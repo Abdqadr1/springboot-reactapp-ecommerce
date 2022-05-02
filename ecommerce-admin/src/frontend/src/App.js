@@ -1,15 +1,17 @@
-import logo from './logo.svg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import MyNavbar from './components/navbar';
+import Users from './components/users';
 
 function App() {
   return (
     <div className="App">
       <MyNavbar />
       <BrowserRouter>
-        <div>Admin page</div>
+        <Routes>
+          <Route path='/' element={<Users />}></Route>
+        </Routes>
       </BrowserRouter>
     </div>
   );

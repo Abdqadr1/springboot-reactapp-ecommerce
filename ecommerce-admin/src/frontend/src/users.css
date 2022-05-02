@@ -1,0 +1,29 @@
+input#keyword {
+    display: inline-block;
+    width: 80%;
+}
+i.delete{
+    cursor: pointer;
+    border: 1px solid #dc3545;
+    border-radius: 5px;
+    color: #dc3545;
+    margin: 3px;
+    padding: 7px;
+}
+i.delete:hover{
+    background-color: #dc3545;
+    color: white;
+}
+i.edit{
+    cursor: pointer;
+    border: 1px solid #0d6efd;
+    border-radius: 5px;
+    color: #0d6efd;
+    background-color: transparent;
+    margin: 3px;
+    padding: 7px;
+}
+i.edit:hover{
+    background-color: #0d6efd;
+    color: white;
+}
