@@ -11,3 +11,17 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.fit-content {
+  width: fit-content !important;
+}
+
+.h-fit-content {
+  height: fit-content !important;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.cursor-pointer:hover {
+  filter: opacity(70%);
+}

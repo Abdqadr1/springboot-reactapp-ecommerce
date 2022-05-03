@@ -2,11 +2,13 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Col, Form, Row, Table, Button } from "react-bootstrap";
 import '../users.css';
+import AddUser from "./add_user";
 import User from "./user";
 
 const Users = (props) => {
     
     const [users, setUsers] = useState([]);
+    const [showAddUser, setShowAddUser] = useState(false);
     const serverUrl = process.env.REACT_APP_SERVER_URL;
 
     useEffect(() => {
@@ -21,7 +23,9 @@ const Users = (props) => {
             <Row className="justify-content-between p-3">
                 <Col xs={12} md={5} className="my-2">
                     <h3 className="">Manage Users</h3> 
-                    <div><span className="text-primary">Create User</span></div>
+                    <div>
+                        <span onClick={() => setShowAddUser(true)} className="text-primary cursor-pointer">Create User</span>
+                    </div>
                 </Col>
                 <Col xs={12} md={7} className="my-2">
                     <Form className="row justify-content-between">
@@ -57,6 +61,7 @@ const Users = (props) => {
                     }
                 </tbody>
             </Table>
+            <AddUser showAddUser={showAddUser} setShowAddUser={setShowAddUser}  />
         </>
      );
 }
