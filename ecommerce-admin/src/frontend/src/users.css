@@ -61,4 +61,17 @@ form .form-input {
     .modal-body {
         min-width: 100% !important;
     }
+    form .form-label {
+        width: 100%;
+        align-self: center;
+        margin-bottom: 0;
+        padding-left: 0;
+    }
+    
+    form .form-input {
+        width: 100%;
+    }
+    .add-user-form{
+        padding: 12px;
+    }
 }
