@@ -41,7 +41,7 @@ public class User {
 
     private boolean enabled;
 
-    private String photos;
+    private String photo;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

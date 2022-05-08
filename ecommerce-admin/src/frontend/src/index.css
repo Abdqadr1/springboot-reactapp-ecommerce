@@ -21,6 +21,9 @@ code {
 .cursor-pointer {
   cursor: pointer;
 }
+/* *{
+  border: 2px solid red;
+} */
 
 .cursor-pointer:hover {
   filter: opacity(70%);

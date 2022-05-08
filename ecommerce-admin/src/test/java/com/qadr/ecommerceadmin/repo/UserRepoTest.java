@@ -91,4 +91,10 @@ class UserRepoTest {
         User user = all.get(all.size() - 1);
         userRepo.deleteById(user.getId());
     }
+
+    @Test
+    void testEnableUser(){
+        userRepo.setUserEnableStatus(8L, false);
+    }
+
 }
