@@ -1,13 +1,14 @@
 import axios from "axios";
 import {useEffect, useRef, useState } from "react";
 import { Alert, Button, Form, Modal, Row } from "react-bootstrap";
-import { showThumbnail } from "./utilities";
+import { isFileValid, showThumbnail } from "./utilities";
 
-const UpdateUser = ({ updateUser, setUpdateUser}) => {
+const UpdateUser = ({ updateUser, setUpdateUser, updatingUser}) => {
     const user = updateUser.user;
     const url = process.env.REACT_APP_SERVER_URL + "user/edit/" + user.id;
+
     const [form, setForm] = useState({
-        id:'', email:'', firstName:'', lastName:'', password:'', enabled: false, photos: null, roles: []
+        id:'', email:'', firstName:'', lastName:'', password:'', enabled: false, photo: null, roles: []
     });
     const [alert, setAlert] = useState({ show: false, message: "", variant: "success" });
     const [image, setImage] = useState(<i className="bi bi-person-fill"></i>)
@@ -31,17 +32,13 @@ const UpdateUser = ({ updateUser, setUpdateUser}) => {
         })
     }
     const handleRoles = (event) => {
-        console.log(event.target.value, event.target.id)
-        let roles = [...form.roles];
-        const roleName = event.target.id;
+        let roles = form.roles;
         const roleID = Number(event.target.value);
-        const role = {id: roleID, name: roleName}
         if (event.target.checked) {
-            if ((roles.findIndex(role => role.id === roleID)) === -1) roles.push(role);
+            if ((roles.findIndex(id => id === roleID)) === -1) roles.push(roleID);
         } else {
-             roles = roles.filter((role) =>  role.id !== roleID )
+             roles = roles.filter((id) =>  id !== roleID )
         }
-        console.log(roles)
         setForm({...form, roles})
     }
     const handleSubmit = (event) => {
@@ -51,9 +48,14 @@ const UpdateUser = ({ updateUser, setUpdateUser}) => {
             setAlert({show:true, message:"no roles selected!", variant: "danger"})
             return;
         }
-        axios.post(url, form).then(response => {
-            console.log(response)
+        const data = Object.keys(form).reduce((formData, key) => {
+            formData.append(key, form[key]);
+            return formData
+        }, new FormData());
+
+        axios.post(url, data).then(response => {
             setAlert({ show: true, message: "User updated!" })
+            updatingUser(response.data)
         })
             .catch(error => {
                 console.log(error.response);    
@@ -64,32 +66,34 @@ const UpdateUser = ({ updateUser, setUpdateUser}) => {
     const handleSelectImage = (event) => {
         const input = event.target;
         const file = input.files[0]
-        if (file.size > 1048576) {
-            input.setCustomValidity("Image size should not be larger than 1MB");
-            input.reportValidity();
-            return;
+        if (isFileValid(file, input)) {
+            setForm({...form, image:file})
+            showThumbnail(file, setImage);
         }
-        if (file.type !== "image/png" && file.type !== "image/jpg" && file.type !== "image/jpeg") {
-            input.setCustomValidity("File type not supported, Use png, jpg or jpeg");
-            input.reportValidity();
-            return;
-        }
-        setForm({...form, photo:file})
-        showThumbnail(file, setImage);
+        
     }
-    const isRole = (id) => form.roles && form.roles.findIndex(u => u.id === id) > -1
+    const isRole = (id) => form.roles && form.roles.findIndex(u => u === id) > -1
     
     useEffect(() => {
         alertRef.current && alertRef.current.focus()
-        if (updateUser.user.id) {
-            if(!form.id || form.id !== updateUser.user.id) setForm({ ...updateUser.user });
+        const currentUser = updateUser.user;
+        if (currentUser.id) {
+            if (!form.id || currentUser.id) {
+                const roles = currentUser.roles.map(role => role.id);
+                setForm({ ...currentUser, roles });
+                const fileURI = process.env.REACT_APP_FILE_URI;
+                const img = currentUser.photo
+                    ? <img src={`${fileURI}${currentUser.id}/${currentUser.photo}`} alt="thumbnail" className="thumbnail" />
+                    : <i className="bi bi-person-fill"></i>
+                setImage(img);
+            }
         }
     }, [alert, updateUser.user, form.id])
 
     return ( 
         <Modal show={updateUser.show} fullscreen={true} onHide={hideModal}>
             <Modal.Header closeButton>
-                <Modal.Title>Edit User</Modal.Title>
+                <Modal.Title>Edit User (ID : {user.id})</Modal.Title>
             </Modal.Header>
             <Modal.Body className="border modal-body">
                 <Alert ref={alertRef} tabIndex={-1} variant={alert.variant} show={alert.show} dismissible onClose={toggleAlert}>
@@ -110,7 +114,7 @@ const UpdateUser = ({ updateUser, setUpdateUser}) => {
                     </Form.Group>
                     <Form.Group className="mb-3 row justify-content-center" controlId="password">
                         <Form.Label className="form-label">Password:</Form.Label>
-                        <Form.Control defaultValue={user.password} onInput={handleInput} required className="form-input" type="text" />
+                        <Form.Control onInput={handleInput} className="form-input" type="text" />
                     </Form.Group>
                     <Form.Group className="mb-3 row justify-content-center" controlId="roles">
                         <Form.Label className="form-label" style={{alignSelf: "start"}}>Roles:</Form.Label>
@@ -149,7 +153,7 @@ const UpdateUser = ({ updateUser, setUpdateUser}) => {
                     </Form.Group>
                     <Form.Group className="mb-3 row justify-content-center" controlId="enabled">
                         <Form.Label className="form-label">Enabled:</Form.Label>
-                        <Form.Check checked={form.enabled}  onChange={handleToggle} required className="form-input ps-0" type="checkbox"/>
+                        <Form.Check checked={form.enabled}  onChange={handleToggle} className="form-input ps-0" type="checkbox"/>
                     </Form.Group>
                     <Form.Group className="mb-3 row justify-content-center" controlId="photo">
                         <Form.Label className="form-label"  style={{alignSelf: "start"}}>Photo:</Form.Label>

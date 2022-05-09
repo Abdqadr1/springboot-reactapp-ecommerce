@@ -11,6 +11,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/' element={<Users />}></Route>
+          <Route path='/users/:page' element={<Users />}></Route>
         </Routes>
       </BrowserRouter>
     </div>

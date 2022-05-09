@@ -18,13 +18,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable();
         http.authorizeRequests().anyRequest().permitAll();
 
-        http.cors().configurationSource(request -> {
-            CorsConfiguration configuration = new CorsConfiguration();
-            configuration.setAllowedOrigins(List.of("*"));
-            configuration.setAllowedMethods(List.of("*"));
-            configuration.setAllowedHeaders(List.of("*"));
-            return configuration;
-        });
+//        http.cors().configurationSource(request -> {
+//            CorsConfiguration configuration = new CorsConfiguration();
+//            configuration.setAllowedOrigins(List.of("*"));
+//            configuration.setAllowedMethods(List.of("*"));
+//            configuration.setAllowedHeaders(List.of("*"));
+//            return configuration;
+//        });
     }
 
     @Bean

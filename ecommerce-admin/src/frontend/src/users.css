@@ -27,6 +27,10 @@ i.edit:hover{
     background-color: #0d6efd;
     color: white;
 }
+.table-dp{
+    width: 100px;
+    aspect-ratio: 1/1;
+}
 /* add new modal */
 .thumbnail{
     width: 100%;

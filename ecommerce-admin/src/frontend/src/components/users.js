@@ -1,15 +1,16 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Col, Form, Row, Table, Button } from "react-bootstrap";
+import { useParams } from "react-router-dom";
 import '../users.css';
 import AddUser from "./add_user";
 import DeleteModal from "./delete_user";
+import MyPagination from "./paging";
 import UpdateUser from "./update_user";
 import User from "./user";
-import { alterArrayDelete, alterArrayEnable, alterArrayUpdate } from "./utilities";
+import { alterArrayAdd, alterArrayDelete, alterArrayEnable, alterArrayUpdate } from "./utilities";
 
-const Users = (props) => {
-    
+const Users = () => {
     const [users, setUsers] = useState([]);
     const [showAddUser, setShowAddUser] = useState(false);
     const [updateUser, setUpdateUser] = useState({show:false, id: -1, user: {}});
@@ -18,13 +19,15 @@ const Users = (props) => {
         const user = users.filter(u => u.id === id)[0]
         setUpdateUser({ show: true, id, user})
     };
+    const { slug } = useParams();
+    const [pageInfo,  setPageInfo] = useState({number: slug ?? 1, totalPages:2, start: 1, end: null, total: null})
     const serverUrl = process.env.REACT_APP_SERVER_URL + "user/";
 
     useEffect(() => {
         axios.get(serverUrl)
             .then(response => setUsers(response.data))
             .catch(err => console.log(err.response))
-    }, [serverUrl])
+    }, [serverUrl, pageInfo])
     
     function toggleEnable(id, status) {
         const url = serverUrl + `${id}/enable/${status}`;
@@ -50,10 +53,13 @@ const Users = (props) => {
             console.log(error.response)
         })
     }
+    function addingUser(user) {
+        alterArrayAdd(users, user, setUsers)
+    }
 
     function updatingUser(user) {
         alterArrayUpdate(users, user, setUsers)
-    }
+    } 
 
     return ( 
         <>
@@ -95,11 +101,12 @@ const Users = (props) => {
                         users.length > 0
                             ? users.map(user => <User key={user.id} user={user} toggleEnable={toggleEnable}
                                 showUpdate={showUpdate} setDeleteUser={setDeleteUser} />)
-                            : <tr><td colSpan={8} >No user found</td></tr>
+                            : <tr><td colSpan={8} className="text-center" >No user found</td></tr>
                     }
                 </tbody>
             </Table>
-            <AddUser showAddUser={showAddUser} setShowAddUser={setShowAddUser} />
+            <MyPagination pageInfo={pageInfo} setPageInfo={setPageInfo} />
+            <AddUser showAddUser={showAddUser} setShowAddUser={setShowAddUser} addingUser={addingUser}/>
             <UpdateUser updateUser={updateUser} setUpdateUser={setUpdateUser} updatingUser={updatingUser} />
             <DeleteModal deleteUser={deleteUser} setDeleteUser={setDeleteUser}   deletingUser={deletingUser} />
         </>

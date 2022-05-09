@@ -1,9 +1,9 @@
 import axios from "axios";
 import {useEffect, useRef, useState } from "react";
 import { Alert, Button, Form, Modal, Row } from "react-bootstrap";
-import { showThumbnail } from "./utilities";
+import { isFileValid, showThumbnail } from "./utilities";
 
-const AddUser = ({ showAddUser, setShowAddUser }) => {
+const AddUser = ({ showAddUser, setShowAddUser, addingUser }) => {
 
     const url = process.env.REACT_APP_SERVER_URL + "user/add"
     const [form, setForm] = useState({
@@ -47,9 +47,10 @@ const AddUser = ({ showAddUser, setShowAddUser }) => {
             formData.append(key, form[key]);
             return formData
         }, new FormData());
+
         axios.post(url, data)
             .then(response => {
-                console.log(response)
+                addingUser(response.data);
                 setAlert({ show: true, message: "User saved!" })
             })
             .catch(error => {
@@ -60,18 +61,10 @@ const AddUser = ({ showAddUser, setShowAddUser }) => {
     const handleSelectImage = (event) => {
         const input = event.target;
         const file = input.files[0]
-        if (file.size > 1048576) {
-            input.setCustomValidity("Image size should not be larger than 1MB");
-            input.reportValidity();
-            return;
+        if (isFileValid(file, input)) {
+            setForm({...form, image:file})
+            showThumbnail(file, setImage);
         }
-        if (file.type !== "image/png" && file.type !== "image/jpg" && file.type !== "image/jpeg") {
-            input.setCustomValidity("File type not supported, Use png, jpg or jpeg");
-            input.reportValidity();
-            return;
-        }
-        setForm({...form, image:file})
-        showThumbnail(file, setImage);
     }
     useEffect(() => {
         alertRef.current && alertRef.current.focus()
