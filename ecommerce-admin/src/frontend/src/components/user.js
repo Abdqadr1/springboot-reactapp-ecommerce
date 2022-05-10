@@ -22,7 +22,7 @@ const User = ({ user, showUpdate, setDeleteUser, toggleEnable }) => {
     const enabled = user.enabled
         ? <i className="bi bi-toggle-on text-success fs-3" onClick={() => toggleEnable(user.id, false)}></i>
         : <i className="bi bi-toggle-off text-secondary fs-3" onClick={() => toggleEnable(user.id, true)}></i>
-    const photo = user.photo ?<img src={`${fileURI}${user.id}/${user.photo}`} alt="user-dp" className="table-dp" />
+    const photo = user.photo ?<img loading="lazy" src={`${fileURI}${user.id}/${user.photo}`} alt="user-dp" className="table-dp" />
         :<span htmlFor="photo" className="avatar cursor-pointer bg-secondary">
             <i className="bi bi-person-fill"></i>
         </span>

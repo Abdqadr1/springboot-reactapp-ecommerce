@@ -2,6 +2,7 @@ package com.qadr.ecommerceadmin.controllers;
 
 import com.qadr.ecommerceadmin.export.UserCsvExport;
 import com.qadr.ecommerceadmin.export.UserExcelExporter;
+import com.qadr.ecommerceadmin.export.UserPdfExport;
 import com.qadr.ecommerceadmin.model.User;
 import com.qadr.ecommerceadmin.service.UserService;
 import com.qadr.sharedLibrary.util.FileUploadUtil;
@@ -109,8 +110,8 @@ public class UserController {
     @GetMapping("/export/pdf")
     void exportPDF(HttpServletResponse response) throws IOException {
         List<User> users = userService.getAllUsers();
-        UserCsvExport userCsvExport = new UserCsvExport();
-        userCsvExport.export(users, response);
+        UserPdfExport userPdfExport = new UserPdfExport();
+        userPdfExport.export(users, response);
     }
 }
 
