@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Button, Modal, Spinner } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
+import { SPINNERS_BORDER } from "./utilities";
 
 const DeleteModal = ({ deleteUser, setDeleteUser, deletingUser }) => {
-    const spinner = <Spinner animation="border" size="sm" />
         
     const [confirm, setConfirm] = useState("Confirm");
     function hideModal() {
@@ -12,7 +12,7 @@ const DeleteModal = ({ deleteUser, setDeleteUser, deletingUser }) => {
         })
     }
     function del() {
-        setConfirm(spinner);
+        setConfirm(SPINNERS_BORDER);
         deletingUser()
     }
 

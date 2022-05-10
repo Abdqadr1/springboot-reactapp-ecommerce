@@ -1,6 +1,7 @@
 package com.qadr.ecommerceadmin.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.qadr.ecommerceadmin.export.UserCsvExport;
+import com.qadr.ecommerceadmin.export.UserExcelExporter;
 import com.qadr.ecommerceadmin.model.User;
 import com.qadr.ecommerceadmin.service.UserService;
 import com.qadr.sharedLibrary.util.FileUploadUtil;
@@ -12,7 +13,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
@@ -30,7 +30,7 @@ public class UserController {
 
     @GetMapping
     public CustomPage listFirstPage() throws IOException {
-        return listUserByPage(1, "firstName", "asc");
+        return listUserByPage(1, "firstName", "asc", null);
     }
 
     @PostMapping(value = "/add")
@@ -77,8 +77,9 @@ public class UserController {
     @GetMapping("/page/{number}")
     public CustomPage listUserByPage(@PathVariable("number") Integer number,
                                      @RequestParam("sortField") String sortField,
-                                     @RequestParam("dir") String dir) throws IOException {
-        Page<User> page = userService.getPage(number, sortField, dir);
+                                     @RequestParam("dir") String dir,
+                                     @RequestParam(value = "keyword", required = false)String keyword) throws IOException {
+        Page<User> page = userService.getPage(number, sortField, dir, keyword);
         int startCount = (number-1) * UserService.USERS_PER_PAGE + 1;
         int endCount = UserService.USERS_PER_PAGE * number;
         endCount = (endCount > page.getTotalElements()) ? (int) page.getTotalElements() : endCount;
@@ -93,6 +94,24 @@ public class UserController {
         );
     }
 
+    @GetMapping("/export/csv")
+    void exportCSV(HttpServletResponse response) throws IOException {
+        List<User> users = userService.getAllUsers();
+        UserCsvExport userCsvExport = new UserCsvExport();
+        userCsvExport.export(users, response);
+    }
+    @GetMapping("/export/excel")
+    void exportExcel(HttpServletResponse response) throws IOException {
+        List<User> users = userService.getAllUsers();
+        UserExcelExporter userExcelExporter = new UserExcelExporter();
+        userExcelExporter.export(users, response);
+    }
+    @GetMapping("/export/pdf")
+    void exportPDF(HttpServletResponse response) throws IOException {
+        List<User> users = userService.getAllUsers();
+        UserCsvExport userCsvExport = new UserCsvExport();
+        userCsvExport.export(users, response);
+    }
 }
 
 @AllArgsConstructor

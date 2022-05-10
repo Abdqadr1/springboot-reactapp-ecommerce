@@ -1,7 +1,4 @@
-input#keyword {
-    display: inline-block;
-    width: 80%;
-}
+
 i.delete{
     cursor: pointer;
     border: 1px solid #dc3545;

@@ -28,7 +28,7 @@ public class UserService {
     private BCryptPasswordEncoder passwordEncoder;
 
     public List<User> getAllUsers(){
-        return userRepo.findAll();
+        return userRepo.findAll(Sort.by("firstName").ascending());
     }
 
     public User addUser(User user){
@@ -73,10 +73,15 @@ public class UserService {
         return "User status changed";
     }
 
-    public Page<User> getPage(int pageNumber, String field, String dir){
+    public Page<User> getPage(int pageNumber, String field, String dir, String keyword){
         Sort sort = Sort.by(field);
         sort = (dir.equals("asc")) ? sort.ascending() : sort.descending();
         Pageable pageable = PageRequest.of(pageNumber - 1, USERS_PER_PAGE, sort);
+
+        if(keyword != null && !keyword.isBlank()){
+            return userRepo.searchKeyword(keyword, pageable);
+        }
+
         return userRepo.findAll(pageable);
     }
 

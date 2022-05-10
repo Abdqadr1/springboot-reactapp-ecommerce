@@ -1,16 +1,18 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Col, Form, Row, Table, Button } from "react-bootstrap";
+import NavbarCollapse from "react-bootstrap/esm/NavbarCollapse";
 import '../users.css';
 import AddUser from "./add_user";
 import DeleteModal from "./delete_user";
 import MyPagination from "./paging";
 import UpdateUser from "./update_user";
 import User from "./user";
-import { alterArrayAdd, alterArrayDelete, alterArrayEnable, alterArrayUpdate } from "./utilities";
+import { alterArrayAdd, alterArrayDelete, alterArrayEnable, alterArrayUpdate, SPINNERS_BORDER_HTML } from "./utilities";
 
 const Users = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "user/";
+    const searchRef = useRef();
     const [users, setUsers] = useState([]);
     const [showAddUser, setShowAddUser] = useState(false);
     const [updateUser, setUpdateUser] = useState({show:false, id: -1, user: {}});
@@ -23,12 +25,13 @@ const Users = () => {
     const [sort, setSort] = useState({field:"firstName", dir: "asc"})
     
     useEffect(() => {
-        changePage(pageInfo.currentPage)
+        changePage(pageInfo.currentPage, "")
     }, [sort])
 
-    function changePage (number) {
+    function changePage(number, keyword) {
         number = number ?? 1;
-        axios.get(`${serverUrl}page/${number}?sortField=${sort.field}&dir=${sort.dir}`)
+        keyword = keyword ?? ""
+        axios.get(`${serverUrl}page/${number}?sortField=${sort.field}&dir=${sort.dir}&keyword=${keyword}`)
             .then(response => {
                 const data = response.data
                 setPageInfo({
@@ -74,6 +77,26 @@ const Users = () => {
     function updatingUser(user) {
         alterArrayUpdate(users, user, setUsers)
     }
+
+    function handleFilter(event) {
+        event.preventDefault();
+        const value = searchRef.current.value
+        if (value) {
+            const button = event.target
+            button.disabled =true
+            button.innerHTML = SPINNERS_BORDER_HTML
+            changePage(null, value)
+            button.disabled = false
+            button.innerHTML = "Search"
+        }
+        
+    }
+    function clearFilter() {
+        if (searchRef.current?.value) {
+            searchRef.current.value = "";
+            changePage(null)
+        }
+    }
     
     function isSort(name) {
         if (name === sort.field) {
@@ -87,28 +110,40 @@ const Users = () => {
         const id = event.target.id;
         const dir = sort.dir === "asc" ? "desc": "asc"
         if (id === sort.field) setSort({ ...sort, dir })
-        else setSort({ field: id, dir: "asc"})
+        else setSort({ field: id, dir: "asc" })
     }
 
     return ( 
         <>
-            <Row className="justify-content-between p-3 mx-0">
+            <Row className="justify-content-between align-items-center p-3 mx-0">
                 <Col xs={12} md={5} className="my-2">
-                    <h3 className="">Manage Users</h3> 
+                    <h3 className="">Manage Users</h3>
                     <div>
                         <span onClick={() => setShowAddUser(true)} className="text-primary cursor-pointer">Create User</span>
+                        &nbsp;|&nbsp;
+                        <a href={`${serverUrl}export/csv`} className="text-primary cursor-pointer">Export CSV</a>
+                        &nbsp;|&nbsp;
+                        <a href={`${serverUrl}export/excel`} className="text-primary cursor-pointer">Export Excel</a>
+                        &nbsp;|&nbsp;
+                        <a href={`${serverUrl}export/pdf`} className="text-primary cursor-pointer">Export PDF</a>
                     </div>
                 </Col>
                 <Col xs={12} md={7} className="my-2">
                     <Form className="row justify-content-between">
-                        <div className="col-12 col-md-8 px-0">
-                            <label htmlFor="keyword" className="me-2 fs-4">Filter:</label>
-                            <input type="text" className="form-control" id="keyword" placeholder="keyword" />
-                        </div>
-                        <div className="col-12 col-md-4 px-0 py-md-0 py-2">
-                            <Button variant="primary" className="mx-1" type="submit">search</Button>
-                            <Button variant="secondary" className="mx-1"  type="button">Clear</Button>
-                        </div>
+                        <Form.Group as={Row} className="mb-3" controlId="keyword">
+                            <Col sm="2" md="2">
+                                <label className="d-block text-end fs-5" htmlFor="keyword">Filter:</label>
+                            </Col>
+                            <Col sm="9" md="6">
+                                <Form.Control ref={searchRef}  type="text" placeholder="keyword" />
+                            </Col>
+                            <Col sm="12" md="4">
+                            <div>
+                                <Button onClick={handleFilter} variant="primary" className="mx-1" type="button">search</Button>
+                                <Button onClick={clearFilter} variant="secondary" className="mx-1"  type="button">Clear</Button>
+                            </div>
+                            </Col>
+                        </Form.Group>
                     </Form> 
                 </Col>
             </Row>
@@ -134,7 +169,7 @@ const Users = () => {
                     }
                 </tbody>
             </Table>
-            <MyPagination pageInfo={pageInfo} changePage={changePage} />
+            {(users.length > 0) ? <MyPagination pageInfo={pageInfo} changePage={changePage} /> : ""}
             <AddUser showAddUser={showAddUser} setShowAddUser={setShowAddUser} addingUser={addingUser}/>
             <UpdateUser updateUser={updateUser} setUpdateUser={setUpdateUser} updatingUser={updatingUser} />
             <DeleteModal deleteUser={deleteUser} setDeleteUser={setDeleteUser}   deletingUser={deletingUser} />

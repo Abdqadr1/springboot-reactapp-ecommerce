@@ -17,7 +17,7 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@DataJpaTest
+@DataJpaTest(showSql = false)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Rollback(value = false)
 class UserRepoTest {
@@ -104,13 +104,15 @@ class UserRepoTest {
     void testPagination(){
         int pageNumber = 0;
         int pageSize = 4;
+        String keyword = "abdqadr6@gmail.com";
 
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
-        Page<User> page = userRepo.findAll(pageable);
+        Page<User> page = userRepo.searchKeyword(keyword, pageable);
 
-        assertThat(page.getContent().size()).isEqualTo(pageSize);
+        List<User> users = page.getContent();
+        System.out.println(users);
+        assertThat(users.size()).isGreaterThan(0);
 
     }
-
 
 }

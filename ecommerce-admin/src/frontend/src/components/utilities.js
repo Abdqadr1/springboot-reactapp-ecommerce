@@ -1,3 +1,5 @@
+import { Spinner } from "react-bootstrap";
+
 export  function alterArrayEnable(allUser, id, status, callback){
     const index = allUser.findIndex((u) => id === u.id);
     const user = allUser[index];
@@ -44,3 +46,12 @@ export function isFileValid(file, input) {
     input.setCustomValidity("")
     return true;
 }
+
+export const SPINNERS_BORDER = <Spinner animation="border" size="sm" />
+export const SPINNERS_GROW = <Spinner animation="grow" size="sm" />
+export const SPINNERS_BORDER_HTML = `<div class="spinner-border spinner-border-sm text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>`
+export const SPINNERS_GROW_HTML = `<div class="spinner-grow spinner-grow-sm text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>`
