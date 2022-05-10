@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -72,8 +73,10 @@ public class UserService {
         return "User status changed";
     }
 
-    public Page<User> getPage(int pageNumber){
-        Pageable pageable = PageRequest.of(pageNumber - 1, USERS_PER_PAGE);
+    public Page<User> getPage(int pageNumber, String field, String dir){
+        Sort sort = Sort.by(field);
+        sort = (dir.equals("asc")) ? sort.ascending() : sort.descending();
+        Pageable pageable = PageRequest.of(pageNumber - 1, USERS_PER_PAGE, sort);
         return userRepo.findAll(pageable);
     }
 

@@ -1,16 +1,23 @@
 package com.qadr.ecommerceadmin.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qadr.ecommerceadmin.model.User;
 import com.qadr.ecommerceadmin.service.UserService;
 import com.qadr.sharedLibrary.util.FileUploadUtil;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -22,8 +29,8 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public List<User> listFirstPage(){
-        return listUserByPage(1);
+    public CustomPage listFirstPage() throws IOException {
+        return listUserByPage(1, "firstName", "asc");
     }
 
     @PostMapping(value = "/add")
@@ -68,16 +75,34 @@ public class UserController {
     }
 
     @GetMapping("/page/{number}")
-    public List<User> listUserByPage(@PathVariable("number") Integer number){
-        Page<User> page = userService.getPage(number);
+    public CustomPage listUserByPage(@PathVariable("number") Integer number,
+                                     @RequestParam("sortField") String sortField,
+                                     @RequestParam("dir") String dir) throws IOException {
+        Page<User> page = userService.getPage(number, sortField, dir);
         int startCount = (number-1) * UserService.USERS_PER_PAGE + 1;
         int endCount = UserService.USERS_PER_PAGE * number;
         endCount = (endCount > page.getTotalElements()) ? (int) page.getTotalElements() : endCount;
+        Map<String, Integer> pageInfo = new HashMap<>();
+        pageInfo.put("startCount", startCount);
+        pageInfo.put("endCount", endCount);
+        pageInfo.put("totalPages", page.getTotalPages());
+        pageInfo.put("totalElement", (int) page.getTotalElements());
 
-        System.out.println(startCount + " to "+ endCount);
-        System.out.println("All users == " + page.getTotalElements());
-        System.out.println("All pages == " + page.getTotalPages());
-        return page.getContent();
+        return new CustomPage(
+                number, startCount, endCount, page.getTotalPages(), page.getTotalElements(), page.getContent()
+        );
     }
+
+}
+
+@AllArgsConstructor
+@Data
+class CustomPage {
+    Integer currentPage;
+    Integer startCount;
+    Integer endCount;
+    Integer totalPages;
+    Long totalElements;
+    List<User> users;
 
 }

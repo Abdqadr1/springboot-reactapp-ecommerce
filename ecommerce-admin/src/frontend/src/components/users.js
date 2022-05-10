@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Col, Form, Row, Table, Button } from "react-bootstrap";
-import { useParams } from "react-router-dom";
 import '../users.css';
 import AddUser from "./add_user";
 import DeleteModal from "./delete_user";
@@ -11,6 +10,7 @@ import User from "./user";
 import { alterArrayAdd, alterArrayDelete, alterArrayEnable, alterArrayUpdate } from "./utilities";
 
 const Users = () => {
+    const serverUrl = process.env.REACT_APP_SERVER_URL + "user/";
     const [users, setUsers] = useState([]);
     const [showAddUser, setShowAddUser] = useState(false);
     const [updateUser, setUpdateUser] = useState({show:false, id: -1, user: {}});
@@ -19,15 +19,29 @@ const Users = () => {
         const user = users.filter(u => u.id === id)[0]
         setUpdateUser({ show: true, id, user})
     };
-    const { slug } = useParams();
-    const [pageInfo,  setPageInfo] = useState({number: slug ?? 1, totalPages:2, start: 1, end: null, total: null})
-    const serverUrl = process.env.REACT_APP_SERVER_URL + "user/";
-
+    const [pageInfo,  setPageInfo] = useState({number: 1, totalPages:2, startCount: 1, endCount: null, totalElements: null})
+    const [sort, setSort] = useState({field:"firstName", dir: "asc"})
+    
     useEffect(() => {
-        axios.get(serverUrl)
-            .then(response => setUsers(response.data))
+        changePage(pageInfo.currentPage)
+    }, [sort])
+
+    function changePage (number) {
+        number = number ?? 1;
+        axios.get(`${serverUrl}page/${number}?sortField=${sort.field}&dir=${sort.dir}`)
+            .then(response => {
+                const data = response.data
+                setPageInfo({
+                    currentPage: data.currentPage,
+                    endCount: data.endCount,
+                    startCount: data.startCount,
+                    totalPages: data.totalPages,
+                    totalElements: data.totalElements
+                })
+                setUsers(data.users)
+            })
             .catch(err => console.log(err.response))
-    }, [serverUrl, pageInfo])
+    }  
     
     function toggleEnable(id, status) {
         const url = serverUrl + `${id}/enable/${status}`;
@@ -59,7 +73,22 @@ const Users = () => {
 
     function updatingUser(user) {
         alterArrayUpdate(users, user, setUsers)
-    } 
+    }
+    
+    function isSort(name) {
+        if (name === sort.field) {
+           if(sort.dir === "asc") return (<i className="bi bi-caret-up-fill text-light"></i> )
+           else return (<i className="bi bi-caret-down-fill text-light"></i> )
+        }
+        return ""
+    }
+
+    function handleSort(event) {
+        const id = event.target.id;
+        const dir = sort.dir === "asc" ? "desc": "asc"
+        if (id === sort.field) setSort({ ...sort, dir })
+        else setSort({ field: id, dir: "asc"})
+    }
 
     return ( 
         <>
@@ -86,14 +115,14 @@ const Users = () => {
             <Table striped bordered responsive hover className="">
                 <thead className="bg-dark text-light">
                     <tr>
-                    <th>User ID</th>
-                    <th>Photo</th>
-                    <th>Email</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Roles</th>
-                    <th>Enabled</th>
-                    <th>Actions</th>
+                        <th onClick={handleSort} id="id" className="cursor-pointer">User ID {isSort("id")}</th>
+                        <th>Photo</th>
+                        <th onClick={handleSort} id="email" className="cursor-pointer">Email {isSort("email")}</th>
+                        <th onClick={handleSort} id="firstName" className="cursor-pointer">First Name {isSort("firstName")}</th>
+                        <th onClick={handleSort} id="lastName" className="cursor-pointer">Last Name {isSort("lastName")}</th>
+                        <th>Roles</th>
+                        <th>Enabled</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -105,7 +134,7 @@ const Users = () => {
                     }
                 </tbody>
             </Table>
-            <MyPagination pageInfo={pageInfo} setPageInfo={setPageInfo} />
+            <MyPagination pageInfo={pageInfo} changePage={changePage} />
             <AddUser showAddUser={showAddUser} setShowAddUser={setShowAddUser} addingUser={addingUser}/>
             <UpdateUser updateUser={updateUser} setUpdateUser={setUpdateUser} updatingUser={updatingUser} />
             <DeleteModal deleteUser={deleteUser} setDeleteUser={setDeleteUser}   deletingUser={deletingUser} />
