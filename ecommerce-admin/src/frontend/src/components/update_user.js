@@ -6,10 +6,10 @@ import { isFileValid, showThumbnail } from "./utilities";
 const UpdateUser = ({ updateUser, setUpdateUser, updatingUser}) => {
     const user = updateUser.user;
     const url = process.env.REACT_APP_SERVER_URL + "user/edit/" + user.id;
-
-    const [form, setForm] = useState({
+    const initialForm = {
         id:'', email:'', firstName:'', lastName:'', password:'', enabled: false, photo: null, roles: []
-    });
+    }
+    const [form, setForm] = useState({...initialForm});
     const [alert, setAlert] = useState({ show: false, message: "", variant: "success" });
     const [image, setImage] = useState(<i className="bi bi-person-fill"></i>)
     const alertRef = useRef();
@@ -90,6 +90,10 @@ const UpdateUser = ({ updateUser, setUpdateUser, updatingUser}) => {
         }
     }, [alert, updateUser.user, form.id])
 
+    const handleReset = () => {
+        setForm({...initialForm, id:form.id})
+    }
+
     return ( 
         <Modal show={updateUser.show} fullscreen={true} onHide={hideModal}>
             <Modal.Header closeButton>
@@ -102,15 +106,15 @@ const UpdateUser = ({ updateUser, setUpdateUser, updatingUser}) => {
                 <Form className="add-user-form" onSubmit={handleSubmit} encType="multipart/form-data">
                     <Form.Group className="mb-3 row justify-content-center" controlId="email">
                         <Form.Label className="form-label">Email address:</Form.Label>
-                        <Form.Control defaultValue={user.email} onInput={handleInput} required className="form-input" type="email" placeholder="Enter email" />
+                        <Form.Control value={form?.email} onInput={handleInput} required className="form-input" type="email" placeholder="Enter email" />
                     </Form.Group>
                     <Form.Group className="mb-3 row justify-content-center" controlId="firstName">
                         <Form.Label className="form-label">First Name:</Form.Label>
-                        <Form.Control defaultValue={user.firstName} onInput={handleInput} required className="form-input" type="text" placeholder="Enter first name" />
+                        <Form.Control value={form?.firstName} onInput={handleInput} required className="form-input" type="text" placeholder="Enter first name" />
                     </Form.Group>
                     <Form.Group className="mb-3 row justify-content-center" controlId="lastName">
                         <Form.Label className="form-label">Last Name:</Form.Label>
-                        <Form.Control defaultValue={user.lastName} onInput={handleInput} required className="form-input" type="text" placeholder="Enter last name" />
+                        <Form.Control value={form?.lastName} onInput={handleInput} required className="form-input" type="text" placeholder="Enter last name" />
                     </Form.Group>
                     <Form.Group className="mb-3 row justify-content-center" controlId="password">
                         <Form.Label className="form-label">Password:</Form.Label>
@@ -172,7 +176,7 @@ const UpdateUser = ({ updateUser, setUpdateUser, updatingUser}) => {
                             <Button className="fit-content mx-1" variant="primary" type="submit">
                                 Add User
                             </Button>
-                            <Button  className="fit-content mx-1" variant="secondary" type="reset">
+                            <Button onClick={handleReset} className="fit-content mx-1" variant="secondary" type="reset">
                                 Clear
                             </Button>
                         </div>

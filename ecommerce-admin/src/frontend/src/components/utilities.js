@@ -12,10 +12,8 @@ export function alterArrayDelete(allUser, id, callback) {
     callback(newUsers)
 }
 
-export function alterArrayUpdate(allUser, user, callback) {
-    const index = allUser.findIndex(u => user.id === u.id);
-    allUser[index] = user;
-    callback([...allUser])
+export function alterArrayUpdate(user, callback) {
+    callback([user])
 }
 
 export function alterArrayAdd(allUser, user, callback) {
@@ -55,3 +53,4 @@ export const SPINNERS_BORDER_HTML = `<div class="spinner-border spinner-border-s
 export const SPINNERS_GROW_HTML = `<div class="spinner-grow spinner-grow-sm text-primary" role="status">
                                         <span class="visually-hidden">Loading...</span>
                                     </div>`
+export const SEARCH_ICON = `<i class="bi bi-search"></i>`;

@@ -6,9 +6,10 @@ import { isFileValid, showThumbnail } from "./utilities";
 const AddUser = ({ showAddUser, setShowAddUser, addingUser }) => {
 
     const url = process.env.REACT_APP_SERVER_URL + "user/add"
-    const [form, setForm] = useState({
-        email: "", firstName: "", lastName: "", password: "", enabled: false, roles: []
-    });
+    const initialForm = {
+        email:'', firstName:'', lastName:'', password:'', enabled: false, photo: null, roles: []
+    }
+    const [form, setForm] = useState(initialForm);
     const [image, setImage] = useState(<i className="bi bi-person-fill"></i>)
     const [alert, setAlert] = useState({ show: false, message: "", variant: "success" });
     const alertRef = useRef();
@@ -69,6 +70,11 @@ const AddUser = ({ showAddUser, setShowAddUser, addingUser }) => {
     useEffect(() => {
         alertRef.current && alertRef.current.focus()
     }, [alert])
+
+    const handleReset = () => {
+        setForm(initialForm)
+    }
+    
     return ( 
         <Modal show={showAddUser} fullscreen={true} onHide={()=> setShowAddUser(!showAddUser)}>
             <Modal.Header closeButton>
@@ -151,7 +157,7 @@ const AddUser = ({ showAddUser, setShowAddUser, addingUser }) => {
                             <Button className="fit-content mx-1" variant="primary" type="submit">
                                 Add User
                             </Button>
-                            <Button  className="fit-content mx-1" variant="secondary" type="reset">
+                            <Button onClick={handleReset}  className="fit-content mx-1" variant="secondary" type="reset">
                                 Clear
                             </Button>
                         </div>

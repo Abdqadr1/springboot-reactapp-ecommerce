@@ -91,7 +91,8 @@ public class UserController {
         pageInfo.put("totalElement", (int) page.getTotalElements());
 
         return new CustomPage(
-                number, startCount, endCount, page.getTotalPages(), page.getTotalElements(), page.getContent()
+                number, startCount, endCount, page.getTotalPages(),
+                page.getTotalElements(), page.getContent(), UserService.USERS_PER_PAGE
         );
     }
 
@@ -124,5 +125,5 @@ class CustomPage {
     Integer totalPages;
     Long totalElements;
     List<User> users;
-
+    Integer numberPerPage;
 }

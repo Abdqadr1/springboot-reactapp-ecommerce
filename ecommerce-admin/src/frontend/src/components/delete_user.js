@@ -23,7 +23,7 @@ const DeleteModal = ({ deleteUser, setDeleteUser, deletingUser }) => {
     return ( 
          <Modal show={deleteUser.show}>
             <Modal.Header closeButton={false}>
-                <Modal.Title>Delete User</Modal.Title>
+                <Modal.Title>Delete User (ID: {deleteUser.id})</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <p>This action cannot be undone.</p>
