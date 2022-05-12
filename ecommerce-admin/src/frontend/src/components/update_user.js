@@ -1,7 +1,7 @@
 import axios from "axios";
 import {useEffect, useRef, useState } from "react";
 import { Alert, Button, Form, Modal, Row } from "react-bootstrap";
-import { isFileValid, showThumbnail } from "./utilities";
+import { getFormData, isFileValid, showThumbnail } from "./utilities";
 
 const UpdateUser = ({ updateUser, setUpdateUser, updatingUser}) => {
     const user = updateUser.user;
@@ -48,10 +48,7 @@ const UpdateUser = ({ updateUser, setUpdateUser, updatingUser}) => {
             setAlert({show:true, message:"no roles selected!", variant: "danger"})
             return;
         }
-        const data = Object.keys(form).reduce((formData, key) => {
-            formData.append(key, form[key]);
-            return formData
-        }, new FormData());
+        const data = getFormData(form)
 
         axios.post(url, data).then(response => {
             setAlert({ show: true, message: "User updated!" })

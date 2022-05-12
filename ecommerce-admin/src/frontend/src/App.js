@@ -1,19 +1,26 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import MyNavbar from './components/navbar';
-import Users from './components/users';
+import Login from './components/login';
+import Account from './components/account';
+import React, { useState } from 'react';
+import { AuthContext } from './components/context';
 
 function App() {
+
+  const [auth, setAuth] = useState({})
+  const clearAuth = () => setAuth({})
+
   return (
     <div className="App">
-      <MyNavbar />
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<Users />}></Route>
-          <Route path='/users/:page' element={<Users />}></Route>
-        </Routes>
-      </BrowserRouter>
+      <AuthContext.Provider value={{auth, setAuth, clearAuth}}>
+          <BrowserRouter>
+          <Routes>
+            <Route path='/' element={<Login />}></Route>
+            <Route path='/account' element={<Account />}></Route>
+          </Routes>
+        </BrowserRouter>
+      </AuthContext.Provider>
     </div>
   );
 }

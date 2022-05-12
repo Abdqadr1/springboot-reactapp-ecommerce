@@ -48,9 +48,6 @@ const Users = () => {
     useEffect(() => {
         changePage(pageInfo.currentPage, "")
     }, [changePage, pageInfo.currentPage, sort])
-
-   
-     
     
     function toggleEnable(id, status) {
         const url = serverUrl + `${id}/enable/${status}`;

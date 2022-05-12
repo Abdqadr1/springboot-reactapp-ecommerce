@@ -54,3 +54,10 @@ export const SPINNERS_GROW_HTML = `<div class="spinner-grow spinner-grow-sm text
                                         <span class="visually-hidden">Loading...</span>
                                     </div>`
 export const SEARCH_ICON = `<i class="bi bi-search"></i>`;
+
+export const getFormData = (form) => {
+    return Object.keys(form).reduce((formData, key) => {
+            formData.append(key, form[key]);
+            return formData
+        }, new FormData());
+}

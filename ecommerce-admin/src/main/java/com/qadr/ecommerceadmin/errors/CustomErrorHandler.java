@@ -1,6 +1,7 @@
 package com.qadr.ecommerceadmin.errors;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,11 +22,13 @@ public class CustomErrorHandler {
         );
         return new ResponseEntity<>(response, status);
     }
+
+    @AllArgsConstructor @Data
+    public class CustomErrorResponse {
+        private String message;
+        private HttpStatus status;
+        private LocalDateTime now;
+    }
 }
 
-@AllArgsConstructor
-class CustomErrorResponse {
-    private String message;
-    private HttpStatus status;
-    private LocalDateTime now;
-}
+
