@@ -2,17 +2,7 @@ import { Col, Row } from "react-bootstrap";
 
 const User = ({ user, showUpdate, setDeleteUser, toggleEnable, type }) => {
     const fileURI = process.env.REACT_APP_FILE_URI;
-    let roles = "";
-    if (user.roles.length > 0) {
-        if (user.roles.length === 1) roles = user.roles[0].name
-        else {
-            user.roles.forEach((el, i) => {
-                const del = i === 0 ? "" : ", ";
-                roles += del + el.name
-            });
-        }
-        
-    }
+    let roles = user?.roles.map((role)=> role.name).toString()
 
     function deleteUser() {
         setDeleteUser({

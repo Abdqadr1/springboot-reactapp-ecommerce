@@ -1,10 +1,12 @@
 import axios from "axios";
 import {useEffect, useRef, useState } from "react";
 import { Alert, Button, Form, Modal, Row } from "react-bootstrap";
-import { getFormData, isFileValid, showThumbnail } from "./utilities";
+import { useNavigate } from "react-router-dom";
+import { getAccessToken, getFormData, isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "./utilities";
 
 const AddUser = ({ showAddUser, setShowAddUser, addingUser }) => {
-
+    const navigate = useNavigate()
+    const submitBtnRef = useRef();
     const url = process.env.REACT_APP_SERVER_URL + "user/add"
     const initialForm = {
         email:'', firstName:'', lastName:'', password:'', enabled: false, photo: null, roles: []
@@ -46,14 +48,25 @@ const AddUser = ({ showAddUser, setShowAddUser, addingUser }) => {
         }
         const data = getFormData(form)
 
-        axios.post(url, data)
+        const button = submitBtnRef.current
+        button.disabled=true
+        button.innerHTML = SPINNERS_BORDER_HTML
+        axios.post(url, data, {
+            headers: {
+                "Authorization": `Bearer ${getAccessToken()}`
+            }
+        })
             .then(response => {
                 addingUser(response.data);
                 setAlert({ show: true, message: "User saved!" })
             })
-            .catch(error => {
-                console.log(error.response);    
-                setAlert({show:true, message: error.response.data.message, variant: "danger"})
+            .catch(error => { 
+                const response = error.response
+                if(isTokenExpired(response)) navigate("/login/2")
+                else setAlert({show:true, message: response.data.message, variant: "danger"})
+            }).finally(() => {
+                button.disabled=false
+                button.innerHTML = "Add User"
             })
     }
     const handleSelectImage = (event) => {
@@ -81,7 +94,7 @@ const AddUser = ({ showAddUser, setShowAddUser, addingUser }) => {
                 <Alert ref={alertRef} tabIndex={-1} variant={alert.variant} show={alert.show} dismissible onClose={toggleAlert}>
                     {alert.message}
                 </Alert>
-                <Form className="add-user-form" onSubmit={handleSubmit} encType="multipart/form-data">
+                <Form className="add-user-form" onSubmit={handleSubmit}>
                     <Form.Group className="mb-3 row justify-content-center" controlId="email">
                         <Form.Label className="form-label">Email address:</Form.Label>
                         <Form.Control value={form.email} onInput={handleInput} required className="form-input" type="email" placeholder="Enter email" />
@@ -151,7 +164,7 @@ const AddUser = ({ showAddUser, setShowAddUser, addingUser }) => {
                     <Row className="justify-content-center">
                         <div className="w-25"></div>
                         <div className="form-input ps-0">
-                            <Button className="fit-content mx-1" variant="primary" type="submit">
+                            <Button ref={submitBtnRef} className="fit-content mx-1" variant="primary" type="submit">
                                 Add User
                             </Button>
                             <Button onClick={handleReset}  className="fit-content mx-1" variant="secondary" type="reset">

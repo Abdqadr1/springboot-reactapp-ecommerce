@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 @Table(name = "roles")
 @Getter
 @Setter
-@NoArgsConstructor @ToString
+@NoArgsConstructor
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +37,5 @@ public class Role {
     public String toString(){
         return name;
     }
-
 
 }

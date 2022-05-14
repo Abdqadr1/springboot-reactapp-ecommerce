@@ -1,9 +1,11 @@
 package com.qadr.ecommerceadmin.errors;
 
+import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
-@Getter
+@Data @Getter @Setter
 public class CustomException extends RuntimeException{
     private final HttpStatus status;
 

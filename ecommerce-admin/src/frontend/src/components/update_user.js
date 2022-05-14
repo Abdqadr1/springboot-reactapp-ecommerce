@@ -1,9 +1,11 @@
 import axios from "axios";
 import {useEffect, useRef, useState } from "react";
 import { Alert, Button, Form, Modal, Row } from "react-bootstrap";
-import { getFormData, isFileValid, showThumbnail } from "./utilities";
+import { useNavigate } from "react-router-dom";
+import { getAccessToken, getFormData, isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "./utilities";
 
-const UpdateUser = ({ updateUser, setUpdateUser, updatingUser}) => {
+const UpdateUser = ({ updateUser, setUpdateUser, updatingUser }) => {
+    const navigate = useNavigate()
     const user = updateUser.user;
     const url = process.env.REACT_APP_SERVER_URL + "user/edit/" + user.id;
     const initialForm = {
@@ -13,6 +15,7 @@ const UpdateUser = ({ updateUser, setUpdateUser, updatingUser}) => {
     const [alert, setAlert] = useState({ show: false, message: "", variant: "success" });
     const [image, setImage] = useState(<i className="bi bi-person-fill"></i>)
     const alertRef = useRef();
+    const submitBtnRef = useRef();
     const toggleAlert = () => setAlert({ ...alert, show: !alert.show })
     
     const hideModal = () => {
@@ -49,15 +52,26 @@ const UpdateUser = ({ updateUser, setUpdateUser, updatingUser}) => {
             return;
         }
         const data = getFormData(form)
-
-        axios.post(url, data).then(response => {
+        
+        const button = submitBtnRef.current
+        button.disabled=true
+        button.innerHTML = SPINNERS_BORDER_HTML
+        axios.post(url, data, {
+            headers: {
+                "Authorization": `Bearer ${getAccessToken()}`
+            }
+        }).then(response => {
             setAlert({ show: true, message: "User updated!" })
             updatingUser(response.data)
         })
-            .catch(error => {
-                console.log(error.response);    
-                setAlert({show:true, message: error.response.data.message, variant: "danger"})
-            })
+        .catch(error => { 
+            const response = error.response
+            if(isTokenExpired(response)) navigate("/login/2")  
+            else setAlert({show:true, message: response.data.message, variant: "danger"})
+        }).finally(() => {  
+            button.disabled=false
+            button.innerHTML = "Update user"
+        })
     }
 
     const handleSelectImage = (event) => {
@@ -170,8 +184,8 @@ const UpdateUser = ({ updateUser, setUpdateUser, updatingUser}) => {
                     <Row className="justify-content-center">
                         <div className="w-25"></div>
                         <div className="form-input ps-0">
-                            <Button className="fit-content mx-1" variant="primary" type="submit">
-                                Add User
+                            <Button ref={submitBtnRef} className="fit-content mx-1" variant="primary" type="submit">
+                                Update User
                             </Button>
                             <Button onClick={handleReset} className="fit-content mx-1" variant="secondary" type="reset">
                                 Clear

@@ -7,10 +7,15 @@ import DeleteModal from "./delete_user";
 import MyPagination from "./paging";
 import UpdateUser from "./update_user";
 import User from "./user";
-import { alterArrayAdd, alterArrayDelete, alterArrayEnable, alterArrayUpdate, SEARCH_ICON, SPINNERS_BORDER_HTML } from "./utilities";
+import { useNavigate } from 'react-router-dom';
+import { alterArrayAdd, alterArrayDelete, alterArrayEnable, alterArrayUpdate, getAuth, isAuthValid, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML } from "./utilities";
 
 const Users = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "user/";
+    
+    const navigate = useNavigate();
+    const auth = getAuth();
+    
     const searchRef = useRef();
     const [users, setUsers] = useState([]);
     const [showAddUser, setShowAddUser] = useState(false);
@@ -26,38 +31,61 @@ const Users = () => {
     })
     const [sort, setSort] = useState({ field: "firstName", dir: "asc" })
     
-     const changePage = useCallback(function (number, keyword) {
+     const changePage = useCallback(function (number, keyword, button) {
         number = number ?? 1;
-        keyword = keyword ?? ""
-        axios.get(`${serverUrl}page/${number}?sortField=${sort.field}&dir=${sort.dir}&keyword=${keyword}`)
-            .then(response => {
-                const data = response.data
-                setPageInfo({
-                    currentPage: data.currentPage,
-                    endCount: data.endCount,
-                    startCount: data.startCount,
-                    totalPages: data.totalPages,
-                    totalElements: data.totalElements,
-                    numberPerPage: data.numberPerPage
-                })
-                setUsers(data.users)
-            })
-            .catch(err => console.log(err.response))
-     }, [sort, serverUrl])
+         keyword = keyword ?? ""
+         if (button) {
+            button.disabled = true
+            button.innerHTML = SPINNERS_BORDER_HTML
+         }
+         axios.get(`${serverUrl}page/${number}?sortField=${sort.field}&dir=${sort.dir}&keyword=${keyword}`, {
+             headers: {
+                 "Authorization": `Bearer ${auth.accessToken}`
+             }
+         })
+             .then(response => {
+                 const data = response.data
+                 setPageInfo({
+                     currentPage: data.currentPage,
+                     endCount: data.endCount,
+                     startCount: data.startCount,
+                     totalPages: data.totalPages,
+                     totalElements: data.totalElements,
+                     numberPerPage: data.numberPerPage
+                 })
+                 setUsers(data.users)
+             })
+             .catch(error => {
+                const response = error.response
+                if(isTokenExpired(response)) navigate("/login/2")
+             })
+             .finally(() => {
+                 if (button) {
+                    button.disabled = false
+                    button.innerHTML = SEARCH_ICON;
+                }
+             })
+     }, [sort, serverUrl, auth.accessToken, navigate])
     
     useEffect(() => {
-        changePage(pageInfo.currentPage, "")
-    }, [changePage, pageInfo.currentPage, sort])
+        if (!isAuthValid()) navigate("/login/2") 
+        else changePage(pageInfo.currentPage, "")
+    }, [changePage, pageInfo.currentPage, sort, navigate])
     
     function toggleEnable(id, status) {
         const url = serverUrl + `${id}/enable/${status}`;
-        axios.get(url)
+        axios.get(url,{
+                headers: {
+                    "Authorization": `Bearer ${auth.accessToken}`
+                }
+            })
             .then((response) => {
                 alterArrayEnable(users, id, status, setUsers)
                 alert(response.data)
             })
             .catch(error => {
-                console.log(error)
+                const response = error.response
+                if(isTokenExpired(response)) navigate("/login/2")
             }) 
     }
     function deletingUser() {
@@ -87,12 +115,7 @@ const Users = () => {
         const value = searchRef.current.value
         if (value) {
             const button = event.target
-            button.disabled = true
-            button.innerHTML = SPINNERS_BORDER_HTML
-            changePage(null, value)
-            button.disabled = false
-            button.innerHTML = "";
-            button.innerHTML = SEARCH_ICON;
+            changePage(null, value, button)
         }
         
     }
@@ -127,6 +150,7 @@ const Users = () => {
                 : <div className="text-center">No user found</div>)
     }
 
+
     return ( 
         <>
             <Row className="justify-content-between align-items-center p-3 mx-0">
@@ -134,16 +158,16 @@ const Users = () => {
                     <h3 className="">Manage Users</h3>
                     <div>
                         <span onClick={() => setShowAddUser(true)} className="text-secondary cursor-pointer">
-                            <i className="bi bi-person-plus-fill fs-2"></i>
+                            <i title="Add new user" className="bi bi-person-plus-fill fs-2"></i>
                         </span>
                         <a href={`${serverUrl}export/csv`} className="text-secondary cursor-pointer">
-                            <i className="bi bi-filetype-csv fs-2 ms-2"></i>  
+                            <i title="Export users to csv" className="bi bi-filetype-csv fs-2 ms-2"></i>  
                         </a>
                         <a href={`${serverUrl}export/excel`} className="text-secondary cursor-pointer">
-                            <i className="bi bi-file-earmark-spreadsheet fs-2 ms-2"></i>
+                            <i title="Export users to excel" className="bi bi-file-earmark-spreadsheet fs-2 ms-2"></i>
                         </a>
                         <a href={`${serverUrl}export/pdf`} className="text-secondary cursor-pointer">
-                            <i className="bi bi-filetype-pdf fs-2 ms-2"></i>
+                            <i title="Export users to pdf" className="bi bi-filetype-pdf fs-2 ms-2"></i>
                         </a>
                     </div>
                 </Col>
@@ -159,10 +183,10 @@ const Users = () => {
                             <Col sm="12" md="4">
                             <div className="mt-md-0 mt-2">
                                 <Button onClick={handleFilter} variant="primary" className="mx-1" type="button">
-                                     <i className="bi bi-search"></i>   
+                                     <i title="search keyword" className="bi bi-search"></i>   
                                 </Button>
                                 <Button onClick={clearFilter} variant="secondary" className="mx-1" type="button" alt="clear search">
-                                    <i className="bi bi-eraser"></i>
+                                    <i title="clear keyword" className="bi bi-eraser"></i>
                                 </Button>
                             </div>
                             </Col>

@@ -1,5 +1,6 @@
 package com.qadr.ecommerceadmin.model;
 
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
+@ToString
 public class AdminUserDetails implements UserDetails {
 
     private User user;

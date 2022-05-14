@@ -1,5 +1,6 @@
 package com.qadr.ecommerceadmin.security;
 
+import com.qadr.ecommerceadmin.filter.CustomAuthorizationFilter;
 import com.qadr.ecommerceadmin.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -11,7 +12,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.List;
@@ -35,11 +38,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             return configuration;
         });
 
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/login/**").permitAll();
+        http.authorizeRequests().antMatchers( "/user-photos/**").permitAll();
+        http.authorizeRequests().antMatchers( "/user/export/**").permitAll();
+        http.authorizeRequests().antMatchers("/user/**").hasAuthority("Admin");
         http.authorizeRequests().anyRequest().authenticated();
 
         http.formLogin().disable();
+
+        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     public DaoAuthenticationProvider authenticationProvider () {

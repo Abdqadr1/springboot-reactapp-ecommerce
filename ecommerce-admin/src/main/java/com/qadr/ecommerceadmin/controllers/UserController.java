@@ -51,7 +51,7 @@ public class UserController {
             filename = filename.length() > 255 ? filename.substring(0, 254) : filename;
             user.setPhoto(filename);
             User savedUser = userService.addUser(user);
-            String uploadFolder = "user-photos/admin/"+savedUser.getId();
+            String uploadFolder = "user-photos/"+savedUser.getId();
             FileUploadUtil.saveFile(file, uploadFolder, filename);
             return savedUser;
         }
@@ -67,7 +67,7 @@ public class UserController {
             filename = filename.length() > 255 ? filename.substring(0, 254):filename;
             user.setPhoto(filename);
             User editedUser = userService.editUser(id, user);
-            String uploadFolder = "user-photos/admin/"+editedUser.getId();
+            String uploadFolder = "user-photos/"+editedUser.getId();
             FileUploadUtil.cleanDir(uploadFolder);
             FileUploadUtil.saveFile(file, uploadFolder, filename);
             return editedUser;
@@ -126,7 +126,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public Map<String, String> login(@RequestParam("email") String email,
+    public Map<String, Object> login(@RequestParam("email") String email,
                         @RequestParam("password") String password, HttpServletRequest request){
 
         try{
@@ -135,11 +135,13 @@ public class UserController {
             Authentication auth = authenticationManager.authenticate(authenticationToken);
             AdminUserDetails userDetails = (AdminUserDetails) auth.getPrincipal();
             User user = userDetails.getUser();
-            Map<String, String> tokens = new HashMap<>();
+            Map<String, Object> tokens = new HashMap<>();
             tokens.put("accessToken", JWTUtil.createAccessToken(userDetails, request.getServletPath()));
             tokens.put("refreshToken", JWTUtil.createRefreshToken(userDetails));
             tokens.put("firstName", user.getFirstName());
             tokens.put("lastName", user.getLastName());
+            tokens.put("id", user.getId());
+            tokens.put("roles", user.getRoles());
             return tokens;
         } catch (Exception e){
             throw new CustomException(HttpStatus.BAD_REQUEST, e.getMessage());

@@ -96,4 +96,16 @@ public class UserService implements UserDetailsService {
 
         return new AdminUserDetails(user);
     }
+
+    public User editAccountInfo(Long id, User user) {
+        User oldUser = userRepo.findById(id)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "User id " + id + " not found"));
+        if(!user.getPassword().isBlank() && !user.getPassword().equals(oldUser.getPassword())
+                && !passwordEncoder.matches(user.getPassword(), oldUser.getPassword())){
+            oldUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        oldUser.setFirstName(user.getFirstName());
+        oldUser.setLastName(user.getLastName());
+        return userRepo.save(oldUser);
+    }
 }
