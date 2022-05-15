@@ -1,5 +1,7 @@
 package com.qadr.sharedLibrary.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -10,6 +12,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 public class FileUploadUtil {
+    public static final Logger LOGGER = LoggerFactory.getLogger(FileUploadUtil.class);
+
     public static void saveFile(MultipartFile file,String uploadDir, String filename) throws IOException {
         Path uploadPath = Paths.get(uploadDir);
         if(!Files.exists(uploadPath)){
@@ -20,6 +24,7 @@ public class FileUploadUtil {
             Path filePath = uploadPath.resolve(filename);
             Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e){
+            LOGGER.error("could not upload image", e);
             throw new IOException("could not upload image", e);
         }
     }
@@ -32,13 +37,13 @@ public class FileUploadUtil {
                    try {
                        Files.delete(file);
                    } catch (IOException e) {
-                       System.out.println("could not delete file, "+file.getFileName());
+                       LOGGER.error("could not delete file, "+file.getFileName());
                    }
                }
            });
 
         } catch (IOException e){
-            System.out.println("Could not list directory, "+ dirPath);
+            LOGGER.info("Could not list directory, "+ dirPath);
         }
     }
 }

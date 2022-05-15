@@ -101,3 +101,27 @@ export const isInArray = (role, roles) => {
     }
     return false
 }
+
+export const throttle = function (cb, delay) {
+    let timeout;
+    let shouldWait;
+    let waitArgs;
+
+    return (...args) => {
+        if (shouldWait === false) {
+            cb(...args)
+        }
+        
+        shouldWait = true;
+        waitArgs = [...args]
+        
+        clearTimeout(timeout)
+        timeout = setTimeout(() => {
+            shouldWait = false;
+            if (waitArgs !== null) {
+                cb(...waitArgs)
+                waitArgs=null
+            }
+        }, delay)
+    }
+}

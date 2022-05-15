@@ -9,14 +9,14 @@
         <outputRelativeToContentRoot value="true" />
         <module name="ecommerce-admin" />
         <module name="shared-library" />
-        <module name="ecommerce" />
+        <module name="ecommerce-common" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="ecommerce" options="-parameters" />
       <module name="ecommerce-admin" options="-parameters" />
+      <module name="ecommerce-common" options="-parameters" />
       <module name="shared-library" options="-parameters" />
     </option>
   </component>

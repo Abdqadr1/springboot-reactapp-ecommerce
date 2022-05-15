@@ -89,7 +89,7 @@ form .form-input {
 }
 
 /* ipad screen styles  */
-@media screen and (min-width:761px) and (max-width: 1024px) {
+@media screen and (min-width:769px) and (max-width: 1024px) {
     .hideable-col{
         display: none;
     }
@@ -102,7 +102,7 @@ form .form-input {
 }
 
 /* small phone screen */
-@media screen and (min-width: 200px) and (max-width: 760px) {
+@media screen and (min-width: 200px) and (max-width: 768px) {
     .modal-body {
         min-width: 100% !important;
     }

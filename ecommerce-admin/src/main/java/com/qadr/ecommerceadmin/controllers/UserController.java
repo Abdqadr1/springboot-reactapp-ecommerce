@@ -20,7 +20,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,7 +30,6 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@CrossOrigin(origins = "*", allowCredentials = "false", allowedHeaders = "*")
 public class UserController {
 
     @Autowired
@@ -40,7 +38,7 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
     @GetMapping("/user")
-    public CustomPage listFirstPage() throws IOException {
+    public CustomUserPage listFirstPage() throws IOException {
         return listUserByPage(1, "firstName", "asc", null);
     }
 
@@ -86,21 +84,16 @@ public class UserController {
     }
 
     @GetMapping("/user/page/{number}")
-    public CustomPage listUserByPage(@PathVariable("number") Integer number,
-                                     @RequestParam("sortField") String sortField,
-                                     @RequestParam("dir") String dir,
-                                     @RequestParam(value = "keyword", required = false)String keyword) throws IOException {
+    public CustomUserPage listUserByPage(@PathVariable("number") Integer number,
+                                         @RequestParam("sortField") String sortField,
+                                         @RequestParam("dir") String dir,
+                                         @RequestParam(value = "keyword", required = false) String keyword){
         Page<User> page = userService.getPage(number, sortField, dir, keyword);
         int startCount = (number-1) * UserService.USERS_PER_PAGE + 1;
         int endCount = UserService.USERS_PER_PAGE * number;
         endCount = (endCount > page.getTotalElements()) ? (int) page.getTotalElements() : endCount;
-        Map<String, Integer> pageInfo = new HashMap<>();
-        pageInfo.put("startCount", startCount);
-        pageInfo.put("endCount", endCount);
-        pageInfo.put("totalPages", page.getTotalPages());
-        pageInfo.put("totalElement", (int) page.getTotalElements());
 
-        return new CustomPage(
+        return new CustomUserPage(
                 number, startCount, endCount, page.getTotalPages(),
                 page.getTotalElements(), page.getContent(), UserService.USERS_PER_PAGE
         );
@@ -152,7 +145,7 @@ public class UserController {
 
 @AllArgsConstructor
 @Data
-class CustomPage {
+class CustomUserPage {
     Integer currentPage;
     Integer startCount;
     Integer endCount;
