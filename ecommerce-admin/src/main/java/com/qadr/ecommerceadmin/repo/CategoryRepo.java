@@ -9,8 +9,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Repository
 public interface CategoryRepo extends JpaRepository<Category, Integer> {
+
+
+    Optional<Category> findByName(String name);
+
+    Optional<Category> findByAlias(String alias);
 
     @Query("SELECT c FROM Category c WHERE CONCAT(c.name, ' ', c.alias) LIKE %?1%")
     Page<Category> searchKeyword(String keyword, Pageable pageable);

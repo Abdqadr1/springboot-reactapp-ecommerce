@@ -1,3 +1,4 @@
+import axios from "axios";
 import { Spinner } from "react-bootstrap";
 
 export  function alterArrayEnable(allUser, id, status, callback){
@@ -124,4 +125,24 @@ export const throttle = function (cb, delay) {
             }
         }, delay)
     }
+}
+
+export const getCategoriesWithHierarchy = async (token) => {
+    let hierarchies;
+    const url = process.env.REACT_APP_SERVER_URL + "category/get-hierarchy";
+    await axios.get(url, {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        const data = response.data;
+        localStorage.setItem("hierarchies", JSON.stringify(data))
+        hierarchies = data
+    })
+    .catch(error => {
+        console.error(error.response)
+        alert("Could not get categories hierarchy")
+    })
+    return hierarchies
 }

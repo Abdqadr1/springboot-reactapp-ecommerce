@@ -2,25 +2,31 @@ package com.qadr.ecommerceadmin.controllers;
 
 import com.qadr.ecommerceadmin.model.Category;
 import com.qadr.ecommerceadmin.service.CategoryService;
+import com.qadr.sharedLibrary.util.FileUploadUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
+@RequestMapping("/category")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
-    @GetMapping("/category")
+    @GetMapping
     public CustomCategoryPage listFirstPage(){
         return listByPage(1, "name", "asc", null);
     }
 
-    @GetMapping("/category/page/{number}")
+    @GetMapping("/page/{number}")
     public CustomCategoryPage listByPage(@PathVariable("number") Integer number,
                                          @RequestParam("sortField") String sortField,
                                          @RequestParam("dir") String dir,
@@ -38,6 +44,47 @@ public class CategoryController {
         );
     }
 
+    @GetMapping("/{id}/enable/{status}")
+    public String updateEnabled(@PathVariable("id") Integer id,
+                                @PathVariable("status") boolean status){
+        return categoryService.updateStatus(id, status);
+    }
+
+    @GetMapping("/get-hierarchy")
+    public List<Category> getHierarchy(){
+        return categoryService.getHierarchy();
+    }
+
+    @PostMapping("/add")
+    public Category addCategory(Category category,
+                                @RequestParam(value = "image", required = false)MultipartFile file) throws IOException {
+        if(Optional.ofNullable(file).isPresent()){
+            String filename = StringUtils.cleanPath(file.getOriginalFilename());
+            filename = filename.length() > 255 ? filename.substring(0, 254) : filename;
+            category.setPhoto(filename);
+            Category savedCategory = categoryService.addCategory(category);
+            String uploadFolder = "category-photos/"+savedCategory.getId();
+            FileUploadUtil.saveFile(file, uploadFolder, filename);
+            return savedCategory;
+        }
+        return categoryService.addCategory(category);
+    }
+
+    @PostMapping("/edit/{id}")
+    public Category editCategory(Category category,
+                                @PathVariable("id") Integer id,
+                                @RequestParam(value = "image", required = false)MultipartFile file) throws IOException {
+        if(Optional.ofNullable(file).isPresent()){
+            String filename = StringUtils.cleanPath(file.getOriginalFilename());
+            filename = filename.length() > 255 ? filename.substring(0, 254) : filename;
+            category.setPhoto(filename);
+            Category savedCategory = categoryService.editCategory(id, category);
+            String uploadFolder = "category-photos/"+savedCategory.getId();
+            FileUploadUtil.saveFile(file, uploadFolder, filename);
+            return savedCategory;
+        }
+        return categoryService.editCategory(id, category);
+    }
 
 }
 

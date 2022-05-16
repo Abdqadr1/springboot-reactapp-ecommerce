@@ -1,10 +1,11 @@
 import axios from "axios";
 import {useEffect, useRef, useState } from "react";
 import { Alert, Button, Form, Modal, Row } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import { getAccessToken, getFormData, isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "./utilities";
+import { Navigate, useNavigate } from "react-router-dom";
+import { getAuth, getFormData, isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "../utilities";
 
 const AddUser = ({ showAddUser, setShowAddUser, addingUser }) => {
+    const {accessToken} = getAuth()
     const navigate = useNavigate()
     const submitBtnRef = useRef();
     const url = process.env.REACT_APP_SERVER_URL + "user/add"
@@ -53,7 +54,7 @@ const AddUser = ({ showAddUser, setShowAddUser, addingUser }) => {
         button.innerHTML = SPINNERS_BORDER_HTML
         axios.post(url, data, {
             headers: {
-                "Authorization": `Bearer ${getAccessToken()}`
+                "Authorization": `Bearer ${accessToken}`
             }
         })
             .then(response => {
@@ -73,7 +74,7 @@ const AddUser = ({ showAddUser, setShowAddUser, addingUser }) => {
         const input = event.target;
         const file = input.files[0]
         if (isFileValid(file, input)) {
-            setForm({...form, image:file})
+            setForm(state => ({...state, image:file}))
             showThumbnail(file, setImage);
         }
     }
@@ -85,6 +86,7 @@ const AddUser = ({ showAddUser, setShowAddUser, addingUser }) => {
         setForm(initialForm)
     }
     
+    if(!accessToken) return <Navigate to="/login/2" />
     return ( 
         <Modal show={showAddUser} fullscreen={true} onHide={()=> setShowAddUser(!showAddUser)}>
             <Modal.Header closeButton>

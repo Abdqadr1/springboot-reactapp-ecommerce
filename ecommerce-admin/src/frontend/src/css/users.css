@@ -24,10 +24,6 @@ i.edit:hover{
     background-color: #0d6efd;
     color: white;
 }
-.table-dp{
-    width: 100px;
-    aspect-ratio: 1/1;
-}
 /* add new modal */
 .thumbnail{
     width: 100%;
@@ -78,70 +74,4 @@ form .form-input {
     font-size: 2em;
 }
 
-.hideable-col {
-    display: table-cell;
-}
-.more-details{
-    display: table;
-}
-.less-details{
-    display: none;
-}
 
-/* ipad screen styles  */
-@media screen and (min-width:769px) and (max-width: 1024px) {
-    .hideable-col{
-        display: none;
-    }
-    .more-details {
-        display: table;
-    }
-    .less-details{
-        display: none;
-    }
-}
-
-/* small phone screen */
-@media screen and (min-width: 200px) and (max-width: 768px) {
-    .modal-body {
-        min-width: 100% !important;
-    }
-    form .form-label {
-        width: 100%;
-        align-self: center;
-        margin-bottom: 0;
-        padding-left: 0;
-    }
-    .person-span {
-        max-width: 80%;
-    }
-    
-    form .form-input {
-        width: 100%;
-    }
-    .add-user-form{
-        padding: 12px;
-    }
-    .hideable-col {
-        display: none;
-    }
-    .more-details {
-        display: none;
-    }
-    .less-details{
-        display: block;
-    }
-    i.delete {
-        margin: 1px;
-        padding: 5px;
-    }
-    
-    i.edit {
-        margin: 1px;
-        padding: 5px;
-    }
-    .table-dp {
-        width: 100%;
-        aspect-ratio: 1/1;
-    }
-}

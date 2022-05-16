@@ -1,7 +1,7 @@
 import { Col, Row } from "react-bootstrap";
 
 const User = ({ user, showUpdate, setDeleteUser, toggleEnable, type }) => {
-    const fileURI = process.env.REACT_APP_FILE_URI;
+    const fileURI = process.env.REACT_APP_SERVER_URL + "user-photos/";
     let roles = user?.roles.map((role)=> role.name).toString()
 
     function deleteUser() {

@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+#photos
+category-photos/**
+user-photos/**

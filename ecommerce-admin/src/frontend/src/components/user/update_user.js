@@ -1,11 +1,12 @@
 import axios from "axios";
 import {useEffect, useRef, useState } from "react";
 import { Alert, Button, Form, Modal, Row } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import { getAccessToken, getFormData, isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "./utilities";
+import { Navigate, useNavigate } from "react-router-dom";
+import { getAuth, getFormData, isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "../utilities";
 
 const UpdateUser = ({ updateUser, setUpdateUser, updatingUser }) => {
     const navigate = useNavigate()
+    const {accessToken} = getAuth()
     const user = updateUser.user;
     const url = process.env.REACT_APP_SERVER_URL + "user/edit/" + user.id;
     const initialForm = {
@@ -45,7 +46,6 @@ const UpdateUser = ({ updateUser, setUpdateUser, updatingUser }) => {
         setForm({...form, roles})
     }
     const handleSubmit = (event) => {
-        toggleAlert();
         event.preventDefault();
         if (form.roles.length === 0) {
             setAlert({show:true, message:"no roles selected!", variant: "danger"})
@@ -58,7 +58,7 @@ const UpdateUser = ({ updateUser, setUpdateUser, updatingUser }) => {
         button.innerHTML = SPINNERS_BORDER_HTML
         axios.post(url, data, {
             headers: {
-                "Authorization": `Bearer ${getAccessToken()}`
+                "Authorization": `Bearer ${accessToken}`
             }
         }).then(response => {
             setAlert({ show: true, message: "User updated!" })
@@ -78,7 +78,7 @@ const UpdateUser = ({ updateUser, setUpdateUser, updatingUser }) => {
         const input = event.target;
         const file = input.files[0]
         if (isFileValid(file, input)) {
-            setForm({...form, image:file})
+            setForm(state => ({...state, image:file}))
             showThumbnail(file, setImage);
         }
         
@@ -93,7 +93,7 @@ const UpdateUser = ({ updateUser, setUpdateUser, updatingUser }) => {
                 const roles = currentUser.roles.map(role => role.id);
                 setForm({ ...currentUser, roles });
                 const fileURI = process.env.REACT_APP_FILE_URI;
-                const img = currentUser.photo
+                const img = currentUser.photo && currentUser.photo !== "null"
                     ? <img src={`${fileURI}${currentUser.id}/${currentUser.photo}`} alt="thumbnail" className="thumbnail" />
                     : <i className="bi bi-person-fill"></i>
                 setImage(img);
@@ -105,6 +105,7 @@ const UpdateUser = ({ updateUser, setUpdateUser, updatingUser }) => {
         setForm({...initialForm, id:form.id})
     }
 
+    if(!accessToken) return <Navigate to="/login/2" />
     return ( 
         <Modal show={updateUser.show} fullscreen={true} onHide={hideModal}>
             <Modal.Header closeButton>

@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import AccountHome from "./AccountHome";
-import Categories from "./categories";
+import Categories from "./category/categories";
 import MyNavbar from "./navbar";
-import Users from "./users";
+import Users from "./user/users";
 
 const Account = () => {
 

@@ -59,7 +59,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
     }
 
-    String[] urls = {"/login", "/user-photos/", "/user/export/"};
+    String[] urls = {"/login", "/user-photos/", "/user/export/", "/category-photos/"};
 
     Predicate<String> isPermitted = path -> Arrays.stream(urls).anyMatch(path::startsWith);
 }

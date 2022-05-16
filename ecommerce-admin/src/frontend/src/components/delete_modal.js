@@ -2,28 +2,28 @@ import { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { SPINNERS_BORDER } from "./utilities";
 
-const DeleteModal = ({ deleteUser, setDeleteUser, deletingUser }) => {
+const DeleteModal = ({ deleteObject, setDeleteObject, deletingFunc }) => {
         
     const [confirm, setConfirm] = useState("Confirm");
     function hideModal() {
-        setDeleteUser({
-            ...deleteUser,
+        setDeleteObject({
+            ...deleteObject,
             show: false
         })
     }
     function del() {
         setConfirm(SPINNERS_BORDER);
-        deletingUser()
+        deletingFunc()
     }
 
     useEffect(() => {
         setConfirm("Confirm")
-    }, [deleteUser.show])
+    }, [deleteObject.show])
 
     return ( 
-         <Modal show={deleteUser.show}>
+         <Modal show={deleteObject.show}>
             <Modal.Header closeButton={false}>
-                <Modal.Title>Delete User (ID: {deleteUser.id})</Modal.Title>
+                <Modal.Title>Delete User (ID: {deleteObject.id})</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <p>This action cannot be undone.</p>

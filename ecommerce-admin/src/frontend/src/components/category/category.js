@@ -1,7 +1,7 @@
 import { Col, Row } from "react-bootstrap";
 
 const Category = ({ category, showUpdate, setDeleted, toggleEnable, type }) => {
-    const fileURI = process.env.REACT_APP_FILE_URI;
+    const fileURI = process.env.REACT_APP_SERVER_URL+"category-photos/";
 
     function deleteCategory() {
         setDeleted({
@@ -12,7 +12,8 @@ const Category = ({ category, showUpdate, setDeleted, toggleEnable, type }) => {
     const enabled = category.enabled
         ? <i className="bi bi-toggle-on text-success fs-3" onClick={() => toggleEnable(category.id, false)}></i>
         : <i className="bi bi-toggle-off text-secondary fs-3" onClick={() => toggleEnable(category.id, true)}></i>
-    const photo = category.photo ?<img loading="lazy" src={`${fileURI}${category.id}/${category.photo}`} alt="category-dp" className="table-dp" />
+    const photo = category.photo && category.photo !== "null"
+        ? <img loading="lazy" src={`${fileURI}${category.id}/${category.photo}`} alt="category-dp" className="table-dp" />
         :<span htmlFor="photo" className="avatar cursor-pointer bg-secondary">
             <i className="bi bi-person-fill"></i>
         </span>
@@ -20,10 +21,10 @@ const Category = ({ category, showUpdate, setDeleted, toggleEnable, type }) => {
     function tableItem() {
         return (
             <tr>
-                <td className="hideable-col">{category.id}</td>
+                <td>{category.id}</td>
                 <td>{photo}</td>
                 <td>{category.name}</td>
-                <td>{category.alias}</td>
+                <td className="hideable-col">{category.alias}</td>
                 <td>{enabled}</td>
                 <td className="d-flex justify-content-center">
                     <i className="bi bi-pencil-fill edit" title="edit category" onClick={()=> showUpdate(category.id)}></i>

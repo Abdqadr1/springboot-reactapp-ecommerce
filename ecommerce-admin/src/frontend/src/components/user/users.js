@@ -1,35 +1,35 @@
 import axios from "axios";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Col, Form, Row, Table, Button } from "react-bootstrap";
-import '../users.css';
+import '../../css/users.css';
 import AddUser from "./add_user";
-import DeleteModal from "./delete_user";
-import MyPagination from "./paging";
+import DeleteModal from "../delete_modal";
+import MyPagination from "../paging";
 import UpdateUser from "./update_user";
+import User from "./user";
 import { Navigate, useNavigate } from 'react-router-dom';
-import { alterArrayAdd, alterArrayDelete, alterArrayEnable, alterArrayUpdate, getAuth, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, throttle } from "./utilities";
-import Category from "./category";
+import { alterArrayAdd, alterArrayDelete, alterArrayEnable, alterArrayUpdate, getAuth, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, throttle } from "../utilities";
 
-const Categories = () => {
-    const serverUrl = process.env.REACT_APP_SERVER_URL + "category/";
+const Users = () => {
+    const serverUrl = process.env.REACT_APP_SERVER_URL + "user/";
     const [width, setWidth] = useState(window.innerWidth);
     const navigate = useNavigate();
-    const auth = getAuth();
+    const {accessToken} = getAuth();
     
     const searchRef = useRef();
-    const [categories, setCategories] = useState([]);
-    const [showAddCategory, setShowAddCategory] = useState(false);
-    const [updateCategory, setUpdateCategory] = useState({show:false, id: -1, category: {}});
-    const [deleteCategory, setDeleteCategory] = useState({show:false, id: -1});
+    const [users, setUsers] = useState([]);
+    const [showAddUser, setShowAddUser] = useState(false);
+    const [updateUser, setUpdateUser] = useState({show:false, id: -1, user: {}});
+    const [deleteUser, setDeleteUser] = useState({show:false, id: -1});
     const showUpdate = (id) => {
-        const category = categories.filter(u => u.id === id)[0]
-        setUpdateCategory({ show: true, id, category})
+        const user = users.filter(u => u.id === id)[0]
+        setUpdateUser({ show: true, id, user})
     };
     const [pageInfo, setPageInfo] = useState({
         number: 1, totalPages: 1, startCount: 1,
         endCount: null, totalElements: null,numberPerPage: 1
     })
-    const [sort, setSort] = useState({ field: "name", dir: "asc" })
+    const [sort, setSort] = useState({ field: "firstName", dir: "asc" })
     
      const changePage = useCallback(function (number, keyword, button) {
         number = number ?? 1;
@@ -40,26 +40,23 @@ const Categories = () => {
          }
          axios.get(`${serverUrl}page/${number}?sortField=${sort.field}&dir=${sort.dir}&keyword=${keyword}`, {
              headers: {
-                 "Authorization": `Bearer ${auth.accessToken}`
+                 "Authorization": `Bearer ${accessToken}`
              }
          })
              .then(response => {
                  const data = response.data
-                 console.log(data)
-                 setPageInfo(state => (
-                     {
+                 setPageInfo(state => ({
                      ...state,
                      endCount: data.endCount,
                      startCount: data.startCount,
                      totalPages: data.totalPages,
                      totalElements: data.totalElements,
                      numberPerPage: data.numberPerPage
-                     }
-                 ))
-                 setCategories(data.categories)
+                 }))
+                 setUsers(data.users)
              })
              .catch(error => {
-                 const response = error.response
+                const response = error.response
                 if(isTokenExpired(response)) navigate("/login/2")
              })
              .finally(() => {
@@ -68,7 +65,7 @@ const Categories = () => {
                     button.innerHTML = SEARCH_ICON;
                 }
              })
-     }, [sort, serverUrl, auth?.accessToken, navigate])
+     }, [sort, serverUrl, accessToken, navigate])
     
     const handleWindowWidthChange = throttle(event => setWidth(window.innerWidth), 500)
     
@@ -88,11 +85,11 @@ const Categories = () => {
         const url = serverUrl + `${id}/enable/${status}`;
         axios.get(url,{
                 headers: {
-                    "Authorization": `Bearer ${auth.accessToken}`
+                    "Authorization": `Bearer ${accessToken}`
                 }
             })
             .then((response) => {
-                alterArrayEnable(categories, id, status, setCategories)
+                alterArrayEnable(users, id, status, setUsers)
                 alert(response.data)
             })
             .catch(error => {
@@ -100,26 +97,26 @@ const Categories = () => {
                 if(isTokenExpired(response)) navigate("/login/2")
             }) 
     }
-    function deletingCategory() {
-        const id = deleteCategory.id
+    function deletingUser() {
+        const id = deleteUser.id
         const url = serverUrl + "delete/" + id;
         axios.get(url)
             .then(() => {
-                alterArrayDelete(categories, id, setCategories)
-                setDeleteCategory({...deleteCategory, show:false})
-                alert("Category deleted!")
+                alterArrayDelete(users, id, setUsers)
+                setDeleteUser({...deleteUser, show:false})
+                alert("User deleted!")
             })
             .catch(error => {
             console.log(error.response)
         })
     }
-    function addingCategory(category) {
-        alterArrayAdd(categories, category, setCategories)
+    function addingUser(user) {
+        alterArrayAdd(users, user, setUsers)
     }
 
-    function updatingCategory(category) {
-        alterArrayUpdate(category, setCategories)
-        searchRef.current.value = category.name
+    function updatingUser(user) {
+        alterArrayUpdate(user, setUsers)
+        searchRef.current.value = user.email.split("@")[0]
     }
 
     function handleFilter(event) {
@@ -153,24 +150,24 @@ const Categories = () => {
         else setSort({ field: id, dir: "asc" })
     }
 
-    function listCategories(categories, type) {
-        return (categories.length > 0)
-            ? categories.map(category => <Category key={category.id} type={type} category={category} toggleEnable={toggleEnable}
-                showUpdate={showUpdate} setDeleted={setDeleteCategory} />)
+    function listUsers(users, type) {
+        return (users.length > 0)
+            ? users.map(user => <User key={user.id} type={type} user={user} toggleEnable={toggleEnable}
+                showUpdate={showUpdate} setDeleteUser={setDeleteUser} />)
             : ((type === 'detailed')
-                ? <tr><td colSpan={8} className="text-center" >No category found</td></tr>
-                : <div className="text-center">No category found</div>)
+                ? <tr><td colSpan={8} className="text-center" >No user found</td></tr>
+                : <div className="text-center">No user found</div>)
     }
 
-    if(!auth || !auth?.accessToken) return <Navigate to="/login/2" />
+    if(!accessToken) return <Navigate to="/login/2" />
     return ( 
         <>
             <Row className="justify-content-between align-items-center p-3 mx-0">
                 <Col xs={12} md={5} className="my-2">
-                    <h3 className="">Manage Categories</h3>
+                    <h3 className="">Manage Users</h3>
                     <div>
-                        <span onClick={() => setShowAddCategory(true)} className="text-secondary cursor-pointer">
-                            <i title="Add new category" className="bi bi-person-plus-fill fs-2"></i>
+                        <span onClick={() => setShowAddUser(true)} className="text-secondary cursor-pointer">
+                            <i title="Add new user" className="bi bi-person-plus-fill fs-2"></i>
                         </span>
                         <a href={`${serverUrl}export/csv`} className="text-secondary cursor-pointer">
                             <i title="Export users to csv" className="bi bi-filetype-csv fs-2 ms-2"></i>  
@@ -208,34 +205,36 @@ const Categories = () => {
             </Row>
             {
                 (width >= 769) ?
-                <Table bordered responsive hover className="more-details">
+                    <Table bordered responsive hover className="more-details">
                     <thead className="bg-dark text-light">
                         <tr>
-                            <th onClick={handleSort} id="id" className="cursor-pointer hideable-col">ID {isSort("id")}</th>
+                            <th onClick={handleSort} id="id" className="cursor-pointer hideable-col">User ID {isSort("id")}</th>
                             <th>Photo</th>
-                            <th onClick={handleSort} id="name" className="cursor-pointer">Name {isSort("name")}</th>
-                            <th onClick={handleSort} id="alias" className="cursor-pointer">Alias {isSort("alias")}</th>
+                            <th onClick={handleSort} id="email" className="cursor-pointer hideable-col">Email {isSort("email")}</th>
+                            <th onClick={handleSort} id="firstName" className="cursor-pointer">First Name {isSort("firstName")}</th>
+                            <th onClick={handleSort} id="lastName" className="cursor-pointer">Last Name {isSort("lastName")}</th>
+                            <th>Roles</th>
                             <th>Enabled</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {listCategories(categories,"detailed")}
+                        {listUsers(users,"detailed")}
                     </tbody>
                 </Table> : ""
             }
             {
                 (width <= 768)
                     ? <div className="less-details p-2">
-                        {listCategories(categories, "less")}
+                        {listUsers(users, "less")}
                     </div> : ""
             }
-            {(categories.length > 0) ? <MyPagination pageInfo={pageInfo} setPageInfo={setPageInfo} /> : ""}
-            {/* <AddUser showAddUser={showAddCategory} setShowAddUser={setShowAddCategory} addingUser={addingCategory}/>
-            <UpdateUser updateUser={updateCategory} setUpdateUser={setUpdateCategory} updatingUser={updatingCategory} />
-            <DeleteModal deleteUser={deleteCategory} setDeleteUser={setDeleteCategory}   deletingUser={deletingCategory} /> */}
+            {(users.length > 0) ? <MyPagination pageInfo={pageInfo} setPageInfo={setPageInfo} /> : ""}
+            <AddUser showAddUser={showAddUser} setShowAddUser={setShowAddUser} addingUser={addingUser}/>
+            <UpdateUser updateUser={updateUser} setUpdateUser={setUpdateUser} updatingUser={updatingUser} />
+            <DeleteModal deleteObject={deleteUser} setDeleteCategory={setDeleteUser}   deletingFunc={deletingUser} />
         </>
      );
 }
  
-export default Categories;
+export default Users;
