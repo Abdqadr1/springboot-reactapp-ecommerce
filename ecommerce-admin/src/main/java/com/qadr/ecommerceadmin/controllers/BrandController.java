@@ -1,9 +1,8 @@
 package com.qadr.ecommerceadmin.controllers;
 
-import com.qadr.ecommerceadmin.export.CategoryCsvExport;
-import com.qadr.ecommerceadmin.export.UserCsvExport;
-import com.qadr.ecommerceadmin.model.Category;
-import com.qadr.ecommerceadmin.model.User;
+import com.qadr.ecommerceadmin.export.BrandCsvExport;
+import com.qadr.ecommerceadmin.model.Brand;
+import com.qadr.ecommerceadmin.service.BrandService;
 import com.qadr.ecommerceadmin.service.CategoryService;
 import com.qadr.sharedLibrary.util.FileUploadUtil;
 import lombok.AllArgsConstructor;
@@ -19,98 +18,94 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+import static com.qadr.ecommerceadmin.service.BrandService.CATEGORY_PER_PAGE;
+
 @RestController
-@RequestMapping("/category")
-public class CategoryController {
+@RequestMapping("/brand")
+public class BrandController {
     @Autowired
-    private CategoryService categoryService;
+    private BrandService brandService;
 
     @GetMapping
-    public CustomCategoryPage listFirstPage(){
+    public CustomBrandPage listFirstPage(){
         return listByPage(1, "name", "asc", null);
     }
 
     @GetMapping("/page/{number}")
-    public CustomCategoryPage listByPage(@PathVariable("number") Integer number,
+    public CustomBrandPage listByPage(@PathVariable("number") Integer number,
                                          @RequestParam("sortField") String sortField,
                                          @RequestParam("dir") String dir,
                                          @RequestParam(value = "keyword", required = false) String keyword){
 
-        Page<Category> page = categoryService.getPage(number, sortField, dir, keyword);
-        int startCount = (number-1) * CategoryService.CATEGORY_PER_PAGE + 1;
-        int endCount = CategoryService.CATEGORY_PER_PAGE * number;
+        Page<Brand> page = brandService.getPage(number, sortField, dir, keyword);
+        int startCount = (number-1) * CATEGORY_PER_PAGE + 1;
+        int endCount = CATEGORY_PER_PAGE * number;
         endCount = (endCount > page.getTotalElements()) ? (int) page.getTotalElements() : endCount;
 
 
-        return new CustomCategoryPage(
+        return new CustomBrandPage(
                 number, startCount, endCount, page.getTotalPages(),
                 page.getTotalElements(), page.getContent(), CategoryService.CATEGORY_PER_PAGE
         );
     }
-
-    @GetMapping("/{id}/enable/{status}")
-    public String updateEnabled(@PathVariable("id") Integer id,
-                                @PathVariable("status") boolean status){
-        return categoryService.updateStatus(id, status);
-    }
-
-    @GetMapping("/get-hierarchy")
-    public List<Category> getHierarchy(){
-        return categoryService.getHierarchy();
-    }
+//
+//    @GetMapping("/get-hierarchy")
+//    public List<Brand> getHierarchy(){
+//        return brandService.getHierarchy();
+//    }
 
     @PostMapping("/add")
-    public Category addCategory(Category category,
+    public Brand addBrand(Brand brand,
                                 @RequestParam(value = "image", required = false)MultipartFile file) throws IOException {
         if(Optional.ofNullable(file).isPresent()){
             String filename = StringUtils.cleanPath(file.getOriginalFilename());
             filename = filename.length() > 255 ? filename.substring(0, 254) : filename;
-            category.setPhoto(filename);
-            Category savedCategory = categoryService.addCategory(category);
-            String uploadFolder = "category-photos/"+savedCategory.getId();
+            brand.setPhoto(filename);
+            Brand addBrand = brandService.addBrand(brand);
+            String uploadFolder = "brand-photos/"+addBrand.getId();
             FileUploadUtil.saveFile(file, uploadFolder, filename);
-            return savedCategory;
+            return addBrand;
         }
-        return categoryService.addCategory(category);
+        return brandService.addBrand(brand);
     }
 
     @PostMapping("/edit/{id}")
-    public Category editCategory(Category category,
-                                @PathVariable("id") Integer id,
-                                @RequestParam(value = "image", required = false)MultipartFile file) throws IOException {
+    public Brand editBrand(Brand brand,
+                                 @PathVariable("id") Integer id,
+                                 @RequestParam(value = "image", required = false)MultipartFile file) throws IOException {
         if(Optional.ofNullable(file).isPresent()){
             String filename = StringUtils.cleanPath(file.getOriginalFilename());
             filename = filename.length() > 255 ? filename.substring(0, 254) : filename;
-            category.setPhoto(filename);
-            Category savedCategory = categoryService.editCategory(id, category);
-            String uploadFolder = "category-photos/"+savedCategory.getId();
+            brand.setPhoto(filename);
+            Brand savedBrand = brandService.editBrand(id, brand);
+            String uploadFolder = "brand-photos/"+savedBrand.getId();
             FileUploadUtil.saveFile(file, uploadFolder, filename);
-            return savedCategory;
+            return savedBrand;
         }
-        return categoryService.editCategory(id, category);
+        return brandService.editBrand(id, brand);
     }
 
     @GetMapping("/delete/{id}")
-    public Category deleteCategory(@PathVariable("id") Integer id){
-        return categoryService.deleteCategory(id);
+    public Brand deleteBrand(@PathVariable("id") Integer id){
+        return brandService.deleteBrand(id);
     }
 
     @GetMapping("/export/csv")
     void exportCSV(HttpServletResponse response) throws IOException {
-        List<Category> categories = categoryService.getAll();
-        CategoryCsvExport categoryCsvExport = new CategoryCsvExport();
-        categoryCsvExport.export(categories, response);
+        List<Brand> brands = brandService.getAll();
+        BrandCsvExport brandCsvExport = new BrandCsvExport();
+        brandCsvExport.export(brands, response);
     }
 }
 
 @AllArgsConstructor
 @Data
-class CustomCategoryPage {
+class CustomBrandPage {
     Integer currentPage;
     Integer startCount;
     Integer endCount;
     Integer totalPages;
     Long totalElements;
-    List<Category> categories;
+    List<Brand> brands;
     Integer numberPerPage;
 }

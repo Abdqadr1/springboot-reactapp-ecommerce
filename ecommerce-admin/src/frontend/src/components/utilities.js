@@ -141,8 +141,8 @@ export const getCategoriesWithHierarchy = async (token) => {
         hierarchies = data
     })
     .catch(error => {
+        console.error("Could not get categories hierarchy")
         console.error(error.response)
-        alert("Could not get categories hierarchy")
     })
     return hierarchies
 }

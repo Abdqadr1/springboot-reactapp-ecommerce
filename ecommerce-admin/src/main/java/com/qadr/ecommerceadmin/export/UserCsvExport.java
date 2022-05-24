@@ -1,5 +1,6 @@
 package com.qadr.ecommerceadmin.export;
 
+import com.qadr.ecommerceadmin.model.Category;
 import com.qadr.ecommerceadmin.model.User;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
@@ -22,6 +23,19 @@ public class UserCsvExport extends AbstractExporter {
         beanWriter.writeHeader(CSV_HEADER);
         for (User user : users){
             beanWriter.write(user, CSV_DATA_MAPPING);
+        }
+        beanWriter.close();
+    }
+
+    public  void exportCategories(List<Category> categories, HttpServletResponse response) throws IOException {
+        super.setResponseHeader(response, "csv", "text/csv");
+        ICsvBeanWriter beanWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
+
+        String[] CSV_HEADER = {"USER ID", "Name", "Alias", "Parent", "Enabled"};
+        String[] CSV_DATA_MAPPING = {"id", "name", "alias","parent", "enabled"};
+        beanWriter.writeHeader(CSV_HEADER);
+        for (Category category : categories){
+            beanWriter.write(category, CSV_DATA_MAPPING);
         }
         beanWriter.close();
     }

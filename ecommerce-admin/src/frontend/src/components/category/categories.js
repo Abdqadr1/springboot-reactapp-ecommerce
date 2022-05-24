@@ -17,6 +17,7 @@ const Categories = () => {
     const {accessToken} = getAuth();
     
     const searchRef = useRef();
+    const searchBtnRef = useRef();
     const [categories, setCategories] = useState([]);
     const [showAddCategory, setShowAddCategory] = useState(false);
     const [updateCategory, setUpdateCategory] = useState({show:false, id: -1, category: {}});
@@ -107,7 +108,11 @@ const Categories = () => {
     function deletingCategory() {
         const id = deleteCategory.id
         const url = serverUrl + "delete/" + id;
-        axios.get(url)
+        axios.get(url, {
+             headers: {
+                 "Authorization": `Bearer ${accessToken}`
+             }
+        })
             .then(() => {
                 alterArrayDelete(categories, id, setCategories)
                 setDeleteCategory({...deleteCategory, show:false})
@@ -130,8 +135,7 @@ const Categories = () => {
         event.preventDefault();
         const value = searchRef.current.value
         if (value) {
-            const button = event.target
-            changePage(null, value, button)
+            changePage(null, value, searchBtnRef.current)
         }
         
     }
@@ -179,16 +183,10 @@ const Categories = () => {
                         <a href={`${serverUrl}export/csv`} className="text-secondary cursor-pointer">
                             <i title="Export users to csv" className="bi bi-filetype-csv fs-2 ms-2"></i>  
                         </a>
-                        <a href={`${serverUrl}export/excel`} className="text-secondary cursor-pointer">
-                            <i title="Export users to excel" className="bi bi-file-earmark-spreadsheet fs-2 ms-2"></i>
-                        </a>
-                        <a href={`${serverUrl}export/pdf`} className="text-secondary cursor-pointer">
-                            <i title="Export users to pdf" className="bi bi-filetype-pdf fs-2 ms-2"></i>
-                        </a>
                     </div>
                 </Col>
                 <Col xs={12} md={7} className="my-2">
-                    <Form className="row justify-content-between">
+                    <Form className="row justify-content-between" onSubmit={handleFilter}>
                         <Form.Group as={Row} className="mb-3" controlId="keyword">
                             <Col sm="2" md="2">
                                 <label className="d-block text-start text-md-end fs-5" htmlFor="keyword">Filter:</label>
@@ -198,7 +196,7 @@ const Categories = () => {
                             </Col>
                             <Col sm="12" md="4">
                             <div className="mt-md-0 mt-2">
-                                <Button onClick={handleFilter} variant="primary" className="mx-1" type="button">
+                                <Button ref={searchBtnRef} variant="primary" className="mx-1" type="submit">
                                      <i title="search keyword" className="bi bi-search"></i>   
                                 </Button>
                                 <Button onClick={clearFilter} variant="secondary" className="mx-1" type="button" alt="clear search">
@@ -237,7 +235,7 @@ const Categories = () => {
             {(categories.length > 0) ? <MyPagination pageInfo={pageInfo} setPageInfo={setPageInfo} /> : ""}
             <AddCategory hierarchies={hierarchies} showAddCategory={showAddCategory} setShowAddCategory={setShowAddCategory} addingCategory={addingCategory}/>
             <UpdateCategory hierarchies={hierarchies} updateCategory={updateCategory} setUpdateCategory={setUpdateCategory} updatingCategory={updatingCategory} />
-            <DeleteModal deleteObject={deleteCategory} setDeleteObject={setDeleteCategory}   deletingFunc={deletingCategory} />
+            <DeleteModal deleteObject={deleteCategory} setDeleteObject={setDeleteCategory}   deletingFunc={deletingCategory} type="Category" />
         </>
      );
 }

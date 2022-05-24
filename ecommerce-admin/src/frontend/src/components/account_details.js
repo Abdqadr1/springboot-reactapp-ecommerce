@@ -9,7 +9,7 @@ const AccountDetails = ({show, setShow}) => {
     const auth = getAuth()
     const [initPassword, setInitPassword] = useState("")
     const url = process.env.REACT_APP_SERVER_URL + "account/edit/" + auth.id;
-    const fileURI = process.env.REACT_APP_FILE_URI;
+    const fileURI = process.env.REACT_APP_SERVER_URL + "user-photos/";
     const initialForm = {
         id: '', email: '', firstName: '', lastName: '', password: '',
         enabled: false, photo: null, roles: [], 'confirm-password': "", "new-password": ""
@@ -156,13 +156,11 @@ const AccountDetails = ({show, setShow}) => {
                     </Form.Group>
                     <Form.Group className="mb-3 row justify-content-center" controlId="photo">
                         <Form.Label className="form-label"  style={{alignSelf: "start"}}>Photo:</Form.Label>
-                        <div className="form-input d-flex">
-                            <Form.Control onChange={handleSelectImage} className="w-50 h-fit-content"  style={{alignSelf: "center"}} type="file" accept="image/jpg, image/png, image/jpeg" />
-                            <div className="w-50">
-                                <label htmlFor="photo" className="person-span cursor-pointer bg-secondary">
-                                    {image}
-                                </label>
-                            </div>
+                        <div className="form-input row">
+                            <Form.Control onChange={handleSelectImage} className="col-10" type="file" accept="image/jpg, image/png, image/jpeg" />
+                            <label htmlFor="photo" className="ms-0 w-50 person-span mt-3 cursor-pointer bg-secondary">
+                                {image}
+                            </label>
                         </div>
                     </Form.Group>
                     <Row className="justify-content-center">

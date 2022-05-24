@@ -13,7 +13,9 @@ const AddUser = ({ showAddUser, setShowAddUser, addingUser }) => {
         email:'', firstName:'', lastName:'', password:'', enabled: false, photo: null, roles: []
     }
     const [form, setForm] = useState(initialForm);
-    const [image, setImage] = useState(<i className="bi bi-person-fill"></i>)
+    const [image, setImage] = useState(<label htmlFor="photo" className="ms-0 person-span mt-3 cursor-pointer bg-secondary">
+                                <i className="bi bi-person-fill"></i>
+                            </label>)
     const [alert, setAlert] = useState({ show: false, message: "", variant: "success" });
     const alertRef = useRef();
     const toggleAlert = () => {
@@ -48,6 +50,7 @@ const AddUser = ({ showAddUser, setShowAddUser, addingUser }) => {
             return;
         }
         const data = getFormData(form)
+        setAlert((state) => ({ ...state, show: false }));
 
         const button = submitBtnRef.current
         button.disabled=true
@@ -154,13 +157,9 @@ const AddUser = ({ showAddUser, setShowAddUser, addingUser }) => {
                     </Form.Group>
                     <Form.Group className="mb-3 row justify-content-center" controlId="photo">
                         <Form.Label className="form-label"  style={{alignSelf: "start"}}>Photo:</Form.Label>
-                        <div className="form-input d-flex">
-                            <Form.Control onChange={handleSelectImage} className="w-50 h-fit-content"  style={{alignSelf: "center"}} type="file" accept="image/jpg, image/png, image/jpeg" />
-                            <div className="w-50">
-                                <label htmlFor="photo" className="person-span cursor-pointer bg-secondary">
-                                    {image}
-                                </label>
-                            </div>
+                        <div className="form-input row">
+                            <Form.Control onChange={handleSelectImage} className="col-10" type="file" accept="image/jpg, image/png, image/jpeg" />
+                            {image}
                         </div>
                     </Form.Group>
                     <Row className="justify-content-center">

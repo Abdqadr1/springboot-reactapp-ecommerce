@@ -1,30 +1,32 @@
 import axios from "axios";
 import {useEffect, useRef, useState } from "react";
-import { Alert, Button, Form, Modal, Row } from "react-bootstrap";
+import { Alert, Button, Form, Modal, Row, Badge } from "react-bootstrap";
 import { Navigate, useNavigate } from "react-router-dom";
 import { getAuth, getFormData, isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "../utilities";
 
-const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, hierarchies }) => {
+const UpdateBrand = ({ updateBrand, setUpdateBrand, updatingBrand, categories }) => {
     const navigate = useNavigate()
-    const category = updateCategory.category;
-    const url = process.env.REACT_APP_SERVER_URL + "category/edit/" + category.id;
+    const brand = updateBrand.brand;
+    const url = process.env.REACT_APP_SERVER_URL + "brand/edit/" + brand.id;
     const initialForm = {
-        id:'', name:'', alias:'', parent:"", enabled: false, photo: null
+        name:'', photo: null, categories: []
     }
 
     const { accessToken } = getAuth();
 
     const [form, setForm] = useState({...initialForm});
     const [alert, setAlert] = useState({ show: false, message: "", variant: "success" });
-    const [image, setImage] = useState(<label htmlFor="photo" className="ms-0 person-span mt-3 cursor-pointer bg-secondary">
-                                <i className="bi bi-image-fill"></i>
-                            </label>)
+    const [image, setImage] = useState(<label htmlFor="photo" className="ms-0 w-50 person-span mt-3 cursor-pointer bg-secondary">
+                                            <i className="bi bi-image-fill"></i>
+                                        </label>);
     const alertRef = useRef();
     const submitBtnRef = useRef();
+    const categoriesRef = useRef();
+    const [chosenCat, setChosenCat] = useState([]);
     const toggleAlert = () => setAlert({ ...alert, show: !alert.show })
     
     const hideModal = () => {
-        setUpdateCategory({...updateCategory, show: false})
+        setUpdateBrand({...updateBrand, show: false})
     }
 
     const handleInput = (event) => {
@@ -33,17 +35,10 @@ const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, h
             [event.target.id]: event.target.value
         })
     }
-    const handleToggle = (event) => {
-        setForm({
-            ...form,
-            [event.target.id]: event.target.checked
-        })
-    }
     const handleSubmit = (event) => {
         event.preventDefault();
-        if(form.parent?.id) form.parent = form.parent.id
         const data = getFormData(form)
-        setAlert((state) => ({ ...state, show: false }));
+        setAlert(state => ({...state, show:false}))
         
         const button = submitBtnRef.current
         button.disabled=true
@@ -53,8 +48,8 @@ const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, h
                 "Authorization": `Bearer ${accessToken}`
             }
         }).then(response => {
-            setAlert({ show: true, message: "category updated!" })
-            updatingCategory(response.data)
+            setAlert({ show: true, message: "brand updated!" })
+            updatingBrand(response.data)
         })
         .catch(error => { 
             const response = error.response
@@ -62,7 +57,7 @@ const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, h
             else setAlert({show:true, message: response.data.message, variant: "danger"})
         }).finally(() => {  
             button.disabled=false
-            button.innerHTML = "Update Category"
+            button.innerHTML = "Update Brand"
         })
     }
 
@@ -77,25 +72,42 @@ const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, h
     }
     
     useEffect(() => {
-        alertRef.current && alertRef.current.focus()
-        const currentCategory = updateCategory.category;
-        if (currentCategory.id) {
-            if (!form.id || currentCategory.id) {
+        const currentBrand = updateBrand.brand;
+        if (currentBrand.id) {
+            if (!form.id || currentBrand.id) {
                 setForm(() => {
-                    let newState = { ...currentCategory }
-                    if (!currentCategory.parent) newState.parent = ""
+                    let newState = { ...currentBrand }
+                    newState.categories = currentBrand.categories.map(b => b.id);
                     return newState;
                 });
-                const fileURI = process.env.REACT_APP_SERVER_URL + "category-photos/";
-                const img = currentCategory.photo && currentCategory.photo !== "null"
-                    ? <img src={`${fileURI}${currentCategory.id}/${currentCategory.photo}`} alt="thumbnail" className="thumbnail" />
-                    : <label htmlFor="photo" className="ms-0 person-span mt-3 cursor-pointer bg-secondary">
-                                <i className="bi bi-image-fill"></i>
-                            </label>
+                setChosenCat(() => {
+                    return currentBrand.categories.map(cat => cat.name);
+                })
+                const fileURI = process.env.REACT_APP_SERVER_URL + "brand-photos/";
+                const img = currentBrand.photo && currentBrand.photo !== "null" && currentBrand.photo !== "default.png"
+                    ? <img src={`${fileURI}${currentBrand.id}/${currentBrand.photo}`} alt="thumbnail" className="thumbnail" />
+                    : <label htmlFor="photo" className="ms-0 w-50 person-span mt-3 cursor-pointer bg-secondary">
+                        <i className="bi bi-image-fill"></i>
+                    </label>
                 setImage(img);
             }
         }
-    }, [alert, updateCategory.category, form.id])
+    }, [updateBrand.brand, form.id])
+
+    useEffect(() => {
+        alertRef.current && alertRef.current.focus()
+    }, [alert])
+
+   const handleCategories = () => {
+        const selectedOptions = [...categoriesRef.current.selectedOptions];
+        const cats = [];
+        const selected = selectedOptions.map((option) => {
+          cats.push(option.textContent);
+          return Number(option.value);
+        });
+        form.categories = [...selected];
+        setChosenCat([...cats]);
+    }
 
     const handleReset = () => {
         setForm({...initialForm, id:form.id})
@@ -103,9 +115,9 @@ const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, h
 
     if(!accessToken) return <Navigate to="/login/2" />
     return ( 
-        <Modal show={updateCategory.show} fullscreen={true} onHide={hideModal}>
+        <Modal show={updateBrand.show} fullscreen={true} onHide={hideModal}>
             <Modal.Header closeButton>
-                <Modal.Title>Edit category (ID : {category.id})</Modal.Title>
+                <Modal.Title>Edit brand (ID : {brand.id})</Modal.Title>
             </Modal.Header>
             <Modal.Body className="border modal-body">
                 <Alert ref={alertRef} tabIndex={-1} variant={alert.variant} show={alert.show} dismissible onClose={toggleAlert}>
@@ -116,21 +128,17 @@ const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, h
                         <Form.Label className="form-label">Name:</Form.Label>
                         <Form.Control value={form?.name} onInput={handleInput} required className="form-input" type="name" placeholder="Enter name" />
                     </Form.Group>
-                    <Form.Group className="mb-3 row justify-content-center" controlId="alias">
-                        <Form.Label className="form-label">Alias:</Form.Label>
-                        <Form.Control value={form?.alias} onInput={handleInput} required className="form-input" type="text" placeholder="Enter alias" />
-                    </Form.Group>
-                    <Form.Group className="mb-3 row justify-content-center" controlId="parent">
-                        <Form.Label className="form-label">Parent Category:</Form.Label>
-                        <Form.Select value={form.parent?.id} onInput={handleInput} required className="form-input">
-                            <option value={form.parent?.id} hidden>{form.parent?.name ?? "No parent"}</option>
-                            {hierarchies.map(cat => <option key={cat.name} value={cat.id}>{cat.name}</option>)}
+                    <Form.Group className="mb-3 row justify-content-center" controlId="categories">
+                        <Form.Label className="form-label">Categories:</Form.Label>
+                        <Form.Select onChange={handleCategories} multiple required className="form-input" ref={categoriesRef} value={form.categories}>
+                            {categories.map(cat => <option key={cat.name} value={cat.id}>{cat.name}</option>)}
                         </Form.Select>
                     </Form.Group>
-
-                    <Form.Group className="mb-3 row justify-content-center" controlId="enabled">
-                        <Form.Label className="form-label">Enabled:</Form.Label>
-                        <Form.Check checked={form.enabled}  onChange={handleToggle} className="form-input ps-0" type="checkbox"/>
+                    <Form.Group className="my-4 row justify-content-center" controlId="chosenCat">
+                        <Form.Label className="form-label"  style={{alignSelf: "start"}}>Chosen Category:</Form.Label>
+                        <div className="form-input">
+                            {chosenCat.map(option => <Badge className="ms-1" key={option} bg="secondary">{option.replace(/-/g, "")}</Badge>)}
+                        </div>
                     </Form.Group>
                     <Form.Group className="mb-3 row justify-content-center" controlId="photo">
                         <Form.Label className="form-label"  style={{alignSelf: "start"}}>Photo:</Form.Label>
@@ -143,7 +151,7 @@ const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, h
                         <div className="w-25"></div>
                         <div className="form-input ps-0">
                             <Button ref={submitBtnRef} className="fit-content mx-1" variant="primary" type="submit">
-                                Update Category
+                                Update Brand
                             </Button>
                             <Button onClick={handleReset} className="fit-content mx-1" variant="secondary" type="reset">
                                 Clear
@@ -157,4 +165,4 @@ const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, h
      );
 }
  
-export default UpdateCategory;
+export default UpdateBrand;

@@ -1,21 +1,25 @@
 import axios from "axios";
 import {useEffect, useRef, useState } from "react";
-import { Alert, Button, Form, Modal, Row } from "react-bootstrap";
+import { Alert, Badge, Button, Form, Modal, Row } from "react-bootstrap";
 import { Navigate, useNavigate } from "react-router-dom";
 import { getAuth, getFormData, isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "../utilities";
 
-const AddCategory = ({ showAddCategory, setShowAddCategory, addingCategory, hierarchies }) => {
+const AddBrand = ({ showAddBrand, setShowAddBrand, addingBrand, categories }) => {
     const { accessToken } = getAuth();
     const navigate = useNavigate()
     const submitBtnRef = useRef();
-    const url = process.env.REACT_APP_SERVER_URL + "category/add"
+    const url = process.env.REACT_APP_SERVER_URL + "brand/add"
     const initialForm = {
-        name:'', alias:'', parent:'', enabled: false, photo: null
+        name:'', photo: null, categories: []
     }
     const [form, setForm] = useState(initialForm);
-    const [image, setImage] = useState(<i className="bi bi-person-fill"></i>)
+    const [image, setImage] = useState(<label htmlFor="photo" className="ms-0 w-50 person-span mt-3 cursor-pointer bg-secondary">
+                                            <i className="bi bi-image-fill"></i>
+                                        </label>);
     const [alert, setAlert] = useState({ show: false, message: "", variant: "success" });
     const alertRef = useRef();
+    const categoriesRef = useRef();
+    const [chosenCat, setChosenCat] = useState([]);
     const toggleAlert = () => {
         setAlert({...alert, show: !alert.show})
     }
@@ -30,16 +34,10 @@ const AddCategory = ({ showAddCategory, setShowAddCategory, addingCategory, hier
             [id]: value
         })
     }
-    const handleToggle = (event) => {
-        setForm({
-            ...form,
-            [event.target.id]: event.target.checked
-        })
-    }
-    const handleSubmit = (event) => {
+const handleSubmit = (event) => {
         event.preventDefault();
-        const data = getFormData(form)
         setAlert((state) => ({ ...state, show: false }));
+        const data = getFormData(form)
 
         const button = submitBtnRef.current
         button.disabled=true
@@ -50,8 +48,8 @@ const AddCategory = ({ showAddCategory, setShowAddCategory, addingCategory, hier
             }
         })
             .then(response => {
-                addingCategory(response.data);
-                setAlert({ show: true, message: "Category saved!" })
+                addingBrand(response.data);
+                setAlert({ show: true, message: "Brand saved!" })
             })
             .catch(error => { 
                 const response = error.response
@@ -59,7 +57,7 @@ const AddCategory = ({ showAddCategory, setShowAddCategory, addingCategory, hier
                 else setAlert({show:true, message: response.data.message, variant: "danger"})
             }).finally(() => {
                 button.disabled=false
-                button.innerHTML = "Add Category"
+                button.innerHTML = "Add Brand"
             })
     }
     const handleSelectImage = (event) => {
@@ -74,17 +72,26 @@ const AddCategory = ({ showAddCategory, setShowAddCategory, addingCategory, hier
         alertRef.current && alertRef.current.focus()
     }, [alert])
     
-   
-
     const handleReset = () => {
         setForm(initialForm)
+    }
+
+    const handleCategories = () => {
+        const selectedOptions = [...categoriesRef.current.selectedOptions];
+        const cats = []
+        const selected = selectedOptions.map(option => {
+            cats.push(option)
+            return Number(option.value)
+        })
+        form.categories = [...selected];
+        setChosenCat([...cats]);
     }
     
     if(!accessToken) return <Navigate to="/login/2" />
     return ( 
-        <Modal show={showAddCategory} fullscreen={true} onHide={()=> setShowAddCategory(!showAddCategory)}>
+        <Modal show={showAddBrand} fullscreen={true} onHide={()=> setShowAddBrand(!showAddBrand)}>
             <Modal.Header closeButton>
-                <Modal.Title>Add New Category</Modal.Title>
+                <Modal.Title>Add New Brand</Modal.Title>
             </Modal.Header>
             <Modal.Body className="border modal-body">
                 <Alert ref={alertRef} tabIndex={-1} variant={alert.variant} show={alert.show} dismissible onClose={toggleAlert}>
@@ -93,37 +100,32 @@ const AddCategory = ({ showAddCategory, setShowAddCategory, addingCategory, hier
                 <Form className="add-user-form" onSubmit={handleSubmit}>
                     <Form.Group className="mb-3 row justify-content-center" controlId="name">
                         <Form.Label className="form-label">Name:</Form.Label>
-                        <Form.Control value={form.name} onInput={handleInput} required className="form-input" type="name" placeholder="Enter name" />
+                        <Form.Control value={form.name} onInput={handleInput} required className="form-input" type="name" placeholder="Enter brand name" />
                     </Form.Group>
-                    <Form.Group className="mb-3 row justify-content-center" controlId="alias">
-                        <Form.Label className="form-label">Alias:</Form.Label>
-                        <Form.Control value={form.alias} onInput={handleInput} required className="form-input" type="text" placeholder="Enter alias" />
-                    </Form.Group>
-                    <Form.Group className="mb-3 row justify-content-center" controlId="parent">
-                        <Form.Label className="form-label">Parent Category:</Form.Label>
-                        <Form.Select value={form.parent?.id} onInput={handleInput} required className="form-input">
-                            <option value={null}>No parent</option>
-                            {hierarchies.map(cat => <option key={cat.name} value={cat.id}>{cat.name}</option>)}
+                    <Form.Group className="mb-3 row justify-content-center" controlId="categories">
+                        <Form.Label className="form-label">Categories:</Form.Label>
+                        <Form.Select onChange={handleCategories} multiple required className="form-input" ref={categoriesRef}>
+                            {categories.map(cat => <option key={cat.name} value={cat.id}>{cat.name}</option>)}
                         </Form.Select>
                     </Form.Group>
-                    <Form.Group className="mb-3 row justify-content-center" controlId="enabled">
-                        <Form.Label className="form-label">Enabled:</Form.Label>
-                        <Form.Check onChange={handleToggle} required className="form-input ps-0" type="checkbox"/>
+                    <Form.Group className="my-4 row justify-content-center" controlId="chosenCat">
+                        <Form.Label className="form-label"  style={{alignSelf: "start"}}>Chosen Category:</Form.Label>
+                        <div className="form-input">
+                            {chosenCat.map(option => <Badge className="ms-1" key={option.textContent} bg="secondary">{option.textContent.replace(/-/g, "")}</Badge>)}
+                        </div>
                     </Form.Group>
                     <Form.Group className="mb-3 row justify-content-center" controlId="photo">
                         <Form.Label className="form-label"  style={{alignSelf: "start"}}>Photo:</Form.Label>
                         <div className="form-input row">
-                            <Form.Control onChange={handleSelectImage} className="col-10" type="file" accept="image/jpg, image/png, image/jpeg" />
-                            <label htmlFor="photo" className="ms-0 person-span mt-3 cursor-pointer bg-secondary">
-                                {image}
-                            </label>
+                            <Form.Control required onChange={handleSelectImage} className="col-10" type="file" accept="image/jpg, image/png, image/jpeg" />
+                            {image}
                         </div>
                     </Form.Group>
                     <Row className="justify-content-center">
                         <div className="w-25"></div>
                         <div className="form-input ps-0">
                             <Button ref={submitBtnRef} className="fit-content mx-1" variant="primary" type="submit">
-                                Add Category
+                                Add Brand
                             </Button>
                             <Button onClick={handleReset}  className="fit-content mx-1" variant="secondary" type="reset">
                                 Clear
@@ -137,4 +139,4 @@ const AddCategory = ({ showAddCategory, setShowAddCategory, addingCategory, hier
      );
 }
  
-export default AddCategory;
+export default AddBrand;

@@ -7,7 +7,7 @@ import { Dropdown, NavLink } from "react-bootstrap"
 import { getAuth, hasAnyAuthority, setAuth } from "./utilities"
 import { useState } from "react"
 import AccountDetails from "./account_details"
-import { Navigate } from "react-router-dom"
+import { Link, Navigate } from "react-router-dom"
 const MyNavbar = () => {
     const auth = getAuth()
     const [showEditInfo, SetShowEditInfo] = useState(false)
@@ -42,12 +42,12 @@ const MyNavbar = () => {
                                 <NavDropdown title="Users" id="basic-nav-dropdown" menuVariant="dark">
                                         {
                                             (hasAnyAuthority(auth, ["Admin"]))
-                                                ? <NavDropdown.Item href="/account/users">Users</NavDropdown.Item>
+                                                ? <Link className="dropdown-item" to="/account/users">Users</Link>
                                                 : ""
                                         }
                                         {
                                             (hasAnyAuthority(auth, ["Admin", "Salesperson"]))
-                                                ? <NavDropdown.Item href="/account/customers">Customers</NavDropdown.Item>
+                                                ? <Link className="dropdown-item" to="/account/customers">Customers</Link>
                                                 : ""
                                         }
                                     
@@ -60,18 +60,18 @@ const MyNavbar = () => {
                                     <NavDropdown title="Products" id="basic-nav-dropdown" menuVariant="dark">
                                         {
                                             (hasAnyAuthority(auth, ["Admin", "Salesperson", "Editor", "Shipper"]))
-                                            ? <NavDropdown.Item href="/account/products">Products</NavDropdown.Item>
+                                            ? <Link className="dropdown-item" to="/account/products">Products</Link>
                                             : ""
                                         }
                                         {
                                             (hasAnyAuthority(auth, ["Admin", "Editor"]))
-                                            ?  <><NavDropdown.Item href="/account/categories">Categories</NavDropdown.Item>
-                                                <NavDropdown.Item href="/account/brands">Brands</NavDropdown.Item></>
+                                            ?  <><Link className="dropdown-item" to="/account/categories">Categories</Link>
+                                                <Link className="dropdown-item" to="/account/brands">Brands</Link></>
                                             : ""
                                         }
                                         {
                                             (hasAnyAuthority(auth, ["Admin", "Salesperson"]))
-                                            ?  <NavDropdown.Item href="/account/shipping">Shipping</NavDropdown.Item>
+                                            ?  <Link className="dropdown-item" to="/account/shipping">Shipping</Link>
                                             : ""
                                         }
                                     </NavDropdown>
@@ -83,22 +83,22 @@ const MyNavbar = () => {
                                     <NavDropdown title="Menu" id="basic-nav-dropdown" menuVariant="dark">
                                         {
                                             (hasAnyAuthority(auth, ["Admin", "Salesperson", "Shipper"]))
-                                                ? <NavDropdown.Item href="/account/orders">Orders</NavDropdown.Item>
+                                                ? <Link className="dropdown-item" to="/account/orders">Orders</Link>
                                                 : ""
                                         }
                                         {
                                             (hasAnyAuthority(auth, ["Admin", "Salesperson"]))
-                                                ? <NavDropdown.Item href="/account/sales">Sales Report</NavDropdown.Item>
+                                                ? <Link className="dropdown-item" to="/account/sales">Sales Report</Link>
                                                 : ""
                                         }
                                         {
                                             (hasAnyAuthority(auth, ["Admin", "Editor"]))
-                                                ? <NavDropdown.Item href="/account/articles">Articles</NavDropdown.Item>
+                                                ? <Link className="dropdown-item" to="/account/articles">Articles</Link>
                                                 : ""
                                         }
                                         {
                                             (hasAnyAuthority(auth, ["Admin"]))
-                                                ? <NavDropdown.Item href="/account/settings">Settings</NavDropdown.Item>
+                                                ? <Link className="dropdown-item" to="/account/settings">Settings</Link>
                                                 : ""
                                         }
                                     </NavDropdown>

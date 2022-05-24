@@ -66,6 +66,19 @@ public class CategoryService {
         return categoryRepo.save(category);
     }
 
+    public Category deleteCategory(Integer id){
+        Category category = categoryRepo.findById(id)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Category not found"));
+
+        if(!category.getChildren().isEmpty()){
+            throw new CustomException(HttpStatus.BAD_REQUEST, "Category has childre");
+        }
+
+        categoryRepo.deleteById(id);
+        return category;
+    }
+
+
 
     void addSubCategories(Collection<Category> children, Integer dashes, List<Category> hierarchies){
         StringBuilder prefix = new StringBuilder();
