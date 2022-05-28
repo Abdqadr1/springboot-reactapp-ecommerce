@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -39,11 +40,22 @@ public class FileUploadUtil {
                    } catch (IOException e) {
                        LOGGER.error("could not delete file, "+file.getFileName());
                    }
+               }else {
+                   removeDir(dir+"/"+file.getFileName().toString());
                }
            });
 
         } catch (IOException e){
             LOGGER.info("Could not list directory, "+ dirPath);
+        }
+    }
+
+    public static void removeDir(String dir){
+        cleanDir(dir);
+        try {
+            Files.delete(Paths.get(dir));
+        } catch (IOException e) {
+            LOGGER.info("Could not delete directory " + dir);
         }
     }
 }

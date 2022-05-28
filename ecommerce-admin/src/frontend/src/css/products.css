@@ -1,0 +1,41 @@
+.product-image{
+    max-width: 90%;
+    max-height: 400px;
+    display: block;
+    margin: 10px auto;
+}
+
+.select-file{
+    width:90%;
+    margin: 8px auto 0 auto;
+}
+
+.image-span {
+    display: block;
+    margin: 10px auto;
+    color: white;
+    width: 90% !important;
+    padding: 8px;
+    height: 150px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.image-span>i {
+    display: block;
+    margin: auto;
+    font-size: 6em;
+    width: fit-content;
+}
+
+.rm-detail{
+    font-size: x-large;
+    display: inline;
+    vertical-align: middle;
+    cursor: pointer;
+    color: black;
+    filter: opacity(70%);
+}
+.rm-detail:hover{
+    filter: opacity(90%);
+}

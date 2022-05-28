@@ -41,9 +41,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/login/**").permitAll();
-        http.authorizeRequests().antMatchers( "/user/export/**","/category/export/**",
-                        "/brand/export/**", "/brand-photos/**", "/user-photos/**", "/category-photos/**")
-                .permitAll();
+
+        http.authorizeRequests().antMatchers(
+                "/user/export/**","/category/export/**","/brand/export/**", "/brand-photos/**", "/user-photos/**",
+                        "/category-photos/**", "/product-images/**", "/product/export/**").permitAll();
+
         http.authorizeRequests().antMatchers("/user/**").hasAuthority("Admin");
         http.authorizeRequests().antMatchers("/category/**","/brand/**")
                 .hasAnyAuthority("Admin", "Editor");

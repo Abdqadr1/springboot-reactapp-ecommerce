@@ -22,14 +22,22 @@ export function alterArrayAdd(allUser, user, callback) {
     callback([...allUser])
 }
 
-export function showThumbnail(file, setImage) {
+export function showThumbnail(file, setImage, type="thumbnail", id=0) {
     const fileReader = new FileReader();
     fileReader.onload = (event) => {
-        const image = <img src={event.target.result} alt="thumbnail" className="thumbnail" />
-        setImage(image);
+        const image = <img src={event.target.result} alt={type} className={type} />
+        if (type === "thumbnail") {
+            setImage(image);
+        } else {
+            setImage(state => {
+                state[id] = image;
+                return [...state];
+            })
+        }
     }
     fileReader.readAsDataURL(file);
 }
+
 
 export function isFileValid(file, input) {
     if (file.size > 1048576) {
@@ -60,7 +68,21 @@ export const getFormData = (form) => {
     return Object.keys(form).reduce((formData, key) => {
         if (key === 'roles') {
                 formData.append(key, form[key].map(role => role.id ?? role))
-        } else formData.append(key, form[key]);
+        } else if(key === "product_images"){
+            const productImages =  form[key];
+            if(productImages.length > 0){
+                form[key].forEach((f, i) => {
+                    if(i === 0){
+                        formData.append("image", f);
+                    } else {
+                        formData.append("extra_image", f);
+                    }
+                })
+            }
+            
+        }else{ 
+            formData.append(key, form[key]);
+        }
         return formData
     }, new FormData());
 }

@@ -3,6 +3,7 @@ package com.qadr.ecommerceadmin.repo;
 import com.qadr.ecommerceadmin.model.Brand;
 import com.qadr.ecommerceadmin.model.Category;
 import com.qadr.ecommerceadmin.model.Product;
+import com.qadr.sharedLibrary.util.FileUploadUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -90,4 +91,20 @@ class ProductRepoTest {
     void testListProducts(){
         productRepo.findAll().forEach(System.out::println);
     }
+
+    @Test
+    void testDeleteProductFolder(){
+        String dir = "product-images/6";
+        FileUploadUtil.removeDir(dir);
+    }
+
+    @Test
+    void testAddProductDetail(){
+        Product product = entityManager.find(Product.class, 9);
+        product.addDetail("RAM", "6GB");
+        product.addDetail("ROM", "128GB");
+        Product save = productRepo.save(product);
+        assertThat(save.getId()).isEqualTo(product.getId());
+    }
+
 }

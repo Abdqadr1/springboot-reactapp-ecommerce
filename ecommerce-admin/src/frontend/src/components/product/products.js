@@ -7,6 +7,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { alterArrayAdd, alterArrayDelete,alterArrayEnable, alterArrayUpdate, getAuth, getCategoriesWithHierarchy, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, throttle } from "../utilities";
 import Product from "./product";
 import AddProduct from './add-product'
+import "../../css/products.css"
 // import UpdateProduct from "./update-Product";
 
 const Products = () => {
@@ -33,44 +34,44 @@ const Products = () => {
     const [sort, setSort] = useState({ field: "name", dir: "asc" })
     const [categories, setCategories] = useState([])
     
-     const changePage = useCallback(function (number, keyword, button) {
-        number = number ?? 1;
-         keyword = keyword ?? ""
-         if (button) {
-            button.disabled = true
-            button.innerHTML = SPINNERS_BORDER_HTML
-         }
-         axios.get(`${serverUrl}page/${number}?sortField=${sort.field}&dir=${sort.dir}&keyword=${keyword}`, {
-             headers: {
-                 "Authorization": `Bearer ${accessToken}`
-             }
-         })
-             .then(response => {
-                 const data = response.data
-                 setPageInfo(state => (
-                     {
-                     ...state,
-                     endCount: data.endCount,
-                     startCount: data.startCount,
-                     totalPages: data.totalPages,
-                     totalElements: data.totalElements,
-                     numberPerPage: data.numberPerPage
-                     }
-                 ))
-                 setProducts(data.products)
-                 setBrands(data.brands)
-             })
-             .catch(error => {
-                 const response = error?.response
-                if(response && isTokenExpired(response)) navigate("/login/2")
-             })
-             .finally(() => {
-                 if (button) {
-                    button.disabled = false
-                    button.innerHTML = SEARCH_ICON;
-                }
-             })
-     }, [sort, serverUrl, accessToken, navigate])
+    const changePage = useCallback(function (number, keyword, button) {
+    number = number ?? 1;
+        keyword = keyword ?? ""
+        if (button) {
+        button.disabled = true
+        button.innerHTML = SPINNERS_BORDER_HTML
+        }
+        axios.get(`${serverUrl}page/${number}?sortField=${sort.field}&dir=${sort.dir}&keyword=${keyword}`, {
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        })
+            .then(response => {
+                const data = response.data
+                setPageInfo(state => (
+                    {
+                    ...state,
+                    endCount: data.endCount,
+                    startCount: data.startCount,
+                    totalPages: data.totalPages,
+                    totalElements: data.totalElements,
+                    numberPerPage: data.numberPerPage
+                    }
+                ))
+                setProducts(data.products)
+                setBrands(data.brands)
+            })
+            .catch(error => {
+                const response = error?.response
+            if(response && isTokenExpired(response)) navigate("/login/2")
+            })
+            .finally(() => {
+                if (button) {
+                button.disabled = false
+                button.innerHTML = SEARCH_ICON;
+            }
+            })
+    }, [sort, serverUrl, accessToken, navigate])
     
     const handleWindowWidthChange = throttle((event) => setWidth(window.innerWidth), 500)
     

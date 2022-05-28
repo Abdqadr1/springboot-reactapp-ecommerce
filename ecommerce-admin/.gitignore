@@ -35,3 +35,5 @@ build/
 #photos
 category-photos/**
 user-photos/**
+brand-photos/**
+product-images/**

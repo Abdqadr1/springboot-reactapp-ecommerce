@@ -1,7 +1,7 @@
 import { Col, Row } from "react-bootstrap";
 
 const Product = ({ product, showUpdate, setDeleted, toggleEnable, type }) => {
-    const fileURI = process.env.REACT_APP_SERVER_URL+"product-photos/";
+    const fileURI = process.env.REACT_APP_SERVER_URL+"product-images/";
 
     function deleteProduct() {
         setDeleted({
@@ -12,9 +12,9 @@ const Product = ({ product, showUpdate, setDeleted, toggleEnable, type }) => {
     const enabled = product.enabled
         ? <i className="bi bi-toggle-on text-success fs-3" onClick={() => toggleEnable(product.id, false)}></i>
         : <i className="bi bi-toggle-off text-secondary fs-3" onClick={() => toggleEnable(product.id, true)}></i>
-    const photo = product.photo && product.photo !== "null"
-        ? <img loading="lazy" src={`${fileURI}${product.id}/${product.photo}`} alt="product-dp" className="table-dp" />
-        :<span htmlFor="photo" className="avatar cursor-pointer bg-secondary">
+    const photo = product.mainImage && product.mainImage !== "null"
+        ? <img loading="lazy" src={`${fileURI}${product.id}/main-image/${product.mainImage}`} alt="product-dp" className="table-dp" />
+        :<span className="avatar cursor-pointer bg-secondary">
             <i className="bi bi-image-fill"></i>
         </span>
     
