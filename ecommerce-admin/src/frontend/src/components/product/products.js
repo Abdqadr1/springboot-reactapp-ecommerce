@@ -4,11 +4,11 @@ import { Col, Form, Row, Table, Button } from "react-bootstrap";
 import DeleteModal from "../delete_modal";
 import MyPagination from "../paging";
 import { Navigate, useNavigate } from 'react-router-dom';
-import { alterArrayAdd, alterArrayDelete,alterArrayEnable, alterArrayUpdate, getAuth, getCategoriesWithHierarchy, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, throttle } from "../utilities";
+import { alterArrayAdd, alterArrayDelete,alterArrayEnable, alterArrayUpdate, getAuth, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, throttle } from "../utilities";
 import Product from "./product";
 import AddProduct from './add-product'
 import "../../css/products.css"
-// import UpdateProduct from "./update-Product";
+import UpdateProduct from "./update-product";
 
 const Products = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "product/";
@@ -20,19 +20,18 @@ const Products = () => {
     const searchBtnRef = useRef();
     const [products, setProducts] = useState([]);
     const [showAddProduct, setShowAddProduct] = useState(false);
-    const [updateProduct, setUpdateProduct] = useState({show:false, id: -1, Product: {}});
+    const [updateProduct, setUpdateProduct] = useState({show:false, id: -1, product: null});
     const [deleteProduct, setDeleteProduct] = useState({show:false, id: -1});
     const [brands, setBrands] = useState([])
     const showUpdate = (id) => {
-        const Product = products.filter(u => u.id === id)[0]
-        setUpdateProduct({ show: true, id, Product})
+        const product = products.filter(u => u.id === id)[0];
+        setUpdateProduct({ show: true, id, product})
     };
     const [pageInfo, setPageInfo] = useState({
         number: 1, totalPages: 1, startCount: 1,
         endCount: null, totalElements: null,numberPerPage: 1
     })
     const [sort, setSort] = useState({ field: "name", dir: "asc" })
-    const [categories, setCategories] = useState([])
     
     const changePage = useCallback(function (number, keyword, button) {
     number = number ?? 1;
@@ -85,10 +84,6 @@ const Products = () => {
             window.removeEventListener("resize", handleWindowWidthChange)
         }
     })
-    useEffect(() => {
-        getCategoriesWithHierarchy(accessToken)
-            .then(data => setCategories(data))
-    }, [accessToken])
     
     function deletingProduct() {
         const id = deleteProduct.id
@@ -236,9 +231,8 @@ const Products = () => {
                     </div> : ""
             }
             {(products.length > 0) ? <MyPagination pageInfo={pageInfo} setPageInfo={setPageInfo} /> : ""}
-            <AddProduct categories={categories} showAddProduct={showAddProduct} setShowAddProduct={setShowAddProduct} 
-            addingProduct={addingProduct} brands={brands}/>
-            {/* <UpdateProduct categories={categories} updateProduct={updateProduct} setUpdateProduct={setUpdateProduct} updatingProduct={updatingProduct} /> */}
+            <AddProduct showAddProduct={showAddProduct} setShowAddProduct={setShowAddProduct} addingProduct={addingProduct} brands={brands}/>
+            <UpdateProduct brands={brands} updateProduct={updateProduct} setUpdateProduct={setUpdateProduct} updatingProduct={updatingProduct}/>
             <DeleteModal deleteObject={deleteProduct} setDeleteObject={setDeleteProduct}   deletingFunc={deletingProduct} type="Product" />
         </>
      );

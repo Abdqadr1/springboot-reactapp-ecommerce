@@ -22,10 +22,10 @@ export function alterArrayAdd(allUser, user, callback) {
     callback([...allUser])
 }
 
-export function showThumbnail(file, setImage, type="thumbnail", id=0) {
+export function showThumbnail(file, setImage, type="thumbnail", id=0, setType="thumbnail") {
     const fileReader = new FileReader();
     fileReader.onload = (event) => {
-        const image = <img src={event.target.result} alt={type} className={type} />
+        const image = <img src={event.target.result} alt={type} className={setType} />
         if (type === "thumbnail") {
             setImage(image);
         } else {
@@ -36,6 +36,12 @@ export function showThumbnail(file, setImage, type="thumbnail", id=0) {
         }
     }
     fileReader.readAsDataURL(file);
+}
+
+export function listFormData(data){
+      for (const pair of data.entries()) {
+        console.log(pair[0] + ", " + pair[1]);
+      }
 }
 
 

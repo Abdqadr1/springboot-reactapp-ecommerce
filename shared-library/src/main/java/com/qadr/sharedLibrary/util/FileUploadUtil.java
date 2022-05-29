@@ -4,13 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 public class FileUploadUtil {
     public static final Logger LOGGER = LoggerFactory.getLogger(FileUploadUtil.class);
@@ -56,6 +56,24 @@ public class FileUploadUtil {
             Files.delete(Paths.get(dir));
         } catch (IOException e) {
             LOGGER.info("Could not delete directory " + dir);
+        }
+    }
+
+    public static void removeFiles(List<String> pathNames, String dir){
+        Path dirPath = Paths.get(dir);
+        try{
+            Files.list(dirPath).forEach((file) -> {
+                if(!pathNames.contains(file.getFileName().toString())){
+                    try {
+                        Files.delete(file);
+                    } catch (IOException e) {
+                        LOGGER.error("could not delete file, "+file.getFileName());
+                    }
+                }
+            });
+
+        } catch (IOException e){
+            LOGGER.info("Could not list directory, "+ dirPath);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.qadr.ecommerceadmin.model;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -7,6 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "product_images")
 @NoArgsConstructor
+@AllArgsConstructor
 public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

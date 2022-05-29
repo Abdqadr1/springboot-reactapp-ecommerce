@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -81,5 +82,32 @@ public class ProductService {
 
         productRepo.deleteById(id);
         return product;
+    }
+
+    public Product editProduct(Integer id, Product product) {
+        Product oldProduct = productRepo.findById(id)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Product not found"));
+
+        if(product.getAlias() == null || product.getAlias().isBlank()){
+            product.setAlias(product.getName().replaceAll(" ", "-"));
+        }else {
+            product.setAlias(product.getAlias().replaceAll(" ", "-"));
+        }
+        Optional<Product> byName = productRepo.findByName(product.getName());
+        Optional<Product> byAlias = productRepo.findByAlias(product.getName());
+        if (byName.isPresent() && !Objects.equals(byName.get().getId(), id))
+            throw new CustomException(HttpStatus.BAD_REQUEST, "There is another product with the name " + product.getName());
+
+        if (byAlias.isPresent() && !Objects.equals(byAlias.get().getId(), id))
+            throw new CustomException(HttpStatus.BAD_REQUEST, "There is another product with the alias " + product.getAlias());
+
+        if(product.getMainImage() == null || product.getMainImage().isBlank()) product.setMainImage(oldProduct.getMainImage());
+
+        product.setCreatedTime(oldProduct.getCreatedTime());
+        product.setUpdatedTime(new Date());
+        Product save = productRepo.save(product);
+        brandRepo.findById(save.getBrand().getId()).ifPresent(save::setBrand);
+        categoryRepo.findById(save.getCategory().getId()).ifPresent(save::setCategory);
+        return save;
     }
 }
