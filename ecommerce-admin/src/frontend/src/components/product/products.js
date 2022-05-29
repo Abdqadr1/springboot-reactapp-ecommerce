@@ -4,7 +4,7 @@ import { Col, Form, Row, Table, Button } from "react-bootstrap";
 import DeleteModal from "../delete_modal";
 import MyPagination from "../paging";
 import { Navigate, useNavigate } from 'react-router-dom';
-import { alterArrayAdd, alterArrayDelete,alterArrayEnable, alterArrayUpdate, getAuth, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, throttle } from "../utilities";
+import { alterArrayAdd, alterArrayDelete,alterArrayEnable, alterArrayUpdate, getAuth, getCategoriesWithHierarchy, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, throttle } from "../utilities";
 import Product from "./product";
 import AddProduct from './add-product'
 import "../../css/products.css"
@@ -22,7 +22,8 @@ const Products = () => {
     const [showAddProduct, setShowAddProduct] = useState(false);
     const [updateProduct, setUpdateProduct] = useState({show:false, id: -1, product: null});
     const [deleteProduct, setDeleteProduct] = useState({show:false, id: -1});
-    const [brands, setBrands] = useState([])
+    const [brands, setBrands] = useState([]);
+    const [categories, setCategories] = useState([]);
     const showUpdate = (id) => {
         const product = products.filter(u => u.id === id)[0];
         setUpdateProduct({ show: true, id, product})
@@ -84,6 +85,10 @@ const Products = () => {
             window.removeEventListener("resize", handleWindowWidthChange)
         }
     })
+
+    useEffect(() => {
+        getCategoriesWithHierarchy(accessToken).then(data => setCategories(data));
+    }, [])
     
     function deletingProduct() {
         const id = deleteProduct.id
@@ -171,27 +176,33 @@ const Products = () => {
     return ( 
         <>
             <Row className="justify-content-between align-items-center p-3 mx-0">
-                <Col xs={12} md={5} className="my-2">
+                <Col xs={12} md={4} className="my-2">
                     <h3 className="">Manage Products</h3>
                     <div>
                         <span onClick={() => setShowAddProduct(true)} className="text-secondary cursor-pointer">
                             <i title="Add new Product" className="bi bi-folder-plus fs-2"></i>
                         </span>
-                        <a href={`${serverUrl}export/csv`} className="text-secondary cursor-pointer">
+                        {/* <a href={`${serverUrl}export/csv`} className="text-secondary cursor-pointer">
                             <i title="Export products to csv" className="bi bi-filetype-csv fs-2 ms-2"></i>  
-                        </a>
+                        </a> */}
                     </div>
                 </Col>
-                <Col xs={12} md={7} className="my-2">
-                    <Form className="row justify-content-between" onSubmit={handleFilter}>
+                <Col xs={12} md={8} className="my-2">
+                    <Form className="row justify-content-center" onSubmit={handleFilter}>
                         <Form.Group as={Row} className="mb-3" controlId="keyword">
                             <Col sm="2" md="2">
                                 <label className="d-block text-start text-md-end fs-5" htmlFor="keyword">Filter:</label>
                             </Col>
-                            <Col sm="9" md="6">
+                            <Col sm={9} md={3}>
+                                <Form.Select name="brand" defaultValue="">
+                                    <option value="">All categories</option>
+                                    {categories.map((cat,i) => <option key={'cat'+i} value={cat.id}>{cat.name}</option>)}
+                                </Form.Select>
+                            </Col>
+                            <Col sm="9" md="4">
                                 <Form.Control ref={searchRef}  type="text" placeholder="keyword" />
                             </Col>
-                            <Col sm="12" md="4">
+                            <Col sm="12" md="2">
                             <div className="mt-md-0 mt-2">
                                 <Button ref={searchBtnRef} variant="primary" className="mx-1" type="submit">
                                      <i title="search keyword" className="bi bi-search"></i>   
@@ -230,7 +241,7 @@ const Products = () => {
                         {listProducts(products, "less")}
                     </div> : ""
             }
-            {(products.length > 0) ? <MyPagination pageInfo={pageInfo} setPageInfo={setPageInfo} /> : ""}
+            {(products.length > 1) ? <MyPagination pageInfo={pageInfo} setPageInfo={setPageInfo} /> : ""}
             <AddProduct showAddProduct={showAddProduct} setShowAddProduct={setShowAddProduct} addingProduct={addingProduct} brands={brands}/>
             <UpdateProduct brands={brands} updateProduct={updateProduct} setUpdateProduct={setUpdateProduct} updatingProduct={updatingProduct}/>
             <DeleteModal deleteObject={deleteProduct} setDeleteObject={setDeleteProduct}   deletingFunc={deletingProduct} type="Product" />

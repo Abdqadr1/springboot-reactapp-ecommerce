@@ -38,6 +38,9 @@ public class Category {
     @OneToMany(mappedBy = "parent")
     private Set<Category> children = new HashSet<>();
 
+    @Column(name = "all_parent_ids")
+    private String allParentIds;
+
     public Category(Integer id){
         this.id = id;
     }

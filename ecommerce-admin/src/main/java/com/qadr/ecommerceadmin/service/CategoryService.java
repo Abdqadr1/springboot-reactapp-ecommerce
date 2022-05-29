@@ -63,6 +63,8 @@ public class CategoryService {
         Optional<Category> byAlias = categoryRepo.findByAlias(category.getAlias());
         if(byAlias.isPresent()) throw new CustomException(HttpStatus.BAD_REQUEST, "Alias already exists");
 
+        getAllParentIds(category);
+
         return categoryRepo.save(category);
     }
 
@@ -90,6 +92,17 @@ public class CategoryService {
         });
     }
 
+    void getAllParentIds(Category category){
+        if(category.getParent() != null ){
+            Category parent = category.getParent();
+            String parentIds = (parent.getAllParentIds() == null || Objects.equals(parent.getAllParentIds(), "null"))
+                    ? "-" : parent.getAllParentIds();
+            parentIds += parent.getId() + "-";
+            category.setAllParentIds(parentIds);
+        }
+    }
+
+
     public Category editCategory(Integer id, Category category) {
         Category byId = categoryRepo.findById(id)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Category not found"));
@@ -99,6 +112,8 @@ public class CategoryService {
         Optional<Category> byAlias = categoryRepo.findByAlias(category.getAlias());
         if(byAlias.isPresent() && !Objects.equals(byAlias.get().getId(), id))
             throw new CustomException(HttpStatus.BAD_REQUEST, "Alias already exists");
+
+        getAllParentIds(category);
 
         return categoryRepo.save(category);
     }
