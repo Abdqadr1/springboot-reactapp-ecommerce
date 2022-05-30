@@ -64,7 +64,7 @@ const UpdateProduct = ({ updateProduct, setUpdateProduct, updatingProduct, brand
         if(!isDescriptionSet(data)) return;
         if(!isImageAdded(data)) return;
         
-        listFormData(data);
+        // listFormData(data);
 
         setAlert((state) => ({ ...state, show: false }));
         const button = submitBtnRef.current

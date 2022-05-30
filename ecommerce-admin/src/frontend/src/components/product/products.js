@@ -10,6 +10,7 @@ import AddProduct from './add-product'
 import "../../css/products.css"
 import UpdateProduct from "./update-product";
 import useAuth from "../custom_hooks/use-auth";
+import ViewProduct from "./view-product";
 
 const Products = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "product/";
@@ -22,6 +23,7 @@ const Products = () => {
     const [products, setProducts] = useState([]);
     const [showAddProduct, setShowAddProduct] = useState(false);
     const [updateProduct, setUpdateProduct] = useState({show:false, id: -1, product: null});
+    const [viewProduct, setViewProduct] = useState({show:false, id: -1, product: null});
     const [deleteProduct, setDeleteProduct] = useState({show:false, id: -1});
     const [brands, setBrands] = useState([]);
     const [categories, setCategories] = useState([]);
@@ -29,6 +31,10 @@ const Products = () => {
         const product = products.filter(u => u.id === id)[0];
         setUpdateProduct({ show: true, id, product})
     };
+    const showView = (id) => {
+        const product = products.filter((u) => u.id === id)[0];
+        setViewProduct({ show: true, id, product });
+    }
     const [pageInfo, setPageInfo] = useState({
         number: 1, totalPages: 1, startCount: 1,
         endCount: null, totalElements: null,numberPerPage: 1
@@ -171,7 +177,7 @@ const Products = () => {
     function listProducts(products, type) {
         return (products.length > 0)
             ? products.map(product => <Product key={product.id} type={type} product={product} showUpdate={showUpdate} 
-            setDeleted={setDeleteProduct}  toggleEnable={toggleEnable} />)
+            setDeleted={setDeleteProduct}  toggleEnable={toggleEnable}  showView={showView} />)
             : ((type === 'detailed')
                 ? <tr><td colSpan={8} className="text-center" >No Product found</td></tr>
                 : <div className="text-center">No Product found</div>)
@@ -235,13 +241,10 @@ const Products = () => {
                             <th className="hideable-col">Brand</th>
                             <th className="hideable-col">Category</th>
                             {
-                                (hasAnyAuthority(auth, ["Admin", "Editor"]))
-                                ? (
-                                    <>
-                                        <th>Enabled</th>
-                                        <th>Actions</th> 
-                                    </>
-                                ) : ""
+                                (hasAnyAuthority(auth, ["Admin", "Editor", "Salesperson"])) ? <th>Enabled</th>: ""
+                            }
+                             {
+                                (hasAnyAuthority(auth, ["Admin", "Editor", "Salesperson", "Shipper"])) ? <th>Actions</th> : ""
                             }
                             
                         </tr>
@@ -260,6 +263,7 @@ const Products = () => {
             {(products.length > 1) ? <MyPagination pageInfo={pageInfo} setPageInfo={setPageInfo} /> : ""}
             <AddProduct showAddProduct={showAddProduct} setShowAddProduct={setShowAddProduct} addingProduct={addingProduct} brands={brands}/>
             <UpdateProduct brands={brands} updateProduct={updateProduct} setUpdateProduct={setUpdateProduct} updatingProduct={updatingProduct}/>
+            <ViewProduct viewProduct={viewProduct} setViewProduct={setViewProduct} />
             <DeleteModal deleteObject={deleteProduct} setDeleteObject={setDeleteProduct}   deletingFunc={deletingProduct} type="Product" />
         </>
      );

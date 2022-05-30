@@ -95,8 +95,7 @@ public class CategoryService {
     void getAllParentIds(Category category){
         if(category.getParent() != null ){
             Category parent = category.getParent();
-            String parentIds = (parent.getAllParentIds() == null || Objects.equals(parent.getAllParentIds(), "null"))
-                    ? "-" : parent.getAllParentIds();
+            String parentIds = (parent.getAllParentIds() == null) ? "-" : parent.getAllParentIds();
             parentIds += parent.getId() + "-";
             category.setAllParentIds(parentIds);
         }

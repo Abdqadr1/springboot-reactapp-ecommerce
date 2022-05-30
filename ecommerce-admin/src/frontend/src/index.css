@@ -73,6 +73,17 @@ i.delete:hover {
   color: white;
 }
 
+i.view {
+  cursor: pointer;
+  color: #6f6566;
+  font-size: 2em;
+  margin: 0 5px;
+}
+
+i.view:hover {
+  filter: opacity(50%);
+}
+
 i.edit {
   cursor: pointer;
   border: 1px solid #0d6efd;
@@ -196,12 +207,7 @@ form .form-input {
     display: block;
   }
 
-  i.delete {
-    margin: 1px;
-    padding: 5px;
-  }
-
-  i.edit {
+  i.delete,i.edit, i.view {
     margin: 1px;
     padding: 5px;
   }

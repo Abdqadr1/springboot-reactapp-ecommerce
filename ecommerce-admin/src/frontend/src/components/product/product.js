@@ -2,7 +2,7 @@ import { Col, Row } from "react-bootstrap";
 import useAuth from "../custom_hooks/use-auth";
 import { hasAnyAuthority } from "../utilities";
 
-const Product = ({ product, showUpdate, setDeleted, toggleEnable, type }) => {
+const Product = ({ product, showUpdate, setDeleted, toggleEnable, type, showView }) => {
     const fileURI = process.env.REACT_APP_SERVER_URL+"product-images/";
 
     function deleteProduct() {
@@ -31,25 +31,39 @@ const Product = ({ product, showUpdate, setDeleted, toggleEnable, type }) => {
             <td className="hideable-col">{product.brand.name}</td>
             <td className="hideable-col">{product.category.name}</td>
             {
-                hasAnyAuthority(auth, ["Admin", "Editor"])
-                ? (
-                  <>
-                    <td>{enabled}</td>  
-                  <td className="d-flex justify-content-center">
-                    <i
+              hasAnyAuthority(auth, ["Admin", "Editor", "Salesperson"])
+              ? <td>{enabled}</td>  : "" 
+            }
+            <td className="d-flex justify-content-center">
+              {
+                hasAnyAuthority(auth, ["Admin", "Editor", "Salesperson", "Shipper"]) 
+                ? <i 
+                    className="bi bi-journal-text view"
+                    title="view details"
+                    onClick={() => showView(product.id)}
+                  ></i> : "" 
+              }
+                {
+                  hasAnyAuthority(auth, ["Admin", "Editor", "Salesperson"])
+                 ? <i
                       className="bi bi-pencil-fill edit"
                       title="edit product"
                       onClick={() => showUpdate(product.id)}
-                    ></i>
+                    ></i> : ""
+                }
+              {
+                hasAnyAuthority(auth, ["Admin", "Editor"])
+                ? (
                     <i
                       className="bi bi-archive-fill delete"
                       title="delete product"
                       onClick={deleteProduct}
-                    ></i>
-                  </td>
-                  </> 
+                    ></i> 
                   ) : ""
             }
+            </td>
+            
+            
            
           </tr>
         );
@@ -62,26 +76,46 @@ const Product = ({ product, showUpdate, setDeleted, toggleEnable, type }) => {
             <Col xs="7">
               <span className="d-block mb-3">{product.name}</span>
               <span className="d-block mb-3">{product.brand.name}</span>
-              {
-                  hasAnyAuthority(auth, ["Admin", "Salesperson"])
-                  ? (<Row className="justify-content-start align-item-center">
-                      <Col xs="3">{enabled}</Col>
-                      <Col xs="4">
-                        <i
-                          className="bi bi-pencil-fill edit fs-6"
-                          title="edit product"
-                          onClick={() => showUpdate(product.id)}
-                        ></i>
-                      </Col>
-                      <Col xs="4">
-                        <i
-                          className="bi bi-archive-fill delete fs-6"
-                          title="delete product"
-                          onClick={deleteProduct}
-                        ></i>
-                      </Col>
-                    </Row>) : ""
-              }
+              <Row className="justify-content-start align-item-center">
+                {
+                  hasAnyAuthority(auth, ["Admin", "Editor", "Salesperson", "Shipper"]) 
+                  ?  
+                  <Col xs="3">
+                      <i 
+                        className="bi bi-journal-text view fs-4"
+                        title="view details"
+                        onClick={() => showView(product.id)}
+                      ></i>
+                  </Col>: "" 
+                }
+                {
+                    hasAnyAuthority(auth, ["Admin", "Editor"])
+                    ? (
+                        <>
+                        <Col xs="3">{enabled}</Col>
+                          
+                          <Col xs="3">
+                            <i
+                              className="bi bi-archive-fill delete fs-6"
+                              title="delete product"
+                              onClick={deleteProduct}
+                            ></i>
+                          </Col>
+                      </>
+                      ) : ""
+                }
+                {
+                  hasAnyAuthority(auth, ["Admin", "Editor", "Salesperson"])
+                 ? <Col xs="3">
+                      <i
+                        className="bi bi-pencil-fill edit fs-6"
+                        title="edit product"
+                        onClick={() => showUpdate(product.id)}
+                      ></i>
+                  </Col>  : ""
+                }
+              </Row>
+              
             </Col>
           </Row>
         );

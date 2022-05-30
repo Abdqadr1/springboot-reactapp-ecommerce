@@ -1,6 +1,6 @@
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css"; 
-const TextEditor = ({placeholder, text, setText}) => {
+const TextEditor = ({placeholder, text, setText, disabled}) => {
 
 
   function handleChange(value) {
@@ -27,6 +27,7 @@ const TextEditor = ({placeholder, text, setText}) => {
 
 return (
   <ReactQuill
+    readOnly={disabled}
     theme="snow"
     className="mb-5 text-editor"
     value={text}
