@@ -46,9 +46,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/user/export/**","/category/export/**","/brand/export/**", "/brand-photos/**", "/user-photos/**",
                         "/category-photos/**", "/product-images/**", "/product/export/**").permitAll();
 
+        http.authorizeRequests().antMatchers("/category/get-hierarchy/**")
+                .hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper");
+
+        http.authorizeRequests().antMatchers("/product/{id:[\\d+]}/**", "/product/edit/**","/product/delete/**", "/product/add/**")
+                .hasAnyAuthority("Admin", "Editor");
+
+        http.authorizeRequests().antMatchers("/product/**")
+                .hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper");
+
         http.authorizeRequests().antMatchers("/user/**").hasAuthority("Admin");
+
         http.authorizeRequests().antMatchers("/category/**","/brand/**")
                 .hasAnyAuthority("Admin", "Editor");
+
         http.authorizeRequests().anyRequest().authenticated();
 
         http.formLogin().disable();

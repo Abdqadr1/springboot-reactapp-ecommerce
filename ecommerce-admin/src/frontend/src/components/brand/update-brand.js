@@ -2,7 +2,8 @@ import axios from "axios";
 import {useEffect, useRef, useState } from "react";
 import { Alert, Button, Form, Modal, Row, Badge } from "react-bootstrap";
 import { Navigate, useNavigate } from "react-router-dom";
-import { getAuth, getFormData, isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "../utilities";
+import useAuth from "../custom_hooks/use-auth";
+import { getFormData, isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "../utilities";
 
 const UpdateBrand = ({ updateBrand, setUpdateBrand, updatingBrand, categories }) => {
     const navigate = useNavigate()
@@ -12,7 +13,7 @@ const UpdateBrand = ({ updateBrand, setUpdateBrand, updatingBrand, categories })
         name:'', photo: null, categories: []
     }
 
-    const { accessToken } = getAuth();
+    const [{ accessToken }] = useAuth();
 
     const [form, setForm] = useState({...initialForm});
     const [alert, setAlert] = useState({ show: false, message: "", variant: "success" });

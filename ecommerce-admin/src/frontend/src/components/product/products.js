@@ -4,18 +4,19 @@ import { Col, Form, Row, Table, Button } from "react-bootstrap";
 import DeleteModal from "../delete_modal";
 import MyPagination from "../paging";
 import { Navigate, useNavigate } from 'react-router-dom';
-import { alterArrayAdd, alterArrayDelete,alterArrayEnable, alterArrayUpdate, getAuth, getCategoriesWithHierarchy, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, throttle } from "../utilities";
+import { alterArrayAdd, alterArrayDelete,alterArrayEnable, alterArrayUpdate, getCategoriesWithHierarchy, hasAnyAuthority, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, throttle } from "../utilities";
 import Product from "./product";
 import AddProduct from './add-product'
 import "../../css/products.css"
 import UpdateProduct from "./update-product";
+import useAuth from "../custom_hooks/use-auth";
 
 const Products = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "product/";
     const [width, setWidth] = useState(window.innerWidth);
     const navigate = useNavigate();
-    const {accessToken} = getAuth();
-    
+    const [auth] = useAuth();
+    const accessToken = auth.accessToken;
     const searchRef = useRef();
     const searchBtnRef = useRef();
     const [products, setProducts] = useState([]);
@@ -32,16 +33,17 @@ const Products = () => {
         number: 1, totalPages: 1, startCount: 1,
         endCount: null, totalElements: null,numberPerPage: 1
     })
-    const [sort, setSort] = useState({ field: "name", dir: "asc" })
+    const [sort, setSort] = useState({ field: "name", dir: "asc", category:0 })
     
     const changePage = useCallback(function (number, keyword, button) {
-    number = number ?? 1;
-        keyword = keyword ?? ""
+        number = number ?? 1;
+        keyword = keyword ?? "";
+        const url = `${serverUrl}page/${number}?sortField=${sort.field}&dir=${sort.dir}&keyword=${keyword}&category=${sort.category}`
         if (button) {
         button.disabled = true
         button.innerHTML = SPINNERS_BORDER_HTML
         }
-        axios.get(`${serverUrl}page/${number}?sortField=${sort.field}&dir=${sort.dir}&keyword=${keyword}`, {
+        axios.get(url, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
@@ -88,7 +90,7 @@ const Products = () => {
 
     useEffect(() => {
         getCategoriesWithHierarchy(accessToken).then(data => setCategories(data));
-    }, [])
+    }, [accessToken])
     
     function deletingProduct() {
         const id = deleteProduct.id
@@ -116,19 +118,22 @@ const Products = () => {
         searchRef.current.value = Product.name
     }
 
+    function handleSelectCategory(event){
+        const category = Number(event.target.value)
+        setSort(state => ({...state, category}))
+    }
+
     function handleFilter(event) {
         event.preventDefault();
         const value = searchRef.current.value
-        if (value) {
-            changePage(null, value, searchBtnRef.current)
-        }
-        
+        changePage(null, value, searchBtnRef.current)
     }
     function clearFilter() {
         if (searchRef.current?.value) {
             searchRef.current.value = "";
-            changePage(null)
         }
+        setSort(state => ({...state, category: 0}))
+        changePage(null)
     }
     
     function isSort(name) {
@@ -142,8 +147,8 @@ const Products = () => {
     function handleSort(event) {
         const id = event.target.id;
         const dir = sort.dir === "asc" ? "desc": "asc"
-        if (id === sort.field) setSort({ ...sort, dir })
-        else setSort({ field: id, dir: "asc" })
+        if (id === sort.field) setSort(state => ({ ...state, dir }))
+        else setSort(state => ({...state, field: id, dir: "asc" }))
     }
     function toggleEnable(id, status) {
       const url = serverUrl + `${id}/enable/${status}`;
@@ -178,14 +183,17 @@ const Products = () => {
             <Row className="justify-content-between align-items-center p-3 mx-0">
                 <Col xs={12} md={4} className="my-2">
                     <h3 className="">Manage Products</h3>
-                    <div>
-                        <span onClick={() => setShowAddProduct(true)} className="text-secondary cursor-pointer">
-                            <i title="Add new Product" className="bi bi-folder-plus fs-2"></i>
-                        </span>
-                        {/* <a href={`${serverUrl}export/csv`} className="text-secondary cursor-pointer">
-                            <i title="Export products to csv" className="bi bi-filetype-csv fs-2 ms-2"></i>  
-                        </a> */}
-                    </div>
+                    {
+                        (hasAnyAuthority(auth, ["Admin", "Editor"]))
+                         ? (<div>
+                                <span onClick={() => setShowAddProduct(true)} className="text-secondary cursor-pointer">
+                                    <i title="Add new Product" className="bi bi-folder-plus fs-2"></i>
+                                </span>
+                                {/* <a href={`${serverUrl}export/csv`} className="text-secondary cursor-pointer">
+                                    <i title="Export products to csv" className="bi bi-filetype-csv fs-2 ms-2"></i>  
+                                </a> */}
+                            </div>) : ""
+                    }
                 </Col>
                 <Col xs={12} md={8} className="my-2">
                     <Form className="row justify-content-center" onSubmit={handleFilter}>
@@ -194,9 +202,9 @@ const Products = () => {
                                 <label className="d-block text-start text-md-end fs-5" htmlFor="keyword">Filter:</label>
                             </Col>
                             <Col sm={9} md={3}>
-                                <Form.Select name="brand" defaultValue="">
-                                    <option value="">All categories</option>
-                                    {categories.map((cat,i) => <option key={'cat'+i} value={cat.id}>{cat.name}</option>)}
+                                <Form.Select name="brand" value={sort.category} onChange={handleSelectCategory}>
+                                    <option value={0}>All categories</option>
+                                    {(categories ?? []).map((cat,i) => <option key={'cat'+i} value={cat.id}>{cat.name}</option>)}
                                 </Form.Select>
                             </Col>
                             <Col sm="9" md="4">
@@ -226,8 +234,16 @@ const Products = () => {
                             <th onClick={handleSort} id="name" className="cursor-pointer">Product Name {isSort("name")}</th>
                             <th className="hideable-col">Brand</th>
                             <th className="hideable-col">Category</th>
-                            <th>Enabled</th>
-                            <th>Actions</th>
+                            {
+                                (hasAnyAuthority(auth, ["Admin", "Editor"]))
+                                ? (
+                                    <>
+                                        <th>Enabled</th>
+                                        <th>Actions</th> 
+                                    </>
+                                ) : ""
+                            }
+                            
                         </tr>
                     </thead>
                     <tbody>

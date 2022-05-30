@@ -2,11 +2,12 @@ import axios from "axios";
 import {useCallback, useEffect, useRef, useState } from "react";
 import { Alert, Button, Form, Modal, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { getAccessToken, getAuth, getFormData, isAuthValid, isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "./utilities";
+import useAuth from "./custom_hooks/use-auth";
+import { getAccessToken, getFormData, isAuthValid, isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "./utilities";
 
 const AccountDetails = ({show, setShow}) => {
     const navigate = useNavigate()
-    const auth = getAuth()
+    const [auth] = useAuth();
     const [initPassword, setInitPassword] = useState("")
     const url = process.env.REACT_APP_SERVER_URL + "account/edit/" + auth.id;
     const fileURI = process.env.REACT_APP_SERVER_URL + "user-photos/";

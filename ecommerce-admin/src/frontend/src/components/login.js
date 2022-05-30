@@ -4,7 +4,8 @@ import { Alert, Button, Col, Form, Row } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import '../login.css'
 import logo from '../logo.svg'
-import { getFormData, setAuth, SPINNERS_BORDER_HTML } from './utilities';
+import useAuth from './custom_hooks/use-auth';
+import { getFormData, SPINNERS_BORDER_HTML } from './utilities';
 
 const Login = () => {
     const loginUrl = process.env.REACT_APP_SERVER_URL+"login";
@@ -16,6 +17,7 @@ const Login = () => {
 
     const [form, setForm] = useState({ email: '', password: '' })
     const [alert, setAlert] = useState({msg: '', show:false})
+    const [, setAuth] = useAuth();
 
     const toggleAlert = () => setAlert({...alert, show:false})
 

@@ -2,10 +2,11 @@ import axios from "axios";
 import {useEffect, useRef, useState } from "react";
 import { Alert, Button, Form, Modal, Row } from "react-bootstrap";
 import { Navigate, useNavigate } from "react-router-dom";
-import { getAuth, getFormData, isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "../utilities";
+import useAuth from "../custom_hooks/use-auth";
+import {getFormData, isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "../utilities";
 
 const AddCategory = ({ showAddCategory, setShowAddCategory, addingCategory, hierarchies }) => {
-    const { accessToken } = getAuth();
+    const [{ accessToken }] = useAuth();
     const navigate = useNavigate()
     const submitBtnRef = useRef();
     const url = process.env.REACT_APP_SERVER_URL + "category/add"

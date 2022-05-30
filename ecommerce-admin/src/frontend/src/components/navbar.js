@@ -4,12 +4,13 @@ import Nav from "react-bootstrap/Nav"
 import NavDropdown from "react-bootstrap/NavDropdown"
 import logo from "../images/logo.png"
 import { Dropdown, NavLink } from "react-bootstrap"
-import { getAuth, hasAnyAuthority, setAuth } from "./utilities"
+import { hasAnyAuthority } from "./utilities"
 import { useState } from "react"
 import AccountDetails from "./account_details"
 import { Link, Navigate } from "react-router-dom"
+import useAuth from "./custom_hooks/use-auth"
 const MyNavbar = () => {
-    const auth = getAuth()
+    const [auth, setAuth] = useAuth();
     const [showEditInfo, SetShowEditInfo] = useState(false)
     const handleLogout = (event) => {
         setAuth({});

@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,7 +40,7 @@ public class ProductController {
 
     @GetMapping
     public CustomProductPage listFirstPage(){
-        return listByPage(1, "name", "asc", null);
+        return listByPage(1, "name", "asc", null, null);
     }
 
 
@@ -47,9 +48,10 @@ public class ProductController {
     public CustomProductPage listByPage(@PathVariable("number") Integer number,
                                       @RequestParam("sortField") String sortField,
                                       @RequestParam("dir") String dir,
+                                      @RequestParam("category") Integer catId,
                                       @RequestParam(value = "keyword", required = false) String keyword){
 
-        Page<Product> page = productService.getPage(number, sortField, dir, keyword);
+        Page<Product> page = productService.getPage(number, sortField, dir, keyword, catId);
         int startCount = (number-1) * CATEGORY_PER_PAGE + 1;
         int endCount = CATEGORY_PER_PAGE * number;
         endCount = (endCount > page.getTotalElements()) ? (int) page.getTotalElements() : endCount;
@@ -95,7 +97,6 @@ public class ProductController {
         saveImageFiles(mainImage, extraImages, product);
         return productService.editProduct(id, product);
     }
-
 
 
     @GetMapping("/{id}/enable/{status}")

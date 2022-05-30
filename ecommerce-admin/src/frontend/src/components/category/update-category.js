@@ -2,17 +2,18 @@ import axios from "axios";
 import {useEffect, useRef, useState } from "react";
 import { Alert, Button, Form, Modal, Row } from "react-bootstrap";
 import { Navigate, useNavigate } from "react-router-dom";
-import { getAuth, getFormData, isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "../utilities";
+import { getFormData, isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "../utilities";
+import useAuth from "../custom_hooks/use-auth";
 
 const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, hierarchies }) => {
     const navigate = useNavigate()
+    const [{ accessToken }] = useAuth();
     const category = updateCategory.category;
     const url = process.env.REACT_APP_SERVER_URL + "category/edit/" + category.id;
     const initialForm = {
         id:'', name:'', alias:'', parent:"", enabled: false, photo: null
     }
 
-    const { accessToken } = getAuth();
 
     const [form, setForm] = useState({...initialForm});
     const [alert, setAlert] = useState({ show: false, message: "", variant: "success" });

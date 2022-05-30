@@ -34,10 +34,14 @@ public class ProductService {
         return productRepo.findAll(Sort.by("name").ascending());
     }
 
-    public Page<Product> getPage(int pageNumber, String field, String dir, String keyword){
+    public Page<Product> getPage(int pageNumber, String field, String dir, String keyword, Integer catId){
         Sort sort = Sort.by(field);
         sort = (dir.equals("asc")) ? sort.ascending() : sort.descending();
         Pageable pageable = PageRequest.of(pageNumber - 1, CATEGORY_PER_PAGE, sort);
+
+        if(catId != null && catId > 0){
+            return productRepo.findProduct(keyword, catId, "-"+catId+"-", pageable);
+        }
 
         if(keyword != null && !keyword.isBlank()){
             return productRepo.searchKeyword(keyword, pageable);

@@ -8,6 +8,7 @@ const MyPagination = ({ pageInfo, setPageInfo }) => {
 
     const handleClick = (i) => {
         setPageInfo(state => ({
+            ...state,
             number: i
         }))
     }

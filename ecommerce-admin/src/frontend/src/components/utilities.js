@@ -93,18 +93,12 @@ export const getFormData = (form) => {
     }, new FormData());
 }
 
-export const isAuthValid = () => {
-    const auth = getAuth()
+export const isAuthValid = (auth) => {
     if (auth?.accessToken && auth?.id) return true
     
     return false
 }
-export const getAuth = () => {
-    return JSON.parse(localStorage.getItem("user"))
-}
-export const setAuth = (auth) => {
-    localStorage.setItem("user", JSON.stringify(auth))
-}
+
 export const getAccessToken = () => {
     return JSON.parse(localStorage.getItem("user")).accessToken
 }

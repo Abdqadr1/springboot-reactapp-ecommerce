@@ -26,4 +26,14 @@ public interface ProductRepo extends JpaRepository<Product, Integer> {
     Optional<Product> findByName(String name);
 
     Optional<Product> findByAlias(String alias);
+
+    @Query("SELECT p FROM Product p WHERE (p.category.id = ?2 OR "
+            + "p.category.allParentIds LIKE %?3%) AND "
+            + "( p.name LIKE %?1% "
+            + "OR p.alias LIKE %?1% "
+            + "OR p.brand.name LIKE %?1% "
+            + "OR p.category.name LIKE %?1% "
+            + "OR p.fullDescription LIKE %?1% "
+            + "OR p.shortDescription LIKE %?1% )")
+    Page<Product> findProduct(String keyword, Integer id, String catId, Pageable pageable);
 }

@@ -1,8 +1,8 @@
-import { getAuth } from "./utilities";
+import useAuth from "./custom_hooks/use-auth";
 
 const AccountHome = () => {
 
-    const auth = getAuth()
+    const [auth] = useAuth()
     const roles = auth.roles.map(role => role.name);
 
     return ( 

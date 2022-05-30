@@ -2,11 +2,12 @@ import axios from "axios";
 import {useEffect, useRef, useState } from "react";
 import { Alert, Button, Form, Modal, Row } from "react-bootstrap";
 import { Navigate, useNavigate } from "react-router-dom";
-import { getAuth, getFormData, isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "../utilities";
+import { getFormData, isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "../utilities";
+import useAuth from "../custom_hooks/use-auth";
 
 const UpdateUser = ({ updateUser, setUpdateUser, updatingUser }) => {
     const navigate = useNavigate()
-    const {accessToken} = getAuth()
+    const [{accessToken}] = useAuth();
     const user = updateUser.user;
     const url = process.env.REACT_APP_SERVER_URL + "user/edit/" + user.id;
     const initialForm = {

@@ -4,16 +4,17 @@ import { Col, Form, Row, Table, Button } from "react-bootstrap";
 import DeleteModal from "../delete_modal";
 import MyPagination from "../paging";
 import { Navigate, useNavigate } from 'react-router-dom';
-import { alterArrayAdd, alterArrayDelete, alterArrayUpdate, getAuth, getCategoriesWithHierarchy, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, throttle } from "../utilities";
+import { alterArrayAdd, alterArrayDelete, alterArrayUpdate, getCategoriesWithHierarchy, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, throttle } from "../utilities";
 import Brand from "./brand";
 import AddBrand from './add-brand'
 import UpdateBrand from "./update-brand";
+import useAuth from "../custom_hooks/use-auth";
 
 const Brands = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "brand/";
     const [width, setWidth] = useState(window.innerWidth);
     const navigate = useNavigate();
-    const {accessToken} = getAuth();
+    const [{accessToken}] = useAuth();
     
     const searchRef = useRef();
     const searchBtnRef = useRef();
