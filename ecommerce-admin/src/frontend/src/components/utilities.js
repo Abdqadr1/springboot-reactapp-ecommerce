@@ -125,30 +125,6 @@ export const isInArray = (role, roles) => {
     return false
 }
 
-export const throttle = function (cb, delay) {
-    let timeout;
-    let shouldWait;
-    let waitArgs;
-
-    return (...args) => {
-        if (shouldWait === false) {
-            cb(...args)
-        }
-        
-        shouldWait = true;
-        waitArgs = [...args]
-        
-        clearTimeout(timeout)
-        timeout = setTimeout(() => {
-            shouldWait = false;
-            if (waitArgs !== null) {
-                cb(...waitArgs)
-                waitArgs=null
-            }
-        }, delay)
-    }
-}
-
 export const getCategoriesWithHierarchy = async (token) => {
     let hierarchies;
     const url = process.env.REACT_APP_SERVER_URL + "category/get-hierarchy";

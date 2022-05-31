@@ -4,13 +4,14 @@ import { Col, Form, Row, Table, Button } from "react-bootstrap";
 import DeleteModal from "../delete_modal";
 import MyPagination from "../paging";
 import { Navigate, useNavigate } from 'react-router-dom';
-import { alterArrayAdd, alterArrayDelete,alterArrayEnable, alterArrayUpdate, getCategoriesWithHierarchy, hasAnyAuthority, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, throttle } from "../utilities";
+import { alterArrayAdd, alterArrayDelete,alterArrayEnable, alterArrayUpdate, getCategoriesWithHierarchy, hasAnyAuthority, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML } from "../utilities";
 import Product from "./product";
 import AddProduct from './add-product'
 import "../../css/products.css"
 import UpdateProduct from "./update-product";
 import useAuth from "../custom_hooks/use-auth";
 import ViewProduct from "./view-product";
+import useThrottle from "../custom_hooks/use-throttle";
 
 const Products = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "product/";
@@ -81,7 +82,7 @@ const Products = () => {
             })
     }, [sort, serverUrl, accessToken, navigate])
     
-    const handleWindowWidthChange = throttle((event) => setWidth(window.innerWidth), 500)
+    const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500)
     
     useEffect(() => {
         changePage(pageInfo.number, "")
@@ -204,7 +205,7 @@ const Products = () => {
                 <Col xs={12} md={8} className="my-2">
                     <Form className="row justify-content-center" onSubmit={handleFilter}>
                         <Form.Group as={Row} className="mb-3" controlId="keyword">
-                            <Col sm="2" md="2">
+                            <Col sm="12" md="1">
                                 <label className="d-block text-start text-md-end fs-5" htmlFor="keyword">Filter:</label>
                             </Col>
                             <Col sm={9} md={3}>
@@ -213,18 +214,18 @@ const Products = () => {
                                     {(categories ?? []).map((cat,i) => <option key={'cat'+i} value={cat.id}>{cat.name}</option>)}
                                 </Form.Select>
                             </Col>
-                            <Col sm="9" md="4">
+                            <Col sm="9" md="4" className="mt-md-0 mt-2">
                                 <Form.Control ref={searchRef}  type="text" placeholder="keyword" />
                             </Col>
-                            <Col sm="12" md="2">
-                            <div className="mt-md-0 mt-2">
-                                <Button ref={searchBtnRef} variant="primary" className="mx-1" type="submit">
-                                     <i title="search keyword" className="bi bi-search"></i>   
-                                </Button>
-                                <Button onClick={clearFilter} variant="secondary" className="mx-1" type="button" alt="clear search">
-                                    <i title="clear keyword" className="bi bi-eraser"></i>
-                                </Button>
-                            </div>
+                            <Col sm="12" md="3" className="mt-md-0 mt-2">
+                                <div>
+                                    <Button ref={searchBtnRef} variant="primary" className="mx-1" type="submit">
+                                        <i title="search keyword" className="bi bi-search"></i>   
+                                    </Button>
+                                    <Button onClick={clearFilter} variant="secondary" className="mx-1" type="button" alt="clear search">
+                                        <i title="clear keyword" className="bi bi-eraser"></i>
+                                    </Button>
+                                </div>
                             </Col>
                         </Form.Group>
                     </Form> 

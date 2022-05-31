@@ -5,11 +5,12 @@ import '../../css/users.css';
 import DeleteModal from "../delete_modal";
 import MyPagination from "../paging";
 import { Navigate, useNavigate } from 'react-router-dom';
-import { alterArrayAdd, alterArrayDelete, alterArrayEnable, alterArrayUpdate, getCategoriesWithHierarchy, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, throttle } from "../utilities";
+import { alterArrayAdd, alterArrayDelete, alterArrayEnable, alterArrayUpdate, getCategoriesWithHierarchy, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML } from "../utilities";
 import Category from "./category";
 import AddCategory from './add-category'
 import UpdateCategory from "./update-category";
 import useAuth from "../custom_hooks/use-auth";
+import useThrottle from "../custom_hooks/use-throttle";
 
 const Categories = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "category/";
@@ -73,7 +74,7 @@ const Categories = () => {
              })
      }, [sort, serverUrl, accessToken, navigate])
     
-    const handleWindowWidthChange = throttle((event) => setWidth(window.innerWidth), 500)
+    const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500)
     
     useEffect(() => {
         changePage(pageInfo.number, "")

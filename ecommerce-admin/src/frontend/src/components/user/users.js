@@ -9,7 +9,8 @@ import UpdateUser from "./update_user";
 import User from "./user";
 import { Navigate, useNavigate } from 'react-router-dom';
 import useAuth from "../custom_hooks/use-auth";
-import { alterArrayAdd, alterArrayDelete, alterArrayEnable, alterArrayUpdate, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, throttle } from "../utilities";
+import { alterArrayAdd, alterArrayDelete, alterArrayEnable, alterArrayUpdate, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML } from "../utilities";
+import useThrottle from "../custom_hooks/use-throttle";
 
 const Users = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "user/";
@@ -69,7 +70,7 @@ const Users = () => {
              })
      }, [sort, serverUrl, accessToken, navigate])
     
-    const handleWindowWidthChange = throttle(event => setWidth(window.innerWidth), 500)
+    const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500)
     
 
     useEffect(() => {

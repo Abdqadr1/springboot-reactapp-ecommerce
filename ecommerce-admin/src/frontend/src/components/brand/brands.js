@@ -4,11 +4,12 @@ import { Col, Form, Row, Table, Button } from "react-bootstrap";
 import DeleteModal from "../delete_modal";
 import MyPagination from "../paging";
 import { Navigate, useNavigate } from 'react-router-dom';
-import { alterArrayAdd, alterArrayDelete, alterArrayUpdate, getCategoriesWithHierarchy, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, throttle } from "../utilities";
+import { alterArrayAdd, alterArrayDelete, alterArrayUpdate, getCategoriesWithHierarchy, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML } from "../utilities";
 import Brand from "./brand";
 import AddBrand from './add-brand'
 import UpdateBrand from "./update-brand";
 import useAuth from "../custom_hooks/use-auth";
+import useThrottle from "../custom_hooks/use-throttle";
 
 const Brands = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "brand/";
@@ -71,7 +72,7 @@ const Brands = () => {
              })
      }, [sort, serverUrl, accessToken, navigate])
     
-    const handleWindowWidthChange = throttle((event) => setWidth(window.innerWidth), 500)
+    const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500)
     
     useEffect(() => {
         changePage(pageInfo.number, "")
