@@ -261,7 +261,7 @@ const Products = () => {
                         {listProducts(products, "less")}
                     </div> : ""
             }
-            {(products.length > 1) ? <MyPagination pageInfo={pageInfo} setPageInfo={setPageInfo} /> : ""}
+            {(products.length > 0) ? <MyPagination pageInfo={pageInfo} setPageInfo={setPageInfo} /> : ""}
             <AddProduct showAddProduct={showAddProduct} setShowAddProduct={setShowAddProduct} addingProduct={addingProduct} brands={brands}/>
             <UpdateProduct brands={brands} updateProduct={updateProduct} setUpdateProduct={setUpdateProduct} updatingProduct={updatingProduct}/>
             <ViewProduct viewProduct={viewProduct} setViewProduct={setViewProduct} />

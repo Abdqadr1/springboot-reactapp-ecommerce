@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { Alert, Button, Col, Form, Row } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
-import '../login.css'
+import "../css/login.css"
 import logo from '../logo.svg'
 import useAuth from './custom_hooks/use-auth';
 import { getFormData, SPINNERS_BORDER_HTML } from './utilities';

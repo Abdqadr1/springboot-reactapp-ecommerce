@@ -1,9 +1,9 @@
-package com.qadr.ecommerceadmin.controllers;
+package com.qadr.ecommerce.ecommerceadmin.controllers;
 
-import com.qadr.ecommerceadmin.errors.CustomException;
-import com.qadr.ecommerceadmin.model.User;
-import com.qadr.ecommerceadmin.repo.UserRepo;
-import com.qadr.ecommerceadmin.service.UserService;
+import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
+import com.qadr.ecommerce.ecommerceadmin.model.User;
+import com.qadr.ecommerce.ecommerceadmin.repo.UserRepo;
+import com.qadr.ecommerce.ecommerceadmin.service.UserService;
 import com.qadr.sharedLibrary.util.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

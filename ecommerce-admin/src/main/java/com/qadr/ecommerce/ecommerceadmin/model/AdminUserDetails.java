@@ -1,4 +1,4 @@
-package com.qadr.ecommerceadmin.model;
+package com.qadr.ecommerce.ecommerceadmin.model;
 
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;

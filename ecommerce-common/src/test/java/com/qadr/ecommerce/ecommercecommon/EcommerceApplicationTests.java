@@ -1,9 +1,10 @@
-package com.qadr.ecommerce;
+package com.qadr.ecommerce.ecommercecommon;
 
+import com.qadr.ecommerce.sharedLibrary.entities.Category;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(classes = {Category.class})
 class EcommerceApplicationTests {
 
 	@Test

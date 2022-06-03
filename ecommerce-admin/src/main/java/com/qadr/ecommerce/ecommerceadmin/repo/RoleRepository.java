@@ -1,6 +1,6 @@
-package com.qadr.ecommerceadmin.repo;
+package com.qadr.ecommerce.ecommerceadmin.repo;
 
-import com.qadr.ecommerceadmin.model.Role;
+import com.qadr.ecommerce.ecommerceadmin.model.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

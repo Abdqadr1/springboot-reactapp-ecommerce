@@ -1,4 +1,4 @@
-package com.qadr.ecommerce.ecommerceadmin.security;
+package com.qadr.ecommerce.ecommerceadmin.config;
 
 import com.qadr.ecommerce.ecommerceadmin.filter.CustomAuthorizationFilter;
 import com.qadr.ecommerce.ecommerceadmin.service.UserService;

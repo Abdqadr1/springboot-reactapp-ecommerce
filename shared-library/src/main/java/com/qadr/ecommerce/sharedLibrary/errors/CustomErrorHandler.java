@@ -1,4 +1,4 @@
-package com.qadr.ecommerce.ecommerceadmin.errors;
+package com.qadr.ecommerce.sharedLibrary.errors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

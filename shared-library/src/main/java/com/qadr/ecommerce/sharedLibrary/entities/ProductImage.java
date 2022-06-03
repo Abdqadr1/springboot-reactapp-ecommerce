@@ -1,4 +1,4 @@
-package com.qadr.ecommerce.ecommerceadmin.model;
+package com.qadr.ecommerce.sharedLibrary.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

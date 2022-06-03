@@ -1,4 +1,4 @@
-package com.qadr.ecommerce.ecommercecommon;
+package com.qadr.ecommerce.ecommercecommon.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;

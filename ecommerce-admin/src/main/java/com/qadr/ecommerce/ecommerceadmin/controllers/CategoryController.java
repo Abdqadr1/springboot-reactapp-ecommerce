@@ -1,8 +1,8 @@
-package com.qadr.ecommerceadmin.controllers;
+package com.qadr.ecommerce.ecommerceadmin.controllers;
 
-import com.qadr.ecommerceadmin.export.CategoryCsvExport;
-import entities.Category;
-import com.qadr.ecommerceadmin.service.CategoryService;
+import com.qadr.ecommerce.ecommerceadmin.export.CategoryCsvExport;
+import com.qadr.ecommerce.ecommerceadmin.service.CategoryService;
+import com.qadr.ecommerce.sharedLibrary.entities.Category;
 import com.qadr.sharedLibrary.util.FileUploadUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -76,6 +76,7 @@ public class CategoryController {
     public Category editCategory(Category category,
                                 @PathVariable("id") Integer id,
                                 @RequestParam(value = "image", required = false)MultipartFile file) throws IOException {
+        System.out.println(category);
         if(Optional.ofNullable(file).isPresent()){
             String filename = StringUtils.cleanPath(file.getOriginalFilename());
             filename = filename.length() > 255 ? filename.substring(0, 254) : filename;

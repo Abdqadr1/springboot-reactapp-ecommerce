@@ -1,10 +1,9 @@
-package com.qadr.ecommerce.ecommerceadmin.model;
+package com.qadr.ecommerce.sharedLibrary.entities;
 
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.qadr.ecommerce.sharedLibrary.entities.Category;
 
 import javax.persistence.*;
 import java.util.Date;

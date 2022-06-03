@@ -4,7 +4,7 @@ const TextEditor = ({placeholder, text, setText, disabled}) => {
 
 
   function handleChange(value) {
-    setText(value);
+    if(setText) setText(value)
   }
 
   const modules = {

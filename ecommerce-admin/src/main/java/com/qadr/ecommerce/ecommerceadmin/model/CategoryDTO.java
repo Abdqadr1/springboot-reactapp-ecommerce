@@ -1,4 +1,4 @@
-package com.qadr.ecommerceadmin.model;
+package com.qadr.ecommerce.ecommerceadmin.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

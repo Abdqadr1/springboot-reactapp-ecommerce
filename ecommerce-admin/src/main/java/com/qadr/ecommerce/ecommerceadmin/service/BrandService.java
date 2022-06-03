@@ -1,10 +1,10 @@
-package com.qadr.ecommerceadmin.service;
+package com.qadr.ecommerce.ecommerceadmin.service;
 
-import com.qadr.ecommerceadmin.errors.CustomException;
-import com.qadr.ecommerceadmin.model.Brand;
-import com.qadr.ecommerceadmin.model.CategoryDTO;
-import com.qadr.ecommerceadmin.repo.BrandRepo;
-import com.qadr.ecommerceadmin.repo.CategoryRepo;
+import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
+import com.qadr.ecommerce.sharedLibrary.entities.Brand;
+import com.qadr.ecommerce.ecommerceadmin.model.CategoryDTO;
+import com.qadr.ecommerce.ecommerceadmin.repo.BrandRepo;
+import com.qadr.ecommerce.ecommerceadmin.repo.CategoryRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

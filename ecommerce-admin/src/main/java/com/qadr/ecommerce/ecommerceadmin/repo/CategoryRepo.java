@@ -1,6 +1,6 @@
-package com.qadr.ecommerceadmin.repo;
+package com.qadr.ecommerce.ecommerceadmin.repo;
 
-import entities.Category;
+import com.qadr.ecommerce.sharedLibrary.entities.Category;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

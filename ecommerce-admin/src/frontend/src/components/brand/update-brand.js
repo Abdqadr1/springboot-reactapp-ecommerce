@@ -12,14 +12,15 @@ const UpdateBrand = ({ updateBrand, setUpdateBrand, updatingBrand, categories })
     const initialForm = {
         name:'', photo: null, categories: []
     }
+    const initialImage = <label htmlFor="photo" className="ms-0 w-50 person-span mt-3 cursor-pointer bg-secondary">
+                                            <i className="bi bi-image-fill"></i>
+                                        </label>
 
     const [{ accessToken }] = useAuth();
 
     const [form, setForm] = useState({...initialForm});
     const [alert, setAlert] = useState({ show: false, message: "", variant: "success" });
-    const [image, setImage] = useState(<label htmlFor="photo" className="ms-0 w-50 person-span mt-3 cursor-pointer bg-secondary">
-                                            <i className="bi bi-image-fill"></i>
-                                        </label>);
+    const [image, setImage] = useState(initialImage);
     const alertRef = useRef();
     const submitBtnRef = useRef();
     const categoriesRef = useRef();
@@ -73,6 +74,7 @@ const UpdateBrand = ({ updateBrand, setUpdateBrand, updatingBrand, categories })
     }
     
     useEffect(() => {
+        setAlert(state => ({ ...state, show: false }));
         const currentBrand = updateBrand.brand;
         if (currentBrand.id) {
             if (!form.id || currentBrand.id) {
@@ -112,6 +114,9 @@ const UpdateBrand = ({ updateBrand, setUpdateBrand, updatingBrand, categories })
 
     const handleReset = () => {
         setForm({...initialForm, id:form.id})
+        setChosenCat([])
+        setImage(initialImage)
+        setAlert((state) => ({ ...state, show: false }));
     }
 
     if(!accessToken) return <Navigate to="/login/2" />

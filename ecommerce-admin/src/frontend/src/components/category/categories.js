@@ -49,7 +49,6 @@ const Categories = () => {
          })
              .then(response => {
                  const data = response.data
-                //  console.log(data)
                  setPageInfo(state => (
                      {
                      ...state,

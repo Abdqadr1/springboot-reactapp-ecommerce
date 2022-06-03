@@ -14,9 +14,4 @@
         <module>ecommerce-admin</module>
         <module>shared-library</module>
     </modules>
-
-    <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-    </properties>
 </project>

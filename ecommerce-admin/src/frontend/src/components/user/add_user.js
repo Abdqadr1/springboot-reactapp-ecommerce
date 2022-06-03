@@ -13,10 +13,12 @@ const AddUser = ({ showAddUser, setShowAddUser, addingUser }) => {
     const initialForm = {
         email:'', firstName:'', lastName:'', password:'', enabled: false, photo: null, roles: []
     }
-    const [form, setForm] = useState(initialForm);
-    const [image, setImage] = useState(<label htmlFor="photo" className="ms-0 person-span mt-3 cursor-pointer bg-secondary">
+    const initialImage = <label htmlFor="photo" className="ms-0 person-span mt-3 cursor-pointer bg-secondary">
                                 <i className="bi bi-person-fill"></i>
-                            </label>)
+                            </label>
+
+    const [form, setForm] = useState(initialForm);
+    const [image, setImage] = useState(initialImage);
     const [alert, setAlert] = useState({ show: false, message: "", variant: "success" });
     const alertRef = useRef();
     const toggleAlert = () => {
@@ -88,6 +90,8 @@ const AddUser = ({ showAddUser, setShowAddUser, addingUser }) => {
 
     const handleReset = () => {
         setForm(initialForm)
+        setImage(initialImage)
+        setAlert((state) => ({ ...state, show: false }));
     }
     
     if(!accessToken) return <Navigate to="/login/2" />

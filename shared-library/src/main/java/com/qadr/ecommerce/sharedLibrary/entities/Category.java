@@ -1,6 +1,6 @@
 package com.qadr.ecommerce.sharedLibrary.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -30,11 +30,12 @@ public class Category {
 
     private String photo;
 
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
     @OneToOne
     @JoinColumn(name = "parent_id")
     private Category parent;
 
-    @JsonIgnore
+    @JsonManagedReference
     @OneToMany(mappedBy = "parent")
     private Set<Category> children = new HashSet<>();
 

@@ -13,10 +13,12 @@ const AddBrand = ({ showAddBrand, setShowAddBrand, addingBrand, categories }) =>
     const initialForm = {
         name:'', photo: null, categories: []
     }
-    const [form, setForm] = useState(initialForm);
-    const [image, setImage] = useState(<label htmlFor="photo" className="ms-0 w-50 person-span mt-3 cursor-pointer bg-secondary">
+    const initialImage = <label htmlFor="photo" className="ms-0 w-50 person-span mt-3 cursor-pointer bg-secondary">
                                             <i className="bi bi-image-fill"></i>
-                                        </label>);
+                                        </label>;
+
+    const [form, setForm] = useState(initialForm);
+    const [image, setImage] = useState(initialImage);
     const [alert, setAlert] = useState({ show: false, message: "", variant: "success" });
     const alertRef = useRef();
     const categoriesRef = useRef();
@@ -75,6 +77,9 @@ const handleSubmit = (event) => {
     
     const handleReset = () => {
         setForm(initialForm)
+        setChosenCat([])
+        setImage(initialImage)
+        setAlert((state) => ({ ...state, show: false }));
     }
 
     const handleCategories = () => {

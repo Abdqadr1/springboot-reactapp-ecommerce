@@ -1,9 +1,12 @@
-package com.qadr.ecommerceadmin.controllers;
+package com.qadr.ecommerce.ecommerceadmin.controllers;
 
-import com.qadr.ecommerceadmin.model.*;
-import com.qadr.ecommerceadmin.service.BrandService;
-import com.qadr.ecommerceadmin.service.CategoryService;
-import com.qadr.ecommerceadmin.service.ProductService;
+import com.qadr.ecommerce.sharedLibrary.entities.Brand;
+import com.qadr.ecommerce.ecommerceadmin.model.CategoryDTO;
+import com.qadr.ecommerce.sharedLibrary.entities.Product;
+import com.qadr.ecommerce.sharedLibrary.entities.ProductImage;
+import com.qadr.ecommerce.ecommerceadmin.service.BrandService;
+import com.qadr.ecommerce.ecommerceadmin.service.CategoryService;
+import com.qadr.ecommerce.ecommerceadmin.service.ProductService;
 import com.qadr.sharedLibrary.util.FileUploadUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +25,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.qadr.ecommerceadmin.service.BrandService.CATEGORY_PER_PAGE;
+import static com.qadr.ecommerce.ecommerceadmin.service.ProductService.CATEGORY_PER_PAGE;
+
 
 @RestController
 @RequestMapping("/product")

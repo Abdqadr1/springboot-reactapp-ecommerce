@@ -2,7 +2,7 @@ import axios from "axios";
 import {useEffect, useRef, useState } from "react";
 import { Alert, Button, Form, Modal, Row } from "react-bootstrap";
 import { Navigate, useNavigate } from "react-router-dom";
-import { getFormData, isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "../utilities";
+import { isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "../utilities";
 import useAuth from "../custom_hooks/use-auth";
 
 const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, hierarchies }) => {
@@ -13,15 +13,17 @@ const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, h
     const initialForm = {
         id:'', name:'', alias:'', parent:"", enabled: false, photo: null
     }
-
+    const initialImage = <label htmlFor="photo" className="ms-0 person-span mt-3 cursor-pointer bg-secondary">
+                                <i className="bi bi-image-fill"></i>
+                            </label>
 
     const [form, setForm] = useState({...initialForm});
     const [alert, setAlert] = useState({ show: false, message: "", variant: "success" });
-    const [image, setImage] = useState(<label htmlFor="photo" className="ms-0 person-span mt-3 cursor-pointer bg-secondary">
-                                <i className="bi bi-image-fill"></i>
-                            </label>)
+    const [image, setImage] = useState(initialImage)
     const alertRef = useRef();
     const submitBtnRef = useRef();
+    const formRef = useRef();
+
     const toggleAlert = () => setAlert({ ...alert, show: !alert.show })
     
     const hideModal = () => {
@@ -40,10 +42,21 @@ const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, h
             [event.target.id]: event.target.checked
         })
     }
+
+
     const handleSubmit = (event) => {
         event.preventDefault();
         if(form.parent?.id) form.parent = form.parent.id
-        const data = getFormData(form)
+
+        const data = new FormData(formRef.current);
+        data.set("parent", form.parent.id ?? "");
+        data.set("image", form.image);
+
+        if(form.children.length > 0){
+            const children = form.children.map(ch => ch.id);
+            data.set("children", children)
+        }
+
         setAlert((state) => ({ ...state, show: false }));
         
         const button = submitBtnRef.current
@@ -78,7 +91,7 @@ const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, h
     }
     
     useEffect(() => {
-        alertRef.current && alertRef.current.focus()
+        setAlert(state => ({ ...state, show: false}));
         const currentCategory = updateCategory.category;
         if (currentCategory.id) {
             if (!form.id || currentCategory.id) {
@@ -96,10 +109,15 @@ const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, h
                 setImage(img);
             }
         }
-    }, [alert, updateCategory.category, form.id])
+    }, [updateCategory.category, form.id])
+
+    useEffect(() => {
+        alertRef.current && alertRef.current.focus();
+    }, [alert])
 
     const handleReset = () => {
         setForm({...initialForm, id:form.id})
+        setImage(initialImage)
     }
 
     if(!accessToken) return <Navigate to="/login/2" />
@@ -112,18 +130,18 @@ const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, h
                 <Alert ref={alertRef} tabIndex={-1} variant={alert.variant} show={alert.show} dismissible onClose={toggleAlert}>
                     {alert.message}
                 </Alert>
-                <Form className="add-user-form" onSubmit={handleSubmit}>
+                <Form ref={formRef} className="add-user-form" onSubmit={handleSubmit}>
                     <Form.Group className="mb-3 row justify-content-center" controlId="name">
                         <Form.Label className="form-label">Name:</Form.Label>
-                        <Form.Control value={form?.name} onInput={handleInput} required className="form-input" type="name" placeholder="Enter name" />
+                        <Form.Control name="name" value={form?.name} onInput={handleInput} required className="form-input" type="name" placeholder="Enter name" />
                     </Form.Group>
                     <Form.Group className="mb-3 row justify-content-center" controlId="alias">
                         <Form.Label className="form-label">Alias:</Form.Label>
-                        <Form.Control value={form?.alias} onInput={handleInput} required className="form-input" type="text" placeholder="Enter alias" />
+                        <Form.Control name="alias" value={form?.alias} onInput={handleInput} required className="form-input" type="text" placeholder="Enter alias" />
                     </Form.Group>
                     <Form.Group className="mb-3 row justify-content-center" controlId="parent">
                         <Form.Label className="form-label">Parent Category:</Form.Label>
-                        <Form.Select value={form.parent?.id} onInput={handleInput} required className="form-input">
+                        <Form.Select name="parent" value={form.parent?.id} onInput={handleInput} required className="form-input">
                             <option value={form.parent?.id} hidden>{form.parent?.name ?? "No parent"}</option>
                             {hierarchies.map(cat => <option key={cat.name} value={cat.id}>{cat.name}</option>)}
                         </Form.Select>
@@ -131,7 +149,7 @@ const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, h
 
                     <Form.Group className="mb-3 row justify-content-center" controlId="enabled">
                         <Form.Label className="form-label">Enabled:</Form.Label>
-                        <Form.Check checked={form.enabled}  onChange={handleToggle} className="form-input ps-0" type="checkbox"/>
+                        <Form.Check name="enabled" checked={form.enabled}  onChange={handleToggle} className="form-input ps-0" type="checkbox"/>
                     </Form.Group>
                     <Form.Group className="mb-3 row justify-content-center" controlId="photo">
                         <Form.Label className="form-label"  style={{alignSelf: "start"}}>Photo:</Form.Label>

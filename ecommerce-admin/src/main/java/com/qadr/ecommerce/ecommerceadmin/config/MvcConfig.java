@@ -1,4 +1,4 @@
-package com.qadr.ecommerce.ecommerceadmin;
+package com.qadr.ecommerce.ecommerceadmin.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -12,10 +12,10 @@ public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
-        exposeResources(registry, "../user-photos");
-        exposeResources(registry, "../category-photos");
-        exposeResources(registry, "../brand-photos");
-        exposeResources(registry, "../product-images");
+        exposeResources(registry, "user-photos");
+        exposeResources(registry, "category-photos");
+        exposeResources(registry, "brand-photos");
+        exposeResources(registry, "product-images");
 
     }
 
@@ -24,7 +24,7 @@ public class MvcConfig implements WebMvcConfigurer {
         String absolutePath = path.toFile().getAbsolutePath();
         String logicalPath = dir.replace("../", "") + "/**";
 
-        System.out.printf("\n dir = %s, logical = %s, absolute %s \n", dir, logicalPath, absolutePath);
+//        System.out.printf("\n dir = %s, logical = %s, absolute %s \n", dir, logicalPath, absolutePath);
 
         registry.addResourceHandler(
                         "/"+logicalPath+"/**")

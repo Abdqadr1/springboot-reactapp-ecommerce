@@ -1,9 +1,9 @@
-package com.qadr.ecommerceadmin.controllers;
+package com.qadr.ecommerce.ecommerceadmin.controllers;
 
-import com.qadr.ecommerceadmin.export.BrandCsvExport;
-import com.qadr.ecommerceadmin.model.Brand;
-import com.qadr.ecommerceadmin.service.BrandService;
-import com.qadr.ecommerceadmin.service.CategoryService;
+import com.qadr.ecommerce.ecommerceadmin.export.BrandCsvExport;
+import com.qadr.ecommerce.sharedLibrary.entities.Brand;
+import com.qadr.ecommerce.ecommerceadmin.service.BrandService;
+import com.qadr.ecommerce.ecommerceadmin.service.CategoryService;
 import com.qadr.sharedLibrary.util.FileUploadUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import static com.qadr.ecommerceadmin.service.BrandService.CATEGORY_PER_PAGE;
+import static com.qadr.ecommerce.ecommerceadmin.service.BrandService.CATEGORY_PER_PAGE;
 
 @RestController
 @RequestMapping("/brand")

@@ -1,6 +1,6 @@
-package com.qadr.ecommerceadmin.export;
+package com.qadr.ecommerce.ecommerceadmin.export;
 
-import com.qadr.ecommerceadmin.model.Brand;
+import com.qadr.ecommerce.sharedLibrary.entities.Brand;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;
@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-public class BrandCsvExport extends AbstractExporter{
+public class BrandCsvExport extends AbstractExporter {
 
     public  void export(List<Brand> brands, HttpServletResponse response) throws IOException {
         super.setResponseHeader(response, "csv", "text/csv");

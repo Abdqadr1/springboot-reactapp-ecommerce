@@ -1,6 +1,6 @@
-package com.qadr.ecommerceadmin.export;
+package com.qadr.ecommerce.ecommerceadmin.export;
 
-import entities.Category;
+import com.qadr.ecommerce.sharedLibrary.entities.Category;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;
 import org.supercsv.prefs.CsvPreference;

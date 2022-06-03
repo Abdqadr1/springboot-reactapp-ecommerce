@@ -1,6 +1,6 @@
-package com.qadr.ecommerceadmin.repo;
+package com.qadr.ecommerce.ecommerceadmin.repo;
 
-import entities.Category;
+import com.qadr.ecommerce.sharedLibrary.entities.Category;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;

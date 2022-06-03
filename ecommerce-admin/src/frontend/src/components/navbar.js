@@ -36,19 +36,19 @@ const MyNavbar = () => {
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="me-auto w-100 justify-content-end">
+                    <Nav className="ms-auto">
                         {
                             (hasAnyAuthority(auth, ["Admin", "Salesperson"]))
                                 ? 
                                 <NavDropdown title="Users" id="basic-nav-dropdown" menuVariant="dark">
                                         {
                                             (hasAnyAuthority(auth, ["Admin"]))
-                                                ? <Link className="dropdown-item" to="/account/users">Users</Link>
+                                                ? <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="/account/users">Users</Link>
                                                 : ""
                                         }
                                         {
                                             (hasAnyAuthority(auth, ["Admin", "Salesperson"]))
-                                                ? <Link className="dropdown-item" to="/account/customers">Customers</Link>
+                                                ? <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="/account/customers">Customers</Link>
                                                 : ""
                                         }
                                     
@@ -61,13 +61,13 @@ const MyNavbar = () => {
                                     <NavDropdown title="Products" id="basic-nav-dropdown" menuVariant="dark">
                                         {
                                             (hasAnyAuthority(auth, ["Admin", "Salesperson", "Editor", "Shipper"]))
-                                            ? <Link className="dropdown-item" to="/account/products">Products</Link>
+                                            ? <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="/account/products">Products</Link>
                                             : ""
                                         }
                                         {
                                             (hasAnyAuthority(auth, ["Admin", "Editor"]))
-                                            ?  <><Link className="dropdown-item" to="/account/categories">Categories</Link>
-                                                <Link className="dropdown-item" to="/account/brands">Brands</Link></>
+                                            ?  <><Link data-rr-ui-dropdown-item="" className="dropdown-item" to="/account/categories">Categories</Link>
+                                                <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="/account/brands">Brands</Link></>
                                             : ""
                                         }
                                         {
@@ -84,22 +84,22 @@ const MyNavbar = () => {
                                     <NavDropdown title="Menu" id="basic-nav-dropdown" menuVariant="dark">
                                         {
                                             (hasAnyAuthority(auth, ["Admin", "Salesperson", "Shipper"]))
-                                                ? <Link className="dropdown-item" to="/account/orders">Orders</Link>
+                                                ? <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="/account/orders">Orders</Link>
                                                 : ""
                                         }
                                         {
                                             (hasAnyAuthority(auth, ["Admin", "Salesperson"]))
-                                                ? <Link className="dropdown-item" to="/account/sales">Sales Report</Link>
+                                                ? <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="/account/sales">Sales Report</Link>
                                                 : ""
                                         }
                                         {
                                             (hasAnyAuthority(auth, ["Admin", "Editor"]))
-                                                ? <Link className="dropdown-item" to="/account/articles">Articles</Link>
+                                                ? <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="/account/articles">Articles</Link>
                                                 : ""
                                         }
                                         {
                                             (hasAnyAuthority(auth, ["Admin"]))
-                                                ? <Link className="dropdown-item" to="/account/settings">Settings</Link>
+                                                ? <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="/account/settings">Settings</Link>
                                                 : ""
                                         }
                                     </NavDropdown>
@@ -110,8 +110,8 @@ const MyNavbar = () => {
                                 <i className="bi bi-person-fill"></i> {auth.firstName} &nbsp;
                             </Dropdown.Toggle>
                             <Dropdown.Menu variant="dark">
-                                <Dropdown.Item href="#" onClick={showInfo}>Account Info</Dropdown.Item>
-                                <Dropdown.Item href="/login/1" className="text-danger" onClick={handleLogout}>Logout</Dropdown.Item>
+                                <Link className="dropdown-item" data-rr-ui-dropdown-item="" to="#" onClick={showInfo}>Account Info</Link>
+                                <Link className="dropdown-item text-danger" to="/login/1" onClick={handleLogout}>Logout</Link>
                             </Dropdown.Menu>
                         </Dropdown>
                     </Nav>

@@ -13,14 +13,14 @@ const AddCategory = ({ showAddCategory, setShowAddCategory, addingCategory, hier
     const initialForm = {
         name:'', alias:'', parent:'', enabled: false, photo: null
     }
+    const initialImage = <i className="bi bi-person-fill"></i>;
     const [form, setForm] = useState(initialForm);
-    const [image, setImage] = useState(<i className="bi bi-person-fill"></i>)
+    const [image, setImage] = useState(initialImage)
     const [alert, setAlert] = useState({ show: false, message: "", variant: "success" });
     const alertRef = useRef();
     const toggleAlert = () => {
         setAlert({...alert, show: !alert.show})
     }
-
 
     const handleInput = (event) => {
         const id = event.target.id;
@@ -79,6 +79,8 @@ const AddCategory = ({ showAddCategory, setShowAddCategory, addingCategory, hier
 
     const handleReset = () => {
         setForm(initialForm)
+        setImage(initialImage)
+        setAlert((state) => ({ ...state, show: false }));
     }
     
     if(!accessToken) return <Navigate to="/login/2" />

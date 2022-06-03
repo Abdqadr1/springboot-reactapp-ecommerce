@@ -116,6 +116,7 @@ const AddProduct = ({ showAddProduct, setShowAddProduct, addingProduct, brands }
 
     const handleReset = () => {
         setForm(initialForm)
+        setImages([])
         setFullDescription("")
         setShortDescription("")
         setAlert(s => ({...s, show: false}));
@@ -131,7 +132,6 @@ const AddProduct = ({ showAddProduct, setShowAddProduct, addingProduct, brands }
             })
             showThumbnail(file, setImages, "product-image", id);
         }
-         console.log(id,form)
     }
     const handleClearImage = (id) => {
         const formImages = form.product_images.filter((file, i) => i !== id);
@@ -284,7 +284,7 @@ const AddProduct = ({ showAddProduct, setShowAddProduct, addingProduct, brands }
                                     <Form.Control name="detail_value" ref={valueRef} className="form-input" />
                                 </Form.Group>
                             </Row>
-                            <button className="btn btn-secondary mt-3" onClick={handleAddDetail} >Add Product detail</button>
+                            <button type="button" className="btn btn-secondary mt-3" onClick={handleAddDetail} >Add Product detail</button>
                         </Tab>
                         <Tab eventKey="shipping" title="Shipping">
                             <h5 className="mb-5">
@@ -293,19 +293,19 @@ const AddProduct = ({ showAddProduct, setShowAddProduct, addingProduct, brands }
                             </h5>
                             <Form.Group className="mb-3 row justify-content-center" controlId="length">
                                 <Form.Label className="form-label">Length (inch):</Form.Label>
-                                <Form.Control name="length"  required className="form-input" type="number" placeholder="Enter length" />
+                                <Form.Control name="length"  required className="form-input" type="number" step="0.01" placeholder="Enter length" />
                             </Form.Group>
                             <Form.Group className="mb-3 row justify-content-center" controlId="width">
                                 <Form.Label className="form-label">Width (inch):</Form.Label>
-                                <Form.Control name="width" required className="form-input" type="number" placeholder="Enter width" />
+                                <Form.Control name="width" required className="form-input" type="number" step="0.01" placeholder="Enter width" />
                             </Form.Group>
                             <Form.Group className="mb-3 row justify-content-center" controlId="height">
                                 <Form.Label className="form-label">Height (inch):</Form.Label>
-                                <Form.Control name="height"  required className="form-input" type="number" placeholder="Enter height" />
+                                <Form.Control name="height"  required className="form-input" type="number" step="0.01" placeholder="Enter height" />
                             </Form.Group>
                             <Form.Group className="mb-3 row justify-content-center" controlId="weight">
                                 <Form.Label className="form-label">Weight (pound):</Form.Label>
-                                <Form.Control name="weight"  required className="form-input" type="number" placeholder="Enter weight" />
+                                <Form.Control name="weight"  required className="form-input" type="number" step="0.01" placeholder="Enter weight" />
                             </Form.Group>
                         </Tab>
                     </Tabs>

@@ -13,11 +13,12 @@ const UpdateUser = ({ updateUser, setUpdateUser, updatingUser }) => {
     const initialForm = {
         id:'', email:'', firstName:'', lastName:'', password:'', enabled: false, photo: null, roles: []
     }
+    const initialImage = <label htmlFor="photo" className="ms-0 person-span mt-3 cursor-pointer bg-secondary">
+                                <i className="bi bi-person-fill"></i>
+                            </label>
     const [form, setForm] = useState({...initialForm});
     const [alert, setAlert] = useState({ show: false, message: "", variant: "success" });
-    const [image, setImage] = useState(<label htmlFor="photo" className="ms-0 person-span mt-3 cursor-pointer bg-secondary">
-                                <i className="bi bi-person-fill"></i>
-                            </label>)
+    const [image, setImage] = useState(initialImage)
     const alertRef = useRef();
     const submitBtnRef = useRef();
     const toggleAlert = () => setAlert({ ...alert, show: !alert.show })
@@ -90,7 +91,7 @@ const UpdateUser = ({ updateUser, setUpdateUser, updatingUser }) => {
     const isRole = (id) => form.roles && form.roles.findIndex(u => u === id) > -1
     
     useEffect(() => {
-        alertRef.current && alertRef.current.focus()
+        setAlert((state) => ({ ...state, show: false }));
         const currentUser = updateUser.user;
         if (currentUser.id) {
             if (!form.id || currentUser.id) {
@@ -105,10 +106,15 @@ const UpdateUser = ({ updateUser, setUpdateUser, updatingUser }) => {
                 setImage(img);
             }
         }
-    }, [alert, updateUser.user, form.id])
+    }, [updateUser.user, form.id])
+
+    useEffect(() => {
+        alertRef.current && alertRef.current.focus();
+    }, [alert])
 
     const handleReset = () => {
         setForm({...initialForm, id:form.id})
+        setImage(initialImage)
     }
 
     if(!accessToken) return <Navigate to="/login/2" />
