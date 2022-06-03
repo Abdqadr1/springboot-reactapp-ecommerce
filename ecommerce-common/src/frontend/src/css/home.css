@@ -1,0 +1,28 @@
+.cat-dp, .avatar{
+    display: block;
+    margin: 0 auto;
+    max-width: 90%;
+    height: 150px;
+    padding: auto;
+    margin: 0 auto;
+    /* border: .5px solid #6c757d; */
+    /* border-radius: 50%; */
+}
+.avatar>i{
+    font-size: 5em;
+    margin: auto;
+    color: #6c757d;
+}
+a{
+    text-decoration: none;
+}
+a:hover{
+    filter: opacity(70%) !important;
+}
+.secondary{
+    background-color: rgb(226, 230, 234)
+}
+.product-in-listing:hover{
+    border-radius: 5px;
+    box-shadow: 3px 4px 3px 3px #d8dadc;
+}
