@@ -23,6 +23,22 @@ a:hover{
     background-color: rgb(226, 230, 234)
 }
 .product-in-listing:hover{
+    filter:brightness(200%);
     border-radius: 5px;
     box-shadow: 3px 4px 3px 3px #d8dadc;
+}
+.main-image{
+    width: 95%;
+    max-height: 300px;
+}
+.small-img{
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
+.carousel-img{
+    display: block;
+    width: 95%;
+    height: 70vh;
+    margin: 0 auto;
 }

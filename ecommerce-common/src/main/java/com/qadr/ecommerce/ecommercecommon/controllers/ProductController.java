@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.qadr.ecommerce.ecommercecommon.service.ProductService.PRODUCTS_PER_PAGE;
+import static com.qadr.ecommerce.ecommercecommon.service.ProductService.SEARCH_PRODUCTS_PER_PAGE;
 
 
 @RestController
@@ -39,6 +40,26 @@ public class ProductController {
                 page.getTotalElements(), page.getContent(), PRODUCTS_PER_PAGE
         );
     }
+
+    @GetMapping("/alias/{alias}")
+    Product getProductByAlias(@PathVariable("alias") String alias){
+        return productService.getByAlias(alias);
+    }
+
+    @GetMapping("/search/{keyword}")
+    CustomProductPage getProductByAlias(@PathVariable("keyword") String keyword,
+                              @RequestParam(value = "page-number", defaultValue = "1") Integer pageNumber){
+        Page<Product> page = productService.searchKeyword(pageNumber, keyword);
+        int startCount = (pageNumber-1) * SEARCH_PRODUCTS_PER_PAGE + 1;
+        int endCount = PRODUCTS_PER_PAGE * pageNumber;
+        endCount = (endCount > page.getTotalElements()) ? (int) page.getTotalElements() : endCount;
+
+        return new CustomProductPage(
+                pageNumber,startCount, endCount,page.getTotalPages(),
+                page.getTotalElements(), page.getContent(), SEARCH_PRODUCTS_PER_PAGE
+        );
+    }
+
 }
 @AllArgsConstructor
 @Data

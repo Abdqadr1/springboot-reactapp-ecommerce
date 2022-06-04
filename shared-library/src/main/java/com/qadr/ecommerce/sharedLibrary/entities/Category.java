@@ -37,6 +37,7 @@ public class Category {
 
     @JsonManagedReference
     @OneToMany(mappedBy = "parent")
+    @OrderBy("name asc")
     private Set<Category> children = new HashSet<>();
 
     @Column(name = "all_parent_ids")
