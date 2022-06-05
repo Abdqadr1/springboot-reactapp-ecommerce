@@ -1,11 +1,14 @@
-import logo from "./images/logo.png";
 import {Navbar, Nav, Container, Form, Row, Col, Button} from 'react-bootstrap';
 import { Link, useNavigate } from "react-router-dom";
 import { useRef } from "react";
+import useSettings from './use-settings';
 
 const NavBar = () => {
   const keywordRef = useRef();
   const navigate = useNavigate();
+  const logoUrl = `${process.env.REACT_APP_SERVER_URL}site-logo/`;
+  const { SITE_LOGO } = useSettings();
+  console.log(SITE_LOGO)
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -19,7 +22,7 @@ const NavBar = () => {
           <Container>
             <Navbar.Brand href="/">
               <img
-                src={logo}
+                src={`${logoUrl}${SITE_LOGO}`}
                 width="30"
                 height="30"
                 className="d-inline-block align-top"

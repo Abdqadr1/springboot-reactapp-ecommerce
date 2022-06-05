@@ -23,7 +23,11 @@ export const getPrices =(discount, price) => {
       </h5>
     );
 }
-export const getDiscountPrice = (discount, price) =>  Number(price * (100 - discount) / 100).toFixed(2);
+export const getDiscountPrice = (discount, price) => Number(price * (100 - discount) / 100).toFixed(2);
+
+export const formatPrice = () => {
+    const intl = new Intl.NumberFormat();
+}
 
 export function listProducts(results, keyword, type="category"){
         if(results.length > 0){

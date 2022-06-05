@@ -1,4 +1,4 @@
-package com.qadr.sharedLibrary.util;
+package com.qadr.ecommerce.sharedLibrary.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

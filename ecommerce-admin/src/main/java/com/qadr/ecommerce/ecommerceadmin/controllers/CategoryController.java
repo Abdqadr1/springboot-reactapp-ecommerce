@@ -3,7 +3,7 @@ package com.qadr.ecommerce.ecommerceadmin.controllers;
 import com.qadr.ecommerce.ecommerceadmin.export.CategoryCsvExport;
 import com.qadr.ecommerce.ecommerceadmin.service.CategoryService;
 import com.qadr.ecommerce.sharedLibrary.entities.Category;
-import com.qadr.sharedLibrary.util.FileUploadUtil;
+import com.qadr.ecommerce.sharedLibrary.util.FileUploadUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;

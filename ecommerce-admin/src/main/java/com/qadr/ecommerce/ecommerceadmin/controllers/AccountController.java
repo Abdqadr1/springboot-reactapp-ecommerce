@@ -4,7 +4,7 @@ import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
 import com.qadr.ecommerce.ecommerceadmin.model.User;
 import com.qadr.ecommerce.ecommerceadmin.repo.UserRepo;
 import com.qadr.ecommerce.ecommerceadmin.service.UserService;
-import com.qadr.sharedLibrary.util.FileUploadUtil;
+import com.qadr.ecommerce.sharedLibrary.util.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;

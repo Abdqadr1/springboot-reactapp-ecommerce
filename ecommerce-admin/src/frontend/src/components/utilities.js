@@ -26,7 +26,7 @@ export function showThumbnail(file, setImage, type="thumbnail", id=0, setType="t
     const fileReader = new FileReader();
     fileReader.onload = (event) => {
         const image = <img src={event.target.result} alt={type} className={setType} />
-        if (type === "thumbnail") {
+        if (type.indexOf("thumbnail") > -1) {
             setImage(image);
         } else {
             setImage(state => {

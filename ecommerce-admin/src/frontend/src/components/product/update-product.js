@@ -3,7 +3,7 @@ import {useEffect, useRef, useState } from "react";
 import { Alert, Button, Col, Form, Modal, Row, Tab, Tabs } from "react-bootstrap";
 import { Navigate, useNavigate } from "react-router-dom";
 import TextEditor from "../text_editor"
-import { isFileValid, isTokenExpired, listFormData, showThumbnail, SPINNERS_BORDER_HTML } from "../utilities";
+import { isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "../utilities";
 import useAuth from "../custom_hooks/use-auth";
 
 const UpdateProduct = ({ updateProduct, setUpdateProduct, updatingProduct, brands }) => {

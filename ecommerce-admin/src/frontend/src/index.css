@@ -11,6 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.site-logo{
+  display: block;
+  width: 90%;
+  height: 100px;
+}
 .fit-content {
   width: fit-content !important;
 }
@@ -106,14 +111,14 @@ i.edit:hover {
   margin: 12px 0 !important;
 }
 
-form .form-label {
-  width: 25%;
+.form-label {
+width: 25% !important;
   align-self: center;
-  margin-bottom: 0;
+  margin-bottom: 0 !important;
 }
 
-form .form-input {
-  width: 70%;
+.form-input {
+width: 70% !important;
 }
 
 .form-btn-parent {
@@ -176,10 +181,10 @@ form .form-input {
     min-width: 100% !important;
   }
 
-  form .form-label {
+  .form-label{
     width: 100%;
     align-self: center;
-    margin-bottom: 0;
+    margin-bottom: 0 !important;
     padding-left: 0;
   }
 
@@ -187,8 +192,8 @@ form .form-input {
     max-width: 80%;
   }
 
-  form .form-input {
-    width: 100%;
+  .form-input {
+    width: 100% !important;
   }
 
   .add-user-form {

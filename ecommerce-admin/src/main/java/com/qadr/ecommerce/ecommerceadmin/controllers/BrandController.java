@@ -4,7 +4,7 @@ import com.qadr.ecommerce.ecommerceadmin.export.BrandCsvExport;
 import com.qadr.ecommerce.sharedLibrary.entities.Brand;
 import com.qadr.ecommerce.ecommerceadmin.service.BrandService;
 import com.qadr.ecommerce.ecommerceadmin.service.CategoryService;
-import com.qadr.sharedLibrary.util.FileUploadUtil;
+import com.qadr.ecommerce.sharedLibrary.util.FileUploadUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;

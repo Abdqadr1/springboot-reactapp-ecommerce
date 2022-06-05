@@ -7,7 +7,7 @@ import com.qadr.ecommerce.ecommerceadmin.export.UserPdfExport;
 import com.qadr.ecommerce.ecommerceadmin.model.AdminUserDetails;
 import com.qadr.ecommerce.ecommerceadmin.model.User;
 import com.qadr.ecommerce.ecommerceadmin.service.UserService;
-import com.qadr.sharedLibrary.util.FileUploadUtil;
+import com.qadr.ecommerce.sharedLibrary.util.FileUploadUtil;
 import com.qadr.sharedLibrary.util.JWTUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;

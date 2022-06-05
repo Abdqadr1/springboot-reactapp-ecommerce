@@ -43,8 +43,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(HttpMethod.POST, "/login/**").permitAll();
 
         http.authorizeRequests().antMatchers(
-                "/user/export/**","/category/export/**","/brand/export/**", "/brand-photos/**", "/user-photos/**",
-                        "/category-photos/**", "/product-images/**", "/product/export/**").permitAll();
+                "/user/export/**","/category/export/**","/brand/export/**", "/brand-photos/**",
+                "/user-photos/**","/category-photos/**", "/product-images/**", "/product/export/**",
+                "/site-logo/**", "/set/get").permitAll();
 
         http.authorizeRequests().antMatchers("/category/get-hierarchy/**")
                 .hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper");
@@ -62,6 +63,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests().antMatchers("/category/**","/brand/**")
                 .hasAnyAuthority("Admin", "Editor");
+
+        http.authorizeRequests().antMatchers("/set/**").hasAuthority("Admin");
 
         http.authorizeRequests().anyRequest().authenticated();
 

@@ -21,7 +21,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     Optional<Product> findByAlias(String alias);
 
     @Query(
-            value = "SELECT * FROM products WHERE MATCH (name, short_description, full_description) AGAINST (?1)",
+            value = "SELECT * FROM products WHERE enabled=true AND MATCH (name, short_description, full_description) AGAINST (?1)",
             nativeQuery = true
     )
     Page<Product> searchKeyword(String keyword, Pageable pageable);
