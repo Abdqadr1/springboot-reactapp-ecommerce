@@ -2,7 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Breadcrumb, Col, Row } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
-import { listProducts } from "./utilities";
+import { formatPrice, listProducts } from "./utilities";
+import useSettings from "./use-settings";
 
 const Category = () => {
 
@@ -18,6 +19,16 @@ const Category = () => {
     })
 
     const { alias } = useParams();
+    
+    const {SITE_NAME} = useSettings();
+    useEffect(()=>{document.title = `${alias} - ${SITE_NAME}`},[SITE_NAME, alias])
+    
+    const {CURRENCY_SYMBOL, CURRENCY_SYMBOL_POSITION, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE} = useSettings();
+
+    function priceFormatter() {
+        return (price) =>
+            formatPrice(price, CURRENCY_SYMBOL, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, CURRENCY_SYMBOL_POSITION)
+    }
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -102,7 +113,7 @@ const Category = () => {
         if(cat && cat.children.length > 0){
             const fileURI = process.env.REACT_APP_SERVER_URL + "category-photos/";
             return  (
-            <Row className="justify-content-start p-4">
+            <Row className="justify-content-start p-4 mx-0">
                 {
                     cat.children.map((p) => (
                         <Col key={p.name} sm={6} md={4} lg={2} xlg={2} as={Link} to={"/c/"+p.alias} className="product-in-listing">
@@ -122,7 +133,7 @@ const Category = () => {
             {listParents()}
             {listChildren()}
             <div className="my-4">
-                {listProducts(products, cat?.name, "category")}
+                {listProducts(products, cat?.name, "category", priceFormatter())}
             </div>
         </>
      );

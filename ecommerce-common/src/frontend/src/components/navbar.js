@@ -8,12 +8,14 @@ const NavBar = () => {
   const navigate = useNavigate();
   const logoUrl = `${process.env.REACT_APP_SERVER_URL}site-logo/`;
   const { SITE_LOGO } = useSettings();
-  console.log(SITE_LOGO)
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const keyword = keywordRef.current.value;
-    navigate("p/search/"+keyword);
+    const input = keywordRef.current;
+    const keyword = input.value.trim();
+    if (keyword.length >= 2) {
+      navigate("p/search/"+keyword);
+    } 
   }
 
     return (
@@ -61,11 +63,11 @@ const NavBar = () => {
             </Navbar.Collapse>
           </Container>
         </Navbar>
-        <Row className="justify-content-start px-3">
+        <Row className="justify-content-start px-3 mx-0">
           <Form className="my-2 col-7" onSubmit={handleSubmit}>
               <Row>
                   <Col md={5}>
-                    <Form.Control ref={keywordRef} placeholder="keyword" required />
+                    <Form.Control ref={keywordRef} placeholder="keyword" required minLength="2" />
                   </Col>
                   <Col md={2}>
                     <Button variant="success" type="submit">Search</Button>

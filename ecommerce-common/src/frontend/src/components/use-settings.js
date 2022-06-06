@@ -5,6 +5,7 @@ const useSettings = () => {
     const url = process.env.REACT_APP_SERVER_URL + "set/get";
     const [settings, setSettings] = useState({});
 
+
      useEffect(() => {
          const savedSettings = getFromStorage();
          if (savedSettings) {

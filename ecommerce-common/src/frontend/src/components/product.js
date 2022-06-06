@@ -3,13 +3,26 @@ import { useEffect, useRef, useState } from "react";
 import { Row, Col, Button, InputGroup, FormControl, Breadcrumb} from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import MyCarousel from "./image-carousel";
-import { getDiscountPrice, getShortName } from "./utilities";
+import { getDiscountPrice, getShortName, formatPrice } from "./utilities";
+import useSettings from "./use-settings";
 
 const Product = () => {
     const {alias} = useParams();
     const [product, setProduct] = useState(null);
+
+    
+    
+    const { CURRENCY_SYMBOL, CURRENCY_SYMBOL_POSITION, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE,SITE_NAME } = useSettings();
+
+    useEffect(()=>{document.title = `${alias} - ${SITE_NAME}`},[SITE_NAME, alias])
+
+    function priceFormatter() {
+        return (price) =>
+            formatPrice(price, CURRENCY_SYMBOL, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, CURRENCY_SYMBOL_POSITION)
+    }
+
     const [showCarousel, setShowCarousel] = useState(false);
-  const [imageIndex, setImageIndex] = useState(0);
+    const [imageIndex, setImageIndex] = useState(0);
 
     const bigImageRef = useRef();
     const fileUrl = process.env.REACT_APP_SERVER_URL + "product-images/";
@@ -149,15 +162,15 @@ const Product = () => {
                             <p className="text-start fs-6 mb-1">Brand {product.brand.name}</p>
                             {(product.discountPrice > 0)
                                 ? <>
-                                    <p className="text-start fs-6 mb-1">List price <del>${product.price}</del></p>
+                                    <p className="text-start fs-6 mb-1">List price <del>{priceFormatter()(product.price)}</del></p>
                                     <p className="text-start fs-5 mb-1">
                                         Price 
-                                        <span className="text-danger">${getDiscountPrice(product.discountPrice, product.price)}</span>
+                                        <span className="text-danger mx-1 fw-bold">{priceFormatter()(product.price,getDiscountPrice(product.discountPrice, product.price))}</span>
                                         <span className="mx-2 fs-6 fw-bold">({product.discountPrice}% off)</span>
                                     </p>
                                 </> 
                                 : <>
-                                    <p className="text-start fs-6 mb-1">List price <span className="fw-bold">${product.price}</span></p>
+                                    <p className="text-start fs-6 mb-1">List price <span className="fw-bold">{priceFormatter()(product.price)}</span></p>
                                 </>
                             }
                             <p className="text-start fs-6 mb-1" dangerouslySetInnerHTML={{__html: product.shortDescription}}></p>

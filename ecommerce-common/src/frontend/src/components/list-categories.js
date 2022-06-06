@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import useSettings from "./use-settings";
 
 import axios from "axios";
 import { Col, Row } from "react-bootstrap";
@@ -7,7 +8,10 @@ import { Link } from "react-router-dom";
 const ListCategories = () => {
     const fileURI = process.env.REACT_APP_SERVER_URL + "category-photos/";
 
-    const {array: categories, setArray: setCategories} = useArray([]);
+    const { array: categories, setArray: setCategories } = useArray([]);
+    
+    const {SITE_NAME} = useSettings();
+    useEffect(()=>{document.title = "Categories - " + SITE_NAME},[SITE_NAME])
 
     useEffect(() => {
         const url = process.env.REACT_APP_SERVER_URL + "c";
@@ -27,7 +31,7 @@ const ListCategories = () => {
                 <i className="bi bi-image-fill"></i>
             </span>
             return (
-                <Col className="my-3" key={cat.name+cat.id} sm={6} md={4} lg={3} xlg={2}>
+                <Col className="my-3" key={cat.name+cat.id} sm={6} md={3} lg={2}>
                     {photo}
                     <h5 className="my-2"><Link to={"c/"+cat.alias} >{cat.name}</Link></h5>
                 </Col>

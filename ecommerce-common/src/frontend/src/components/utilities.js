@@ -7,29 +7,39 @@ export const getShortName = (name, len=60) => {
     }
     return name;
 }
-export const getPrices =(discount, price) => {
+export const getPrices = (discount, price, formatPrice) => {
     if(discount > 0){
         const discountPrice =  getDiscountPrice(discount, price);
         return (
           <h5 className="text-dark text-start fw-bold">
-            <span>${discountPrice}</span>
-            <del className="text-danger mx-2">${price}</del>
+            <span>{formatPrice(discountPrice)}</span>
+            <del className="text-danger mx-2">{formatPrice(price)}</del>
           </h5>
         );
     }
     return (
       <h5 className="text-dark text-start fw-bold">
-        <span>${price}</span>
+        <span>{formatPrice(price)}</span>
       </h5>
     );
 }
-export const getDiscountPrice = (discount, price) => Number(price * (100 - discount) / 100).toFixed(2);
+export const getDiscountPrice = (discount, price) => Number(price * (100 - discount) / 100);
 
-export const formatPrice = () => {
-    const intl = new Intl.NumberFormat();
+export const formatPrice = (price, s, m, t, pos) => {
+    t = t === "COMMA" ? "," : ".";
+    if (price) {
+        const re = '\\d(?=(\\d{3})' + (m > 0 ? '\\.' : '$') + ')';
+        const f = price.toFixed(Math.max(0, ~~m)).replace(new RegExp(re, 'g'), '$&' + t);
+        if (pos.toLowerCase().startsWith("before")) {
+            return `${s}${f}`;
+        } else {
+            return `${f}${s}`;
+        }
+    }
+    
 }
 
-export function listProducts(results, keyword, type="category"){
+export function listProducts(results, keyword, type="category", formatPrice){
         if(results.length > 0){
             const fileURI = process.env.REACT_APP_SERVER_URL + "product-images/";
             return (
@@ -39,13 +49,13 @@ export function listProducts(results, keyword, type="category"){
                         ? <h4 className="py-3">Products  in Category {keyword}</h4>
                         : <h3 className="mt-4 mb-2"> Search Results for "{keyword}"</h3>
                     }
-                    <Row className="justify-content-start p-4">
+                    <Row className="justify-content-start p-4 mx-0">
                         {
                             results.map((p) => (
                                 <Col key={p.name} sm={6} md={4} lg={2} xlg={2} className="product-in-listing" as={Link} to={"/p/"+p.alias}>
                                     <img loading="lazy" src={`${fileURI}${p.id}/main-image/${p.mainImage}`} alt={getShortName(p.name, 10)} className="cat-dp" />
                                     <h5 className="my-2 text-primary text-start">{getShortName(p.name)}</h5>
-                                    {getPrices(p.discountPrice, p.price)}
+                                    {getPrices(p.discountPrice, p.price, formatPrice)}
                                 </Col>
                             ))
                         }
