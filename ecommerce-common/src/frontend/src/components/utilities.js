@@ -1,4 +1,4 @@
-import { Col, Row } from "react-bootstrap";
+import { Col, Row, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 export const getShortName = (name, len=60) => {
@@ -11,7 +11,7 @@ export const getPrices = (discount, price, formatPrice) => {
     if(discount > 0){
         const discountPrice =  getDiscountPrice(discount, price);
         return (
-          <h5 className="text-dark text-start fw-bold">
+          <h5 className="text-dark text-start fw-bold fs-6">
             <span>{formatPrice(discountPrice)}</span>
             <del className="text-danger mx-2">{formatPrice(price)}</del>
           </h5>
@@ -52,7 +52,7 @@ export function listProducts(results, keyword, type="category", formatPrice){
                     <Row className="justify-content-start p-4 mx-0">
                         {
                             results.map((p) => (
-                                <Col key={p.name} sm={6} md={4} lg={2} xlg={2} className="product-in-listing" as={Link} to={"/p/"+p.alias}>
+                                <Col key={p.name} xs={6} sm={4} md={3} lg={2} xlg={2} className="product-in-listing" as={Link} to={"/p/"+p.alias}>
                                     <img loading="lazy" src={`${fileURI}${p.id}/main-image/${p.mainImage}`} alt={getShortName(p.name, 10)} className="cat-dp" />
                                     <h5 className="my-2 text-primary text-start">{getShortName(p.name)}</h5>
                                     {getPrices(p.discountPrice, p.price, formatPrice)}
@@ -65,4 +65,22 @@ export function listProducts(results, keyword, type="category", formatPrice){
         } else {
             return <h4>No product found for {type} "{keyword}"</h4>
         }
-    }
+}
+
+
+
+export function listFormData(data){
+      for (const pair of data.entries()) {
+        console.log(pair[0] + ", " + pair[1]);
+      }
+}
+
+export const SPINNERS_BORDER = <Spinner animation="border" size="sm" />
+export const SPINNERS_GROW = <Spinner animation="grow" size="sm" />
+export const SPINNERS_BORDER_HTML = `<div class="spinner-border spinner-border-sm text-dark" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>`
+export const SPINNERS_GROW_HTML = `<div class="spinner-grow spinner-grow-sm text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>`
+export const SEARCH_ICON = `<i class="bi bi-search"></i>`;

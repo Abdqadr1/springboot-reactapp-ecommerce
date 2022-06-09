@@ -22,7 +22,7 @@ public class SettingsController {
 
     @GetMapping("/get")
     public SettingsPage getAllSettings(){
-        List<Setting> allSettings = settingsService.getAllSettings();
+        List<Setting> allSettings = settingsService.getGeneralSettings();
         List<Currency> currencyList = currencyRepo.findAllByOrderByNameAsc();
         return new SettingsPage(allSettings, currencyList);
     }

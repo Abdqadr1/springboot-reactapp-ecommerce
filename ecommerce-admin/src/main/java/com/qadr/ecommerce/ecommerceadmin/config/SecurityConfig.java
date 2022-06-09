@@ -40,12 +40,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.authorizeRequests().antMatchers(HttpMethod.POST, "/login/**").permitAll();
+        http.authorizeRequests().antMatchers( "/login/**", "/set/get").permitAll();
 
         http.authorizeRequests().antMatchers(
                 "/user/export/**","/category/export/**","/brand/export/**", "/brand-photos/**",
                 "/user-photos/**","/category-photos/**", "/product-images/**", "/product/export/**",
-                "/site-logo/**", "/set/get").permitAll();
+                "/site-logo/**", "/set/get","/countries/list").permitAll();
 
         http.authorizeRequests().antMatchers("/category/get-hierarchy/**")
                 .hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper");
@@ -64,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/category/**","/brand/**")
                 .hasAnyAuthority("Admin", "Editor");
 
-        http.authorizeRequests().antMatchers("/set/**").hasAuthority("Admin");
+        http.authorizeRequests().antMatchers("/set/**", "/countries/**", "/states/**").hasAuthority("Admin");
 
         http.authorizeRequests().anyRequest().authenticated();
 

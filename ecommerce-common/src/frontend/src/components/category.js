@@ -4,6 +4,7 @@ import { Breadcrumb, Col, Row } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import { formatPrice, listProducts } from "./utilities";
 import useSettings from "./use-settings";
+import Search from "./search";
 
 const Category = () => {
 
@@ -130,6 +131,7 @@ const Category = () => {
 
     return ( 
         <>
+            <Search />
             {listParents()}
             {listChildren()}
             <div className="my-4">

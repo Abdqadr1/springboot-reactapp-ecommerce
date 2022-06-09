@@ -5,6 +5,7 @@ import axios from "axios";
 import { Col, Row } from "react-bootstrap";
 import useArray from "./custom_hooks/use-array";
 import { Link } from "react-router-dom";
+import Search from "./search";
 const ListCategories = () => {
     const fileURI = process.env.REACT_APP_SERVER_URL + "category-photos/";
 
@@ -31,7 +32,7 @@ const ListCategories = () => {
                 <i className="bi bi-image-fill"></i>
             </span>
             return (
-                <Col className="my-3" key={cat.name+cat.id} sm={6} md={3} lg={2}>
+                <Col className="my-3" key={cat.name+cat.id} xs={6} md={3} lg={2}>
                     {photo}
                     <h5 className="my-2"><Link to={"c/"+cat.alias} >{cat.name}</Link></h5>
                 </Col>
@@ -39,10 +40,14 @@ const ListCategories = () => {
     })
     }
 
-    return ( 
-        <Row className="mt-5 px-2 mx-0">
-            {listCategories()}
-        </Row>
+    return (
+        <>
+            <Search />
+            <Row className="mt-5 px-2 mx-0">
+                {listCategories()}
+            </Row> 
+        </>
+        
      );
 }
  

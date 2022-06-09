@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 
 const useArray = () => {
     const [array, setArray] = useState([]);
@@ -13,9 +13,6 @@ const useArray = () => {
 
     const addToArray = (item) => setArray(state => ([...state, item]));
 
-    useEffect(() => {
-        // console.log("updating")
-    }, [array])
     
 
     return {array, setArray, filterArray, addToArray, showOnlyUpdated};

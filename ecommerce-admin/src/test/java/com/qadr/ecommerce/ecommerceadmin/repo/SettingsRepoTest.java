@@ -2,6 +2,7 @@ package com.qadr.ecommerce.ecommerceadmin.repo;
 
 import com.qadr.ecommerce.sharedLibrary.entities.Setting;
 import com.qadr.ecommerce.sharedLibrary.entities.SettingsCategory;
+import com.qadr.ecommerce.sharedLibrary.repo.SettingsRepo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -9,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -46,10 +46,27 @@ class SettingsRepoTest {
 
     }
     @Test
+    void testAddMailServerSettings(){
+        List<Setting> settings = List.of(
+                new Setting("MAIL_HOST", "smtp.gmail.com", SettingsCategory.MAIL_SERVER),
+                new Setting("MAIL_PORT", "587", SettingsCategory.MAIL_SERVER),
+                new Setting("MAIL_USERNAME", "ecommerce@gmail.com", SettingsCategory.MAIL_SERVER),
+                new Setting("MAIL_PASSWORD", "password", SettingsCategory.MAIL_SERVER),
+                new Setting("SMTP_AUTH", "true", SettingsCategory.MAIL_SERVER),
+                new Setting("SMTP_SECURED", "true", SettingsCategory.MAIL_SERVER),
+                new Setting("MAIL_FROM", "ecommerce@gmail.com", SettingsCategory.MAIL_SERVER),
+                new Setting("MAIL_SENDER_NAME", "E-commerce app", SettingsCategory.MAIL_SERVER),
+                new Setting("CUSTOMER_VERIFY_SUBJECT", "email verify subject", SettingsCategory.MAIL_SERVER),
+                new Setting("CUSTOMER_VERIFY_CONTENT", "email verify content", SettingsCategory.MAIL_TEMPLATE)
+        ) ;
+        List<Setting> saveAll = settingsRepo.saveAll(settings);
+        assertThat(saveAll.size()).isEqualTo(settings.size());
+    }
+
+    @Test
     void testFindByCategory(){
-        Optional<List<Setting>> byCategoryOrderByNameAsc =
+        List<Setting> settingList =
                 settingsRepo.findByCategoryOrderByKeyAsc(SettingsCategory.GENERAL);
-        List<Setting> settingList = byCategoryOrderByNameAsc.get();
 
         settingList.forEach(System.out::println);
 
@@ -58,9 +75,8 @@ class SettingsRepoTest {
 
     @Test
     void testFindByTwoCategories(){
-        Optional<List<Setting>> byCategoryOrderByNameAsc =
+        List<Setting> settingList =
                 settingsRepo.findByTwoCategories(SettingsCategory.GENERAL, SettingsCategory.CURRENCY);
-        List<Setting> settingList = byCategoryOrderByNameAsc.get();
 
         settingList.forEach(System.out::println);
 

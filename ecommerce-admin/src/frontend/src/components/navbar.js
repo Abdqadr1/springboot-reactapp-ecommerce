@@ -28,7 +28,7 @@ const MyNavbar = () => {
         <>
             <Navbar sticky="top" bg="dark" className="navbar-dark" expand="lg">
             <Container>
-                <Navbar.Brand href="/">
+                <Navbar.Brand href="/account">
                     <img
                         src={`${logoUrl}${SITE_LOGO}`}
                         width="30"
@@ -100,14 +100,27 @@ const MyNavbar = () => {
                                                 ? <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="/account/articles">Articles</Link>
                                                 : ""
                                         }
-                                        {
-                                            (hasAnyAuthority(auth, ["Admin"]))
-                                                ? <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="/account/settings">Settings</Link>
-                                                : ""
-                                        }
                                     </NavDropdown>
                                 : ""
-                        }
+                            }
+                            {
+                                (hasAnyAuthority(auth, ["Admin"]))
+                                    ? 
+                                        <Dropdown>
+                                            <Dropdown.Toggle data-toggle="dropdown" as={Link} to="#" className="nav-link border-0" variant="dark">
+                                               Settings
+                                            </Dropdown.Toggle>
+                                            <Dropdown.Menu variant="dark">
+                                                <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="settings/general">General</Link>
+                                                <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="settings/countries">Countries</Link>
+                                                <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="settings/states">States</Link>
+                                                <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="settings/mail-server">Mail Server</Link>
+                                                <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="settings/mail-template">Mail Template</Link>
+                                                <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="settings/payment">Payment</Link>
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                    : ""
+                            }
                         <Dropdown>
                             <Dropdown.Toggle as={NavLink} className="border-0" split variant="dark" id="dropdown-split-basic">
                                 <i className="bi bi-person-fill"></i> {auth.firstName} &nbsp;

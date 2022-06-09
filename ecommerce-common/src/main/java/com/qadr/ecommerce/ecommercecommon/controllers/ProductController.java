@@ -21,10 +21,6 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping
-    String getProducts(){
-        return "Getting it";
-    }
     @GetMapping("/cat")
     public CustomProductPage getCategoryProducts(
             @RequestParam("page-number") int pageNumber,

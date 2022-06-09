@@ -1,7 +1,6 @@
 package com.qadr.ecommerce.ecommerceadmin.repo;
 
 import com.qadr.ecommerce.sharedLibrary.entities.Currency;
-import com.qadr.ecommerce.sharedLibrary.repo.CurrencyRepo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;

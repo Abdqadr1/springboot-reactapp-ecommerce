@@ -27,3 +27,7 @@
      height: 200px;
      max-height: 600px;
  }
+
+ .big-height{
+     height: 400px !important;
+ }

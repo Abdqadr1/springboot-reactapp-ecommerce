@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { listProducts, formatPrice } from "./utilities";
 import useSettings from "./use-settings";
+import Search from "./search";
 
 const ProductSearch = () => {
     const {keyword} = useParams();
@@ -47,6 +48,7 @@ const ProductSearch = () => {
 
     return ( 
         <>
+            <Search />
           {listProducts(results, keyword, "search", priceFormatter())}  
         </>
      );

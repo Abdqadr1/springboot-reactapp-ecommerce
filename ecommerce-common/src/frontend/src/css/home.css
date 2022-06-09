@@ -42,6 +42,23 @@ a:hover{
     height: 70vh;
     margin: 0 auto;
 }
-.section{
-    min-height: 80vh;
+.content{
+    min-height: calc(100vh - 100px);
+}
+.form-label{
+    width: 25%;
+    text-align: start;
+}
+.form-input {
+    width: 75%;
+}
+@media screen and (max-width : 768px) {
+    .form-label {
+        width: 100%;
+        padding-left: 0;
+    }
+
+    .form-input {
+        width: 100%;
+    }
 }

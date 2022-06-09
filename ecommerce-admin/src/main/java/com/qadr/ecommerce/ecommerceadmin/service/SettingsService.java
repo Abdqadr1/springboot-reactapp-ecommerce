@@ -1,6 +1,6 @@
 package com.qadr.ecommerce.ecommerceadmin.service;
 
-import com.qadr.ecommerce.ecommerceadmin.repo.SettingsRepo;
+import com.qadr.ecommerce.sharedLibrary.repo.SettingsRepo;
 import com.qadr.ecommerce.sharedLibrary.entities.Setting;
 import com.qadr.ecommerce.sharedLibrary.entities.SettingsCategory;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
@@ -16,18 +16,24 @@ public class SettingsService {
     private SettingsRepo settingsRepo;
 
     public List<Setting> getByCategory(SettingsCategory category){
-        return settingsRepo.findByCategoryOrderByKeyAsc(category)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "No settings found with category " + category));
+        return settingsRepo.findByCategoryOrderByKeyAsc(category);
     }
 
     public List<Setting> getGeneralSettings(){
-        return settingsRepo.findByTwoCategories(SettingsCategory.GENERAL, SettingsCategory.CURRENCY)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "No general settings found"));
+        return settingsRepo.findByTwoCategories(SettingsCategory.GENERAL, SettingsCategory.CURRENCY);
     }
 
 
     public List<Setting> getAllSettings(){
         return settingsRepo.findAll();
+    }
+
+    public List<Setting> getMailServerSettings(){
+        return settingsRepo.findByCategory(SettingsCategory.MAIL_SERVER);
+    }
+
+    public List<Setting> getMailTemplateSettings(){
+        return settingsRepo.findByCategory(SettingsCategory.MAIL_TEMPLATE);
     }
 
 

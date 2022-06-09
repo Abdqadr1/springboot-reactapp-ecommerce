@@ -19,6 +19,7 @@ const Account = () => {
                 <Route path="/brands" element={<Brands />} />
                 <Route path="/products" element={<Products />} />
                 <Route path="/settings" element={<SettingsPage />} />
+                <Route path="/settings/:which" element={<SettingsPage />} />
                 <Route path="/customers" element={<div>customers</div>} />
                 <Route path='*' element={<h2 className='text-center text-danger'>Page not found</h2>}></Route>
             </Routes>

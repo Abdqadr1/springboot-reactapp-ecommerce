@@ -18,6 +18,12 @@ public class SettingsBag {
         }
         return null;
     }
+    public String getValue(String key){
+        Setting byKey = getByKey(key);
+        if(byKey != null) return byKey.getValue();
+        return null;
+    }
+
 
     public void updateValue(String key, String value){
         Setting setting = getByKey(key);

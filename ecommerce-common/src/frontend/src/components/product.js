@@ -46,16 +46,16 @@ const Product = () => {
             return (
               <>
                 <p className="fw-bold text-success">In Stock</p>
-                <InputGroup className="mb-3 w-75 mx-auto">
+                <InputGroup className="mb-3 mx-auto" style={{"max-width": "110px"}} >
                   <InputGroup.Text>-</InputGroup.Text>
-                  <FormControl aria-label="Number" disabled defaultValue={1} className="text-center" />
+                  <FormControl aria-label="Number" disabled defaultValue={1} className="text-center"/>
                   <InputGroup.Text>+</InputGroup.Text>
                 </InputGroup>
                 <Button variant="primary">Add to Cart</Button>
               </>
             );
-        }else {
-
+        } else {
+            <p className="fw-bold text-danger">Out of stock</p>
         }
     }
 
