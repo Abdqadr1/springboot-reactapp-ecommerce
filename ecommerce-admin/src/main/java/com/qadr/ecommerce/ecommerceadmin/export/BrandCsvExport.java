@@ -12,7 +12,7 @@ import java.util.List;
 public class BrandCsvExport extends AbstractExporter {
 
     public  void export(List<Brand> brands, HttpServletResponse response) throws IOException {
-        super.setResponseHeader(response, "csv", "text/csv");
+        super.setResponseHeader(response, "csv", "text/csv", "brands");
         ICsvBeanWriter beanWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
 
         String[] CSV_HEADER = {"Brand ID", "Name", "Categories"};

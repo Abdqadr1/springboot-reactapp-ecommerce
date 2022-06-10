@@ -76,7 +76,6 @@ public class CategoryController {
     public Category editCategory(Category category,
                                 @PathVariable("id") Integer id,
                                 @RequestParam(value = "image", required = false)MultipartFile file) throws IOException {
-        System.out.println(category);
         if(Optional.ofNullable(file).isPresent()){
             String filename = StringUtils.cleanPath(file.getOriginalFilename());
             filename = filename.length() > 255 ? filename.substring(0, 254) : filename;

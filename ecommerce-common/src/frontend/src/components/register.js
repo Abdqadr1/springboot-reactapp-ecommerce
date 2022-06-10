@@ -99,35 +99,35 @@ const Register = () => {
                     <Form className="my-4" onSubmit={handleSubmit}>
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="firstName">
                             <Form.Label className="form-label">First Name:</Form.Label>
-                            <Form.Control name="firstName" className="form-input" placeholder="Enter first name" required/>
+                            <Form.Control name="firstName" className="form-input" placeholder="Enter first name" required maxLength="45"/>
                         </Form.Group>
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="lastName">
                             <Form.Label className="form-label">Last Name:</Form.Label>
-                            <Form.Control name="lastName" className="form-input" placeholder="Enter last name" required/>
+                            <Form.Control name="lastName" className="form-input" placeholder="Enter last name" required maxLength="45"/>
                         </Form.Group>
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="email">
                             <Form.Label className="form-label">Email:</Form.Label>
-                            <Form.Control name="email" type="email" className="form-input" placeholder="Enter email" required/>
+                            <Form.Control name="email" type="email" className="form-input" placeholder="Enter email" required maxLength="64"/>
                         </Form.Group>
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="password">
                             <Form.Label className="form-label">Password:</Form.Label>
-                            <Form.Control ref={passRef} name="password" type="password" className="form-input" placeholder="Enter password" required/>
+                            <Form.Control ref={passRef} name="password" type="password" className="form-input" placeholder="Enter password" minLength="8" required/>
                         </Form.Group>
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="re-password">
                             <Form.Label className="form-label">Retype Password:</Form.Label>
-                            <Form.Control ref={rePassRef} name="re-password" type="password" className="form-input" placeholder="Enter password again" required/>
+                            <Form.Control ref={rePassRef} name="re-password" type="password" className="form-input" placeholder="Enter password again" minLength="8" required/>
                         </Form.Group>
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="phoneNumber">
                             <Form.Label className="form-label">Phone Number:</Form.Label>
-                            <Form.Control name="phoneNumber" className="form-input" placeholder="Enter phone number" required/>
+                            <Form.Control name="phoneNumber" className="form-input" placeholder="Enter phone number" required maxLength="15"/>
                         </Form.Group>
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="mainAddress">
                             <Form.Label className="form-label">Address 1:</Form.Label>
-                            <Form.Control name="mainAddress" className="form-input" required/>
+                            <Form.Control name="mainAddress" className="form-input" required maxLength="64"/>
                         </Form.Group>
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="extraAddress">
                             <Form.Label className="form-label">Address 2 (Optional):</Form.Label>
-                            <Form.Control name="extraAddress" className="form-input"/>
+                            <Form.Control name="extraAddress" className="form-input"  maxLength="65"/>
                         </Form.Group>
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="country">
                             <Form.Label className="form-label">Country:</Form.Label>
@@ -138,18 +138,18 @@ const Register = () => {
                         </Form.Group>
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="state">
                             <Form.Label className="form-label">State:</Form.Label>
-                            <Form.Control value={state ?? ""} onChange={e=>handleSelect(e,"s")} list="statesList" name="state" className="form-input" placeholder="Enter state" required/>
+                            <Form.Control value={state ?? ""} onChange={e=>handleSelect(e,"s")} list="statesList" name="state" className="form-input" placeholder="Enter state" required  maxLength="45"/>
                                 <datalist id="statesList">
                                     {states.map(s => <option key={s.id} value={s.name}/>)}
                                 </datalist>
                         </Form.Group>
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="city">
                             <Form.Label className="form-label">City:</Form.Label>
-                            <Form.Control name="city" className="form-input" placeholder="Enter city" required/>
+                            <Form.Control name="city" className="form-input" placeholder="Enter city" required  maxLength="45"/>
                         </Form.Group>
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="postalCode">
                             <Form.Label className="form-label">Postal Code:</Form.Label>
-                            <Form.Control name="postalCode" className="form-input" placeholder="Enter postal code" required/>
+                            <Form.Control name="postalCode" className="form-input" placeholder="Enter postal code" required  maxLength="15"/>
                         </Form.Group>
                         <Button ref={btnRef} variant="primary" className="py-2" style={{width: "200px"}} type="submit">Submit</Button>
                     </Form>

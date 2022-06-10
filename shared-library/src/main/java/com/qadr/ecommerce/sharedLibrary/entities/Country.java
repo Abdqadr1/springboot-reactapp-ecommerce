@@ -66,9 +66,7 @@ public class Country {
 
     @Override
     public String toString() {
-        return "[ name = " + name +
-                ", code = " + code +
-                "]";
+        return name;
     }
 
     public Integer getId() {

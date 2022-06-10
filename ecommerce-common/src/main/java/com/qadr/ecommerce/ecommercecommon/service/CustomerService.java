@@ -1,6 +1,6 @@
 package com.qadr.ecommerce.ecommercecommon.service;
 
-import com.qadr.ecommerce.ecommercecommon.repo.CustomerRepo;
+import com.qadr.ecommerce.sharedLibrary.repo.CustomerRepo;
 import com.qadr.ecommerce.sharedLibrary.entities.*;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
 import com.qadr.ecommerce.sharedLibrary.repo.CountryRepo;

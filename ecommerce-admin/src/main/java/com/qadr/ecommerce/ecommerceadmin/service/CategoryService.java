@@ -43,7 +43,7 @@ public class CategoryService {
 
         categoryRepo.updateStatus(id, status);
 
-        return "Category status update";
+        return "Category status updated";
     }
 
     public List<Category> getHierarchy() {

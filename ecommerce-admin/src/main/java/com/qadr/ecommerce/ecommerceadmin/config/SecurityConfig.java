@@ -44,8 +44,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests().antMatchers(
                 "/user/export/**","/category/export/**","/brand/export/**", "/brand-photos/**",
-                "/user-photos/**","/category-photos/**", "/product-images/**", "/product/export/**",
-                "/site-logo/**", "/set/get","/countries/list").permitAll();
+                "/customer/export/**","/user-photos/**","/category-photos/**", "/product-images/**",
+                "/product/export/**","/site-logo/**", "/set/get","/countries/list").permitAll();
 
         http.authorizeRequests().antMatchers("/category/get-hierarchy/**")
                 .hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper");
@@ -64,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/category/**","/brand/**")
                 .hasAnyAuthority("Admin", "Editor");
 
-        http.authorizeRequests().antMatchers("/set/**", "/countries/**", "/states/**").hasAuthority("Admin");
+        http.authorizeRequests().antMatchers("/set/**", "/countries/**", "/states/**","/customer/**").hasAuthority("Admin");
 
         http.authorizeRequests().anyRequest().authenticated();
 

@@ -55,7 +55,7 @@ public class Customer {
 
     @Size(max = 64, message = "address line 2 is too long")
     @Column(length = 64)
-    private String extraAddress;
+    private String extraAddress = "";
 
     @NotBlank(message = "Enter your state")
     @Size(max = 45, message = "state is too long")

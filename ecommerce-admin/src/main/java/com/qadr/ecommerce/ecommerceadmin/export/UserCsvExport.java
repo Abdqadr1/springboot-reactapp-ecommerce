@@ -12,10 +12,10 @@ import java.util.List;
 
 public class UserCsvExport extends AbstractExporter {
     public  void export(List<User> users, HttpServletResponse response) throws IOException {
-        super.setResponseHeader(response, "csv", "text/csv");
+        super.setResponseHeader(response, "csv", "text/csv","users");
         ICsvBeanWriter beanWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
 
-        String[] CSV_HEADER = {"USER ID", "Email", "First Name", "Last Name", "Roles", "Enabled"};
+        String[] CSV_HEADER = {"ID", "Email", "First Name", "Last Name", "Roles", "Enabled"};
         String[] CSV_DATA_MAPPING = {"id", "email", "firstName","lastName", "roles", "enabled"};
         beanWriter.writeHeader(CSV_HEADER);
         for (User user : users){
@@ -25,10 +25,10 @@ public class UserCsvExport extends AbstractExporter {
     }
 
     public  void exportCategories(List<Category> categories, HttpServletResponse response) throws IOException {
-        super.setResponseHeader(response, "csv", "text/csv");
+        super.setResponseHeader(response, "csv", "text/csv","categories");
         ICsvBeanWriter beanWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
 
-        String[] CSV_HEADER = {"USER ID", "Name", "Alias", "Parent", "Enabled"};
+        String[] CSV_HEADER = {"ID", "Name", "Alias", "Parent", "Enabled"};
         String[] CSV_DATA_MAPPING = {"id", "name", "alias","parent", "enabled"};
         beanWriter.writeHeader(CSV_HEADER);
         for (Category category : categories){

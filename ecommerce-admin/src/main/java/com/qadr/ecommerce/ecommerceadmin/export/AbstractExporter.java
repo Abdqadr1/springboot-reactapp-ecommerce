@@ -6,10 +6,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public abstract class AbstractExporter {
-    public void setResponseHeader(HttpServletResponse response, String extension, String contentType){
+    public void setResponseHeader(HttpServletResponse response, String extension, String contentType,String which){
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
         String timeStamp = dateFormatter.format(new Date());
-        String fileName = "users_"+timeStamp+"."+extension;
+        String fileName = which+"_"+timeStamp+"."+extension;
         response.setContentType(contentType);
         response.setHeader("Content-Disposition", "attachment; filename="+fileName);
     }

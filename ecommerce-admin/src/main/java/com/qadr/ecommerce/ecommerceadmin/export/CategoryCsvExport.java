@@ -12,10 +12,10 @@ import java.util.List;
 public class CategoryCsvExport extends AbstractExporter{
 
     public  void export(List<Category> categories, HttpServletResponse response) throws IOException {
-        super.setResponseHeader(response, "csv", "text/csv");
+        super.setResponseHeader(response, "csv", "text/csv","categories");
         ICsvBeanWriter beanWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE);
 
-        String[] CSV_HEADER = {"USER ID", "Name", "Alias", "Parent", "Enabled"};
+        String[] CSV_HEADER = {"ID", "Name", "Alias", "Parent", "Enabled"};
         String[] CSV_DATA_MAPPING = {"id", "name", "alias","parent", "enabled"};
         beanWriter.writeHeader(CSV_HEADER);
         for (Category category : categories){

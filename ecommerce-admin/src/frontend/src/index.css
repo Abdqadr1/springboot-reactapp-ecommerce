@@ -112,13 +112,15 @@ i.edit:hover {
 }
 
 .form-label {
-width: 25% !important;
+  width: 25% !important;
   align-self: center;
   margin-bottom: 0 !important;
+  color: #495057;
 }
 
 .form-input {
-width: 70% !important;
+  width: 70% !important;
+  color: #495057;
 }
 
 .form-btn-parent {
