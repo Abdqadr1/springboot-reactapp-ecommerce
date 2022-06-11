@@ -214,7 +214,7 @@ const UpdateProduct = ({ updateProduct, setUpdateProduct, updatingProduct, brand
                         <span>{`Extra image #${i+1}`}</span>
                         <i title={`Remove image`} className="bi bi-x-circle-fill text-danger" onClick={()=>handleClearImage("s",i)}></i>
                     </h5>
-                    <img src={`${fileURL}extra-images/${img.path}`}  alt="product" className="product-image" />
+                    <img src={`${fileURL}extras/${img.path}`}  alt="product" className="product-image" />
                 </Col>
             ))
         }
@@ -245,7 +245,7 @@ const UpdateProduct = ({ updateProduct, setUpdateProduct, updatingProduct, brand
             return (
                 <Col md={4} className="border py-2">
                     <h5 className="px-1 text-center">Main image</h5>
-                    <img src={`${fileURL}main-image/${product?.mainImage}`}  alt="product" className="product-image" />
+                    <img src={`${fileURL}${product?.mainImage}`}  alt="product" className="product-image" />
                 </Col>)
         }
     }

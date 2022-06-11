@@ -3,10 +3,8 @@ package com.qadr.ecommerce.ecommerceadmin.service;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
 import com.qadr.ecommerce.ecommerceadmin.repo.CategoryRepo;
 import com.qadr.ecommerce.sharedLibrary.entities.Category;
+import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,16 +23,8 @@ public class CategoryService {
         return categoryRepo.findAll(Sort.by("name").ascending());
     }
 
-    public Page<Category> getPage(int pageNumber, String field, String dir, String keyword){
-        Sort sort = Sort.by(field);
-        sort = (dir.equals("asc")) ? sort.ascending() : sort.descending();
-        Pageable pageable = PageRequest.of(pageNumber - 1, CATEGORY_PER_PAGE, sort);
-
-        if(keyword != null && !keyword.isBlank()){
-            return categoryRepo.searchKeyword(keyword, pageable);
-        }
-
-        return categoryRepo.findAll(pageable);
+    public Map<String, Object> getPage(int pageNumber, PagingAndSortingHelper helper){
+        return helper.getPageInfo(pageNumber, CATEGORY_PER_PAGE, categoryRepo);
     }
 
     public String updateStatus(Integer id, boolean status) {
@@ -111,7 +101,7 @@ public class CategoryService {
         Optional<Category> byAlias = categoryRepo.findByAlias(category.getAlias());
         if(byAlias.isPresent() && !Objects.equals(byAlias.get().getId(), id))
             throw new CustomException(HttpStatus.BAD_REQUEST, "Alias already exists");
-
+        if(category.getPhoto() == null) category.setPhoto(byId.getPhoto());
         getAllParentIds(category);
 
         return categoryRepo.save(category);

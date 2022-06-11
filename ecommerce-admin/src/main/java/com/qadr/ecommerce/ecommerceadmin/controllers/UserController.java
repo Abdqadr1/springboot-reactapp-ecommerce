@@ -7,6 +7,8 @@ import com.qadr.ecommerce.ecommerceadmin.export.UserPdfExport;
 import com.qadr.ecommerce.ecommerceadmin.model.AdminUserDetails;
 import com.qadr.ecommerce.ecommerceadmin.model.User;
 import com.qadr.ecommerce.ecommerceadmin.service.UserService;
+import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
+import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingParam;
 import com.qadr.ecommerce.sharedLibrary.util.FileUploadUtil;
 import com.qadr.sharedLibrary.util.JWTUtil;
 import lombok.AllArgsConstructor;
@@ -36,11 +38,6 @@ public class UserController {
     private UserService userService;
     @Autowired
     private AuthenticationManager authenticationManager;
-
-    @GetMapping("/user")
-    public CustomUserPage listFirstPage() throws IOException {
-        return listUserByPage(1, "firstName", "asc", null);
-    }
 
     @PostMapping(value = "/user/add")
     public User addNewUser (User user, @RequestParam(value = "image", required = false) MultipartFile file) throws IOException {
@@ -84,19 +81,9 @@ public class UserController {
     }
 
     @GetMapping("/user/page/{number}")
-    public CustomUserPage listUserByPage(@PathVariable("number") Integer number,
-                                         @RequestParam("sortField") String sortField,
-                                         @RequestParam("dir") String dir,
-                                         @RequestParam(value = "keyword", required = false) String keyword){
-        Page<User> page = userService.getPage(number, sortField, dir, keyword);
-        int startCount = (number-1) * UserService.USERS_PER_PAGE + 1;
-        int endCount = UserService.USERS_PER_PAGE * number;
-        endCount = (endCount > page.getTotalElements()) ? (int) page.getTotalElements() : endCount;
-
-        return new CustomUserPage(
-                number, startCount, endCount, page.getTotalPages(),
-                page.getTotalElements(), page.getContent(), UserService.USERS_PER_PAGE
-        );
+    public Map<String, Object> listUserByPage(@PathVariable("number") Integer number,
+                                              @PagingAndSortingParam("users")PagingAndSortingHelper helper){
+        return userService.getPage(number, helper);
     }
 
     @GetMapping("/user/export/csv")
@@ -141,16 +128,4 @@ public class UserController {
         }
     }
 
-}
-
-@AllArgsConstructor
-@Data
-class CustomUserPage {
-    Integer currentPage;
-    Integer startCount;
-    Integer endCount;
-    Integer totalPages;
-    Long totalElements;
-    List<User> users;
-    Integer numberPerPage;
 }

@@ -14,10 +14,10 @@ const MyCarousel = ({showCarousel: show, setShowCarousel: setShow, items, id, im
     },[imageIndex])
 
     const items_array = items.map((item, i) => {
-        const url = (i===0) ? `${fileUrl}main-image` : `${fileUrl}extra-images`;
+        const url = (i===0) ? `${fileUrl}` : `${fileUrl}extras/`;
         return (
           <Carousel.Item key={i}>
-            <img className="carousel-img" src={`${url}/${item}`} alt={item} />
+            <img className="carousel-img" src={`${url}${item}`} alt={item} />
           </Carousel.Item>
         );
     })

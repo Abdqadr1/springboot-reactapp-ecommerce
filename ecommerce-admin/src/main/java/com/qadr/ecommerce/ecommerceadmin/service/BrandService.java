@@ -5,22 +5,20 @@ import com.qadr.ecommerce.sharedLibrary.entities.Brand;
 import com.qadr.ecommerce.ecommerceadmin.model.CategoryDTO;
 import com.qadr.ecommerce.ecommerceadmin.repo.BrandRepo;
 import com.qadr.ecommerce.ecommerceadmin.repo.CategoryRepo;
+import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class BrandService {
 
-    public static final int CATEGORY_PER_PAGE = 5;
+    public static final int BRANDS_PER_PAGE = 5;
 
     @Autowired
     private BrandRepo brandRepo;
@@ -39,16 +37,8 @@ public class BrandService {
 
     public List<Brand> getAll(){ return brandRepo.findAll(); }
 
-    public Page<Brand> getPage(int pageNumber, String field, String dir, String keyword){
-        Sort sort = Sort.by(field);
-        sort = (dir.equals("asc")) ? sort.ascending() : sort.descending();
-        Pageable pageable = PageRequest.of(pageNumber - 1, CATEGORY_PER_PAGE, sort);
-
-        if(keyword != null && !keyword.isBlank()){
-            return brandRepo.searchKeyword(keyword, pageable);
-        }
-
-        return brandRepo.findAll(pageable);
+    public Map<String, Object> getPage(int number, PagingAndSortingHelper helper){
+        return helper.getPageInfo(number, BRANDS_PER_PAGE, brandRepo);
     }
 
     public Brand addBrand(Brand brand){

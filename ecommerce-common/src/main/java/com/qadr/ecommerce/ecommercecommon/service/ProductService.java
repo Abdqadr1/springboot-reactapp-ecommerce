@@ -1,8 +1,8 @@
 package com.qadr.ecommerce.ecommercecommon.service;
 
-import com.qadr.ecommerce.ecommercecommon.repo.ProductRepository;
 import com.qadr.ecommerce.sharedLibrary.entities.Product;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
+import com.qadr.ecommerce.sharedLibrary.repo.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductService {
     @Autowired
-    private ProductRepository productRepository;
+    private ProductRepo productRepository;
 
     public static final int PRODUCTS_PER_PAGE = 10;
     public static final int SEARCH_PRODUCTS_PER_PAGE = 10;

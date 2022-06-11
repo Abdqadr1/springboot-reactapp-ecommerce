@@ -38,7 +38,7 @@ const Brand = ({ brand, showUpdate, setDeleted, type }) => {
             <Col xs="5">{photo}</Col>
             <Col xs="7">
               <span className="d-block mb-3">{brand.name}</span>
-              <span className="d-block mb-3">{brand.categories.toString()}</span>
+              <span className="d-block mb-3">{brandCategories}</span>
               <Row className="justify-content-start align-item-center">
                 <Col xs="4">
                   <i

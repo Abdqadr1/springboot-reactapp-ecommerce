@@ -19,11 +19,11 @@ public class Category {
     private Integer id;
 
     @NotBlank
-    @Column(nullable = false, length = 128, unique = true)
+    @Column(nullable = false, length = 128, unique = true, name = "name")
     private String name;
 
     @NotBlank
-    @Column(length = 64, unique = true, nullable = false)
+    @Column(length = 64, unique = true, nullable = false, name = "alias")
     private String alias;
 
     private boolean enabled;

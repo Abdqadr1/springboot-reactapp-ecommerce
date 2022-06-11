@@ -3,7 +3,8 @@ package com.qadr.ecommerce.ecommerceadmin.controllers;
 import com.qadr.ecommerce.ecommerceadmin.export.BrandCsvExport;
 import com.qadr.ecommerce.sharedLibrary.entities.Brand;
 import com.qadr.ecommerce.ecommerceadmin.service.BrandService;
-import com.qadr.ecommerce.ecommerceadmin.service.CategoryService;
+import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
+import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingParam;
 import com.qadr.ecommerce.sharedLibrary.util.FileUploadUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,9 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
-import static com.qadr.ecommerce.ecommerceadmin.service.BrandService.CATEGORY_PER_PAGE;
+import static com.qadr.ecommerce.ecommerceadmin.service.BrandService.BRANDS_PER_PAGE;
 
 @RestController
 @RequestMapping("/brand")
@@ -26,27 +28,12 @@ public class BrandController {
     @Autowired
     private BrandService brandService;
 
-    @GetMapping
-    public CustomBrandPage listFirstPage(){
-        return listByPage(1, "name", "asc", null);
-    }
 
     @GetMapping("/page/{number}")
-    public CustomBrandPage listByPage(@PathVariable("number") Integer number,
-                                         @RequestParam("sortField") String sortField,
-                                         @RequestParam("dir") String dir,
-                                         @RequestParam(value = "keyword", required = false) String keyword){
+    public Map<String, Object> listByPage(@PathVariable("number") Integer number,
+                                          @PagingAndSortingParam("brands")PagingAndSortingHelper helper){
 
-        Page<Brand> page = brandService.getPage(number, sortField, dir, keyword);
-        int startCount = (number-1) * CATEGORY_PER_PAGE + 1;
-        int endCount = CATEGORY_PER_PAGE * number;
-        endCount = (endCount > page.getTotalElements()) ? (int) page.getTotalElements() : endCount;
-
-
-        return new CustomBrandPage(
-                number, startCount, endCount, page.getTotalPages(),
-                page.getTotalElements(), page.getContent(), CategoryService.CATEGORY_PER_PAGE
-        );
+        return brandService.getPage(number, helper);
     }
 //
 //    @GetMapping("/get-hierarchy")
@@ -96,16 +83,4 @@ public class BrandController {
         BrandCsvExport brandCsvExport = new BrandCsvExport();
         brandCsvExport.export(brands, response);
     }
-}
-
-@AllArgsConstructor
-@Data
-class CustomBrandPage {
-    Integer currentPage;
-    Integer startCount;
-    Integer endCount;
-    Integer totalPages;
-    Long totalElements;
-    List<Brand> brands;
-    Integer numberPerPage;
 }

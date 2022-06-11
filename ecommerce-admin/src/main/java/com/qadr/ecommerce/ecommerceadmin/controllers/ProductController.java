@@ -5,8 +5,9 @@ import com.qadr.ecommerce.ecommerceadmin.model.CategoryDTO;
 import com.qadr.ecommerce.sharedLibrary.entities.Product;
 import com.qadr.ecommerce.sharedLibrary.entities.ProductImage;
 import com.qadr.ecommerce.ecommerceadmin.service.BrandService;
-import com.qadr.ecommerce.ecommerceadmin.service.CategoryService;
 import com.qadr.ecommerce.ecommerceadmin.service.ProductService;
+import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
+import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingParam;
 import com.qadr.ecommerce.sharedLibrary.util.FileUploadUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,10 +23,11 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.qadr.ecommerce.ecommerceadmin.service.ProductService.CATEGORY_PER_PAGE;
+import static com.qadr.ecommerce.ecommerceadmin.service.ProductService.PRODUCTS_PER_PAGE;
 
 
 @RestController
@@ -41,30 +43,13 @@ public class ProductController {
     private BrandService brandService;
 
 
-    @GetMapping
-    public CustomProductPage listFirstPage(){
-        return listByPage(1, "name", "asc", null, null);
-    }
-
-
     @GetMapping("/page/{number}")
-    public CustomProductPage listByPage(@PathVariable("number") Integer number,
-                                      @RequestParam("sortField") String sortField,
-                                      @RequestParam("dir") String dir,
-                                      @RequestParam("category") Integer catId,
-                                      @RequestParam(value = "keyword", required = false) String keyword){
+    public Map<String, Object> listByPage(@PathVariable("number") Integer number,
+                                          @PagingAndSortingParam("products")PagingAndSortingHelper helper){
 
-        Page<Product> page = productService.getPage(number, sortField, dir, keyword, catId);
-        int startCount = (number-1) * CATEGORY_PER_PAGE + 1;
-        int endCount = CATEGORY_PER_PAGE * number;
-        endCount = (endCount > page.getTotalElements()) ? (int) page.getTotalElements() : endCount;
-
-
-        return new CustomProductPage(
-                number, startCount, endCount, page.getTotalPages(),
-                page.getTotalElements(), page.getContent(),
-                CategoryService.CATEGORY_PER_PAGE, brandService.getAll()
-        );
+        Map<String, Object> pageInfo= productService.getPage(number, helper);
+        pageInfo.put("brands", brandService.getAll());
+        return pageInfo;
     }
 
     @PostMapping(value = "/add")
@@ -154,7 +139,7 @@ public class ProductController {
                         product.getExtraImages().add(new ProductImage(i, path, product));
                         return path;
                     }).collect(Collectors.toList());
-            FileUploadUtil.removeFiles(paths, "product-images/"+id+"/extra-images");
+            FileUploadUtil.removeFiles(paths, "product-images/"+id+"/extras");
         }
     }
     void saveImageFiles(@Nullable MultipartFile mainImage, @Nullable MultipartFile[] files, Product product) throws IOException {
@@ -169,7 +154,7 @@ public class ProductController {
 
         if(files != null){
             // clean extra images directory
-            String folder = "product-images/"+product.getId()+"/extra-images";
+            String folder = "product-images/"+product.getId()+"/extras";
             Arrays.stream(files)
                 .forEach(file -> {
                     if(file != null){
@@ -186,16 +171,4 @@ public class ProductController {
 
     }
 
-}
-@AllArgsConstructor
-@Data
-class CustomProductPage {
-    Integer currentPage;
-    Integer startCount;
-    Integer endCount;
-    Integer totalPages;
-    Long totalElements;
-    List<Product> products;
-    Integer numberPerPage;
-    List<Brand> brands;
 }

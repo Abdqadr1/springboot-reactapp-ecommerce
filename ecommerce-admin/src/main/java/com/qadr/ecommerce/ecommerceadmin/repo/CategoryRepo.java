@@ -1,6 +1,8 @@
 package com.qadr.ecommerce.ecommerceadmin.repo;
 
+import com.qadr.ecommerce.ecommerceadmin.model.User;
 import com.qadr.ecommerce.sharedLibrary.entities.Category;
+import com.qadr.ecommerce.sharedLibrary.repo.SearchRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Repository
-public interface CategoryRepo extends JpaRepository<Category, Integer> {
+public interface CategoryRepo extends SearchRepository<Category, Integer> {
 
 
     Optional<Category> findByName(String name);
@@ -26,4 +28,7 @@ public interface CategoryRepo extends JpaRepository<Category, Integer> {
     @Modifying
     @Query("UPDATE Category c SET c.enabled=?2 WHERE c.id=?1")
     void updateStatus(Integer id, boolean status);
+
+    @Query("SELECT u FROM User u")
+    Page<Category> find(String keyword, Integer id, String catId, Pageable pageable);
 }

@@ -4,10 +4,8 @@ import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
 import com.qadr.ecommerce.ecommerceadmin.model.AdminUserDetails;
 import com.qadr.ecommerce.ecommerceadmin.model.User;
 import com.qadr.ecommerce.ecommerceadmin.repo.UserRepo;
+import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,13 +15,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
 
-    public static final int USERS_PER_PAGE = 4;
+    public static final int USERS_PER_PAGE = 5;
 
     @Autowired
     private UserRepo userRepo;
@@ -76,16 +75,8 @@ public class UserService implements UserDetailsService {
         return "User status changed";
     }
 
-    public Page<User> getPage(int pageNumber, String field, String dir, String keyword){
-        Sort sort = Sort.by(field);
-        sort = (dir.equals("asc")) ? sort.ascending() : sort.descending();
-        Pageable pageable = PageRequest.of(pageNumber - 1, USERS_PER_PAGE, sort);
-
-        if(keyword != null && !keyword.isBlank()){
-            return userRepo.searchKeyword(keyword, pageable);
-        }
-
-        return userRepo.findAll(pageable);
+    public Map<String, Object> getPage(int pageNumber, PagingAndSortingHelper helper){
+        return helper.getPageInfo(pageNumber, USERS_PER_PAGE, userRepo);
     }
 
     @Override

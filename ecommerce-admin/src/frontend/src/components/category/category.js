@@ -41,12 +41,12 @@ const Category = ({ category, showUpdate, setDeleted, toggleEnable, type }) => {
 
     function rowItem() {
         return (
-          <Row className="mt-2 justify-content-between">
+          <Row className="mt-2 justify-content-between mx-0">
             <Col xs="5">{photo}</Col>
             <Col xs="7">
               <span className="d-block mb-3">{category.name}</span>
               <span className="d-block mb-3">{category.alias}</span>
-              <Row className="justify-content-start align-item-center">
+              <Row className="justify-content-start align-item-center mx-0">
                 <Col xs="3">{enabled}</Col>
                 <Col xs="4">
                   <i

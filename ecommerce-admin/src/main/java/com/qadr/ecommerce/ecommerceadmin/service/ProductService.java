@@ -4,24 +4,19 @@ import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
 import com.qadr.ecommerce.sharedLibrary.entities.Product;
 import com.qadr.ecommerce.ecommerceadmin.repo.BrandRepo;
 import com.qadr.ecommerce.ecommerceadmin.repo.CategoryRepo;
-import com.qadr.ecommerce.ecommerceadmin.repo.ProductRepo;
+import com.qadr.ecommerce.sharedLibrary.repo.ProductRepo;
+import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ProductService {
 
-    public static final int CATEGORY_PER_PAGE = 10;
+    public static final int PRODUCTS_PER_PAGE = 10;
     @Autowired
     private ProductRepo productRepo;
     @Autowired
@@ -33,20 +28,8 @@ public class ProductService {
         return productRepo.findAll(Sort.by("name").ascending());
     }
 
-    public Page<Product> getPage(int pageNumber, String field, String dir, String keyword, Integer catId){
-        Sort sort = Sort.by(field);
-        sort = (dir.equals("asc")) ? sort.ascending() : sort.descending();
-        Pageable pageable = PageRequest.of(pageNumber - 1, CATEGORY_PER_PAGE, sort);
-
-        if(catId != null && catId > 0){
-            return productRepo.findProduct(keyword, catId, "-"+catId+"-", pageable);
-        }
-
-        if(keyword != null && !keyword.isBlank()){
-            return productRepo.searchKeyword(keyword, pageable);
-        }
-
-        return productRepo.findAll(pageable);
+    public Map<String, Object> getPage(int pageNumber, PagingAndSortingHelper helper){
+        return helper.getPageInfo(pageNumber, PRODUCTS_PER_PAGE, productRepo);
     }
     
     public Product addProduct(Product product){

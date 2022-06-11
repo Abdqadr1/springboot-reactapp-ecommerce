@@ -2,7 +2,7 @@ import axios from "axios";
 import {useEffect, useRef, useState } from "react";
 import { Alert, Button, Form, Modal, Row } from "react-bootstrap";
 import { Navigate, useNavigate } from "react-router-dom";
-import { isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "../utilities";
+import { isFileValid, isTokenExpired, listFormData, showThumbnail, SPINNERS_BORDER_HTML } from "../utilities";
 import useAuth from "../custom_hooks/use-auth";
 
 const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, hierarchies }) => {
@@ -46,16 +46,8 @@ const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, h
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        const data = new FormData(event.target);
         if(form.parent?.id) form.parent = form.parent.id
-
-        const data = new FormData(formRef.current);
-        data.set("parent", form.parent.id ?? "");
-        data.set("image", form.image);
-
-        if(form.children.length > 0){
-            const children = form.children.map(ch => ch.id);
-            data.set("children", children)
-        }
 
         setAlert((state) => ({ ...state, show: false }));
         
@@ -141,8 +133,8 @@ const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, h
                     </Form.Group>
                     <Form.Group className="mb-3 row justify-content-center" controlId="parent">
                         <Form.Label className="form-label">Parent Category:</Form.Label>
-                        <Form.Select name="parent" value={form.parent?.id} onInput={handleInput} required className="form-input">
-                            <option value={form.parent?.id} hidden>{form.parent?.name ?? "No parent"}</option>
+                        <Form.Select name="parent" value={form?.parent ?? ""} onInput={handleInput} className="form-input">
+                            <option value={form.parent?.id ?? ""} hidden>{form.parent?.name ?? "No parent"}</option>
                             {hierarchies.map(cat => <option key={cat.name} value={cat.id}>{cat.name}</option>)}
                         </Form.Select>
                     </Form.Group>
@@ -154,7 +146,7 @@ const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, h
                     <Form.Group className="mb-3 row justify-content-center" controlId="photo">
                         <Form.Label className="form-label"  style={{alignSelf: "start"}}>Photo:</Form.Label>
                         <div className="form-input row">
-                            <Form.Control onChange={handleSelectImage} className="col-10" type="file" accept="image/jpg, image/png, image/jpeg" />
+                            <Form.Control name="image" onChange={handleSelectImage} className="col-10" type="file" accept="image/jpg, image/png, image/jpeg" />
                             {image}
                         </div>
                     </Form.Group>

@@ -1,23 +1,21 @@
 package com.qadr.ecommerce.ecommerceadmin.service;
 
-import antlr.BaseAST;
-import com.qadr.ecommerce.sharedLibrary.entities.Category;
 import com.qadr.ecommerce.sharedLibrary.entities.Country;
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
 import com.qadr.ecommerce.sharedLibrary.entities.State;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
+import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import com.qadr.ecommerce.sharedLibrary.repo.CountryRepo;
 import com.qadr.ecommerce.sharedLibrary.repo.CustomerRepo;
 import com.qadr.ecommerce.sharedLibrary.repo.StateRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -39,15 +37,8 @@ public class CustomerService {
         return "Customer status updated";
     }
 
-    public Page<Customer> getPage(int pageNumber,String field,  String dir, String keyword){
-        Sort sort = Sort.by(field);
-        sort = (dir.equals("asc")) ? sort.ascending() : sort.descending();
-        PageRequest pageable = PageRequest.of(pageNumber - 1, CUSTOMERS_PER_PAGE, sort);
-        if(keyword != null && !keyword.isBlank()){
-            return repo.searchKeyword(keyword, pageable);
-        }
-
-        return repo.findAll(pageable);
+    public Map<String, Object> getPage(int pageNumber, PagingAndSortingHelper helper){
+        return helper.getPageInfo(pageNumber, CUSTOMERS_PER_PAGE, repo);
     }
 
     public List<Customer> getAll() {

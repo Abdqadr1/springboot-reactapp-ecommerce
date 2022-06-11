@@ -5,6 +5,8 @@ import com.qadr.ecommerce.ecommerceadmin.service.CustomerService;
 import com.qadr.ecommerce.sharedLibrary.entities.Country;
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
 import com.qadr.ecommerce.sharedLibrary.entities.State;
+import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
+import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingParam;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.slf4j.Logger;
@@ -17,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/customer")
@@ -36,27 +39,11 @@ public class CustomerController {
     }
 
 
-    @GetMapping
-    public CustomCustomerPage listFirstPage(){
-        return listByPage(1, "firstName", "asc", null);
-    }
-
     @GetMapping("/page/{number}")
-    public CustomCustomerPage listByPage(@PathVariable("number") Integer number,
-                                         @RequestParam("sortField") String sortField,
-                                         @RequestParam("dir") String dir,
-                                         @RequestParam(value = "keyword", required = false) String keyword){
+    public Map<String, Object> listByPage(@PathVariable("number") Integer number,
+                                          @PagingAndSortingParam("customers")PagingAndSortingHelper helper){
 
-        Page<Customer> page = customerService.getPage(number, sortField, dir, keyword);
-        int startCount = (number-1) * CustomerService.CUSTOMERS_PER_PAGE + 1;
-        int endCount = CustomerService.CUSTOMERS_PER_PAGE * number;
-        endCount = (endCount > page.getTotalElements()) ? (int) page.getTotalElements() : endCount;
-
-
-        return new CustomCustomerPage(
-                number, startCount, endCount, page.getTotalPages(),
-                page.getTotalElements(), page.getContent(), CustomerService.CUSTOMERS_PER_PAGE
-        );
+        return customerService.getPage(number, helper);
     }
 
     @GetMapping("/{id}/enable/{status}")
@@ -82,15 +69,4 @@ public class CustomerController {
         customerCsvExporter.export(customers, response);
     }
 
-}
-@AllArgsConstructor
-@Data
-class CustomCustomerPage {
-    Integer currentPage;
-    Integer startCount;
-    Integer endCount;
-    Integer totalPages;
-    Long totalElements;
-    List<Customer> customers;
-    Integer numberPerPage;
 }

@@ -127,7 +127,8 @@ const Products = () => {
 
     function handleSelectCategory(event){
         const category = Number(event.target.value)
-        setSort(state => ({...state, category}))
+        setSort(state => ({ ...state, category }))
+        setPageInfo(s=>({...s, number:1}))
     }
 
     function handleFilter(event) {

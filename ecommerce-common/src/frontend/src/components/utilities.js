@@ -53,7 +53,7 @@ export function listProducts(results, keyword, type="category", formatPrice){
                         {
                             results.map((p) => (
                                 <Col key={p.name} xs={6} sm={4} md={3} lg={2} xlg={2} className="product-in-listing" as={Link} to={"/p/"+p.alias}>
-                                    <img loading="lazy" src={`${fileURI}${p.id}/main-image/${p.mainImage}`} alt={getShortName(p.name, 10)} className="cat-dp" />
+                                    <img loading="lazy" src={`${fileURI}${p.id}/${p.mainImage}`} alt={getShortName(p.name, 10)} className="cat-dp" />
                                     <h5 className="my-2 text-primary text-start">{getShortName(p.name)}</h5>
                                     {getPrices(p.discountPrice, p.price, formatPrice)}
                                 </Col>

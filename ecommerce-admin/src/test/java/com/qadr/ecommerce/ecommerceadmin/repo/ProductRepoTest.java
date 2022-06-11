@@ -3,6 +3,7 @@ package com.qadr.ecommerce.ecommerceadmin.repo;
 import com.qadr.ecommerce.sharedLibrary.entities.Brand;
 import com.qadr.ecommerce.sharedLibrary.entities.Product;
 import com.qadr.ecommerce.sharedLibrary.entities.Category;
+import com.qadr.ecommerce.sharedLibrary.repo.ProductRepo;
 import com.qadr.ecommerce.sharedLibrary.util.FileUploadUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

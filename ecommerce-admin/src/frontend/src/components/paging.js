@@ -2,7 +2,7 @@ import { Pagination } from "react-bootstrap";
 
 const MyPagination = ({ pageInfo, setPageInfo }) => {
     let currentPage = pageInfo.number;
-    const maxPageShown = pageInfo.totalPages > 5 ? 5 : pageInfo.totalPages;
+    const maxPageShown = pageInfo.totalPages > 15 ? 15 : pageInfo.totalPages;
     const isPrev = currentPage <= 1
     const isNext = currentPage >= pageInfo.totalPages;
 
@@ -22,7 +22,7 @@ const MyPagination = ({ pageInfo, setPageInfo }) => {
         )
     }
     return ( 
-        <Pagination className="justify-content-center">    
+        <Pagination className="justify-content-center mx-0">    
             {/* <Pagination.First /> */}
             <Pagination.Prev onClick={() => handleClick(currentPage - 1)} disabled={isPrev} />
             {items}
