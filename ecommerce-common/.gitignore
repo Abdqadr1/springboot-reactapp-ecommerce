@@ -19,6 +19,14 @@ target/
 *.iml
 *.ipr
 
+## google oauth credentials ##
+*oauth2.json
+
+## application properties ##
+*.properties
+*.yaml
+*.yml
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

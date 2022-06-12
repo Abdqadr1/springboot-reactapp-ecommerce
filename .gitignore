@@ -14,12 +14,12 @@ target/
 .sts4-cache
 
 ## google oauth credentials ##
-google_oauth2.json
+*oauth2.json
 
 ## application properties ##
-application.properties
-application.yaml
-application.yml
+*.properties
+*.yaml
+*.yml
 
 ### IntelliJ IDEA ###
 .idea
