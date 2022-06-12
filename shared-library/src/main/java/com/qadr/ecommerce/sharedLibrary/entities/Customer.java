@@ -43,7 +43,7 @@ public class Customer {
 
 
     @NotBlank(message = "Enter your phone number")
-    @Size(max = 45, message = "Enter a valid phone number")
+    @Size(max = 15, message = "Enter a valid phone number")
     @Column(nullable = false, length = 15)
     private String phoneNumber;
 
@@ -82,6 +82,10 @@ public class Customer {
     @ManyToOne
     @JoinColumn(name = "country_id")
     private Country country;
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 10, name = "authentication_type")
+    private AuthType authenticationType;
 
     @Override
     public String toString() {

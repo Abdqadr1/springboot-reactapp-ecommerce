@@ -1,10 +1,12 @@
 import {Navbar, Nav, Container, NavLink} from 'react-bootstrap';
 import useSettings from './use-settings';
+import useAuth from "./custom_hooks/use-auth";
 
 const NavBar = () => {
   const logoUrl = `${process.env.REACT_APP_SERVER_URL}site-logo/`;
   const { SITE_LOGO } = useSettings();
 
+    const [{ firstName }] = useAuth();
 
     return (
       <>
@@ -34,12 +36,18 @@ const NavBar = () => {
                 <NavLink className="nav-link" href="/contact">
                   Contact
                 </NavLink>
-                <NavLink className="nav-link" href="/register">
-                  Register
-                </NavLink>
-                <NavLink className="nav-link" href="/login">
-                  Login
-                </NavLink>
+                {
+                  (firstName === undefined || firstName === null)
+                  ? <>
+                    <NavLink className="nav-link" href="/register">
+                      Register
+                    </NavLink>
+                    <NavLink className="nav-link" href="/login">
+                      Login
+                    </NavLink>
+                  </> : ""
+                }
+                
               </Nav>
             </Navbar.Collapse>
           </Container>

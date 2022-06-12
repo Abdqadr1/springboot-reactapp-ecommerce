@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 const useSettings = () => {
     const url = process.env.REACT_APP_SERVER_URL + "set/get";
     const [settings, setSettings] = useState({});
+    const [refresh, setRefresh] = useState(false);
 
 
      useEffect(() => {
@@ -15,6 +16,12 @@ const useSettings = () => {
          }
          
      }, [])
+
+    useEffect(() => {
+        if (refresh) {
+            fetchSettings();
+         }
+     }, [refresh])
 
     function getFromStorage() {
         return JSON.parse(localStorage.getItem("settings"));

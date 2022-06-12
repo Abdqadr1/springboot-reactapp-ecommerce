@@ -1,5 +1,6 @@
 package com.qadr.ecommerce.sharedLibrary.repo;
 
+import com.qadr.ecommerce.sharedLibrary.entities.AuthType;
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,4 +35,10 @@ public interface CustomerRepo extends SearchRepository<Customer, Integer> {
 
     @Query("SELECT c FROM Customer c")
     Page<Customer> find(String keyword, Integer id, String catId, Pageable pageable);
+
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE Customer c SET c.authenticationType=?2 WHERE c.id=?1")
+    void changeAuthType(Integer id, AuthType type);
 }

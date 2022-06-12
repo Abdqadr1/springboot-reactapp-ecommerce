@@ -1,5 +1,6 @@
 package com.qadr.ecommerce.ecommercecommon.repo;
 
+import com.qadr.ecommerce.sharedLibrary.entities.AuthType;
 import com.qadr.ecommerce.sharedLibrary.entities.Country;
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
 import com.qadr.ecommerce.sharedLibrary.repo.CustomerRepo;
@@ -70,5 +71,15 @@ class CustomerRepoTest {
         Optional<Customer> byId = customerRepo.findById(id);
         assertThat(byId).isNotPresent();
     }
+
+    @Test
+    void testChangeAuthType(){
+        customerRepo
+                .findAll()
+                .forEach(customer -> {
+                    customerRepo.changeAuthType(customer.getId(), AuthType.DATABASE);
+                });
+    }
+
 
 }

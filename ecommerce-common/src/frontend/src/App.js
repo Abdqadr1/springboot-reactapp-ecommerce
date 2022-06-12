@@ -11,6 +11,8 @@ import Product from "./components/product";
 import ProductSearch from "./components/product-search";
 import RegisterSuccess from "./components/register-success";
 import "./css/home.css";
+import Logout from "./components/logout";
+import OAuth2Redirect from "./components/oauth_redirect";
 
 function App() {
 
@@ -24,6 +26,7 @@ function App() {
           <Routes>
               <Route path="/" element={<ListCategories />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/logout" element={<Logout />} />
               <Route path="/register" element={<Register />} />
               <Route path="/register-success" element={<RegisterSuccess />} />
               <Route path="/c" element={<ListCategories />} />
@@ -31,6 +34,7 @@ function App() {
               <Route path="/p" element={<Category />} />
               <Route path="/p/:alias" element={<Product />} />
               <Route path="/p/search/:keyword" element={<ProductSearch />} />
+              <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
               <Route path="*" element={<div className="my-4">Not found</div>} />
           </Routes>
         </BrowserRouter>
