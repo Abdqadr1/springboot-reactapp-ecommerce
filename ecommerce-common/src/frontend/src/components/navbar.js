@@ -153,7 +153,7 @@ const NavBar = () => {
                 width="30"
                 height="30"
                 className="d-inline-block align-top"
-                alt="Shopping app logo"
+                alt="QShop"
               />
             </Navbar.Brand>
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -189,11 +189,11 @@ const NavBar = () => {
                               {customer?.lastName ?? auth?.lastName}
                               &nbsp;
                             </Dropdown.Toggle>
-                            <Dropdown.Menu variant="dark" className="text-center">
-                                <NavLink className="dropdown-item" data-rr-ui-dropdown-item="" href="#" onClick={()=>setShowModal(true)}>Account Info</NavLink>
-                                <NavLink className="dropdown-item" data-rr-ui-dropdown-item="" href="/orders">Orders</NavLink>
-                                <NavLink className="dropdown-item" data-rr-ui-dropdown-item="" href="/questions">Questions</NavLink>
-                                <NavLink className="dropdown-item text-danger" href="/logout">Logout</NavLink>
+                            <Dropdown.Menu variant="dark">
+                                <NavLink className="dropdown-item ps-4" data-rr-ui-dropdown-item="" href="#" onClick={()=>setShowModal(true)}>Account Info</NavLink>
+                                <NavLink className="dropdown-item ps-4" data-rr-ui-dropdown-item="" href="/orders">Orders</NavLink>
+                                <NavLink className="dropdown-item ps-4" data-rr-ui-dropdown-item="" href="/questions">Questions</NavLink>
+                                <NavLink className="dropdown-item ps-4 text-danger" href="/logout">Logout</NavLink>
                             </Dropdown.Menu>
                         </Dropdown>
                 }

@@ -68,9 +68,8 @@ public class CustomerController {
     }
 
     @PostMapping("/register")
-    public void registerCustomer (@Valid Customer customer, HttpServletRequest request) throws UnsupportedEncodingException {
-        Customer savedCustomer =   customerService.register(customer);
-        sendVerificationEmail(request, savedCustomer);
+    public void registerCustomer (@Valid Customer customer, HttpServletRequest request) {
+        customerService.register(request,customer);
     }
 
     @GetMapping("/verify")
@@ -93,39 +92,6 @@ public class CustomerController {
         customerService.editCustomer(customer);
         return "Your details have been updated";
     }
-
-
-    void sendVerificationEmail(HttpServletRequest request, Customer customer) {
-        EmailSettingBag emailSettings = customerService.getEmailSettings();
-        JavaMailSenderImpl javaMailSender = Util.prepareMailSender(emailSettings);
-        String toAddress = customer.getEmail();
-        String fullName = customer.getFullName();
-        String code = customer.getVerificationCode();
-        String url = Util.getSiteURL(request) + "/customer/verify?code="+code;
-        String subject = emailSettings.getVerifySubject();
-        String content  = emailSettings.getVerifyContent();
-        content = content.replace("{{NAME}}", fullName);
-        content = content.replace("{{URL}}", url);
-
-        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
-        try {
-            helper.setFrom(emailSettings.getMailFrom(), emailSettings.getMailSenderName());
-            helper.setTo(toAddress);
-            helper.setSubject(subject);
-            helper.setText(content, true);
-
-        } catch (MessagingException | UnsupportedEncodingException e) {
-            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
-        }
-
-        javaMailSender.send(mimeMessage);
-
-        System.out.println("to Address = " +toAddress);
-        System.out.println("verify url = " + url);
-    }
-
-
 
 
 }

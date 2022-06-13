@@ -70,6 +70,7 @@ public class CustomerService {
         customer.setCreatedTime(oldCustomer.getCreatedTime());
         customer.setVerificationCode(oldCustomer.getVerificationCode());
         customer.setAuthenticationType(oldCustomer.getAuthenticationType());
+        customer.setResetToken(oldCustomer.getResetToken());
         return repo.save(customer);
     }
 

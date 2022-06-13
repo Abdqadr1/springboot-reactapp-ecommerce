@@ -73,6 +73,9 @@ public class Customer {
     @Column(length = 64)
     private String verificationCode;
 
+    @Column(length = 30)
+    private String resetToken;
+
     private boolean enabled;
 
     private LocalDateTime createdTime;

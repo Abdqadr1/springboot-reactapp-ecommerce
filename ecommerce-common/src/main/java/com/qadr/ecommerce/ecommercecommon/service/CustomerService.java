@@ -1,6 +1,7 @@
 package com.qadr.ecommerce.ecommercecommon.service;
 
 import com.qadr.ecommerce.ecommercecommon.model.CustomerDetails;
+import com.qadr.ecommerce.ecommercecommon.utilities.Util;
 import com.qadr.ecommerce.sharedLibrary.repo.CustomerRepo;
 import com.qadr.ecommerce.sharedLibrary.entities.*;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
@@ -8,8 +9,13 @@ import com.qadr.ecommerce.sharedLibrary.repo.CountryRepo;
 import com.qadr.ecommerce.sharedLibrary.repo.SettingsRepo;
 import com.qadr.ecommerce.sharedLibrary.repo.StateRepo;
 import net.bytebuddy.utility.RandomString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,12 +23,17 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class CustomerService implements UserDetailsService {
+    public static final Logger LOGGER = LoggerFactory.getLogger(CustomerService.class);
     @Autowired
     private CustomerRepo customerRepo;
     @Autowired
@@ -42,7 +53,8 @@ public class CustomerService implements UserDetailsService {
         return stateRepo.findByCountryOrderByNameAsc(country);
     }
 
-    public Customer register(Customer customer){
+    @Transactional
+    public Customer register(HttpServletRequest request,Customer customer){
         String code = RandomString.make(64);
         encodePassword(customer);
         customer.setCreatedTime(LocalDateTime.now());
@@ -50,6 +62,7 @@ public class CustomerService implements UserDetailsService {
         customer.setEnabled(false);
         customer.setAuthenticationType(AuthType.DATABASE);
         Customer save = customerRepo.save(customer);
+        sendVerificationEmail(request, save);
         return save;
     }
 
@@ -133,6 +146,7 @@ public class CustomerService implements UserDetailsService {
             customer.setVerificationCode(oldCustomer.getVerificationCode());
             customer.setEnabled(oldCustomer.isEnabled());
             customer.setCreatedTime(oldCustomer.getCreatedTime());
+            customer.setResetToken(oldCustomer.getResetToken());
 
             AuthType authType = oldCustomer.getAuthenticationType();
             if(authType.equals(AuthType.DATABASE) && !customer.getPassword().isBlank()){
@@ -147,8 +161,80 @@ public class CustomerService implements UserDetailsService {
         }
     }
 
-    public void forgotPassword(String email) {
+    @Transactional
+    public String forgotPassword(HttpServletRequest request, String email) {
         Customer customer = customerRepo.findByEmail(email)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Email does not exist"));
+        String token = RandomString.make(30);
+        customer.setResetToken(token);
+        return sendForgotPasswordEmail(request, email, token);
     }
+    @Transactional
+    public String resetPassword(String token, String password) {
+        Customer customer = customerRepo.findByResetToken(token)
+                .orElseThrow(()->new CustomException(HttpStatus.BAD_REQUEST, "Invalid Token"));
+        customer.setPassword(password);
+        encodePassword(customer);
+        customer.setResetToken(null);
+        return "Your password has been reset";
+    }
+
+
+    public String sendForgotPasswordEmail(HttpServletRequest request, String email, String token) {
+        try {
+            EmailSettingBag emailSettings = getEmailSettings();
+            JavaMailSenderImpl javaMailSender = Util.prepareMailSender(emailSettings);
+            String redirectUrl = request.getParameter("redirect_uri");
+            String url = redirectUrl != null ? redirectUrl : Util.getSiteURL(request);
+            url = url + "/reset_password?token="+token;
+            String content = "<p>Hello,</p>" +
+                    "<p>You have requested to reset your password.</p>" +
+                    "<p>Click the link below to change your password.</p><br/>" +
+                    "<h4><a href=\""+url+"\">Change your password</a></h4><br/>" +
+                    "<p>Ignore this email if you do remember your password, or you have not made this request.</p>";
+
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
+            helper.setFrom(emailSettings.getMailFrom(), emailSettings.getMailSenderName());
+            helper.setTo(email);
+            helper.setSubject("Here's the link to reset your password");
+            helper.setText(content, true);
+            javaMailSender.send(mimeMessage);
+            return  "We have sent a reset password link to your email, Please check";
+
+        } catch (Exception e) {
+            LOGGER.info(e.getMessage());
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not send mail, Try again later");
+        }
+
+    }
+
+    public void sendVerificationEmail(HttpServletRequest request, Customer customer) {
+        try {
+            EmailSettingBag emailSettings = getEmailSettings();
+            JavaMailSenderImpl javaMailSender = Util.prepareMailSender(emailSettings);
+            String toAddress = customer.getEmail();
+            String fullName = customer.getFullName();
+            String code = customer.getVerificationCode();
+            String url = Util.getSiteURL(request) + "/customer/verify?code="+code;
+            String subject = emailSettings.getVerifySubject();
+            String content  = emailSettings.getVerifyContent();
+            content = content.replace("{{NAME}}", fullName);
+            content = content.replace("{{URL}}", url);
+
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
+            helper.setFrom(emailSettings.getMailFrom(), emailSettings.getMailSenderName());
+            helper.setTo(toAddress);
+            helper.setSubject(subject);
+            helper.setText(content, true);
+            javaMailSender.send(mimeMessage);
+
+        } catch (Exception e) {
+            LOGGER.info(e.getMessage());
+            throw new CustomException(HttpStatus.INTERNAL_SERVER_ERROR, "Could not send mail");
+        }
+
+    }
+
 }

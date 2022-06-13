@@ -41,4 +41,6 @@ public interface CustomerRepo extends SearchRepository<Customer, Integer> {
     @Modifying
     @Query("UPDATE Customer c SET c.authenticationType=?2 WHERE c.id=?1")
     void changeAuthType(Integer id, AuthType type);
+
+    Optional<Customer> findByResetToken(String token);
 }
