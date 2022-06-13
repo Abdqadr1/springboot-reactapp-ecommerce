@@ -31,35 +31,30 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         String countryCode = request.getLocale().getCountry();
-        CustomOAuth2User user = (CustomOAuth2User) authentication.getPrincipal();
-        String name = user.getName();
-        String email = user.getEmail();
-        Optional<Customer> customerByEmail = customerService.getByEmail(email);
-        Customer customer;
-        if(customerByEmail.isPresent()){
-            customer = customerByEmail.get();
-            customerService.changeAuthType(customer.getId(), AuthType.GOOGLE);
+        CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+        String name = oAuth2User.getName();
+        String email = oAuth2User.getEmail();
+        String targetUrl;
+        if(email == null || email.isBlank()){
+            targetUrl = determineUrlNoEmail(getTargetUrl(request), oAuth2User.getClientName());
         }else {
-            customer = customerService.createCustomerFromOAuth(name, email, countryCode);
+            Optional<Customer> customerByEmail = customerService.getByEmail(email);
+            Customer customer;
+            if(customerByEmail.isPresent()){
+                customer = customerByEmail.get();
+                customerService.changeAuthType(customer.getId(), AuthType.valueOf(oAuth2User.getClientName().toUpperCase()));
+            }else {
+                customer = customerService.createCustomerFromOAuth(name, email, countryCode, AuthType.valueOf(oAuth2User.getClientName().toUpperCase()));
+            }
+            targetUrl = determineUrl(request, getTargetUrl(request), customer);
         }
-        String targetUrl = getTargetUrl(request, response, customer);
 
         clearAuthenticationAttributes(request, response);
         getRedirectStrategy().sendRedirect(request, response, targetUrl);
+
     }
 
-    protected String getTargetUrl(HttpServletRequest request, HttpServletResponse response, Customer customer) {
-        Optional<String> redirectUri = CookieUtils.getCookie(request, OAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME)
-                .map(Cookie::getValue);
-
-        if(redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {
-            throw new CustomException(
-                    HttpStatus.BAD_REQUEST,
-                    "Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
-        }
-
-
-        String targetUrl = redirectUri.orElse(getDefaultTargetUrl());
+    protected String determineUrl(HttpServletRequest request, String targetUrl, Customer customer) {
 
         CustomerDetails customerDetails = new CustomerDetails(customer);
         String accessToken = JWTUtil.createAccessToken(customerDetails, request.getServletPath());
@@ -73,6 +68,24 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                 .queryParam("firstName", firstName)
                 .queryParam("lastName", lastName)
                 .build().toUriString();
+    }
+
+    protected String determineUrlNoEmail(String url, String clientName){
+        return UriComponentsBuilder.fromUriString(url)
+                .queryParam("error", "No email return by "+clientName)
+                .build().toUriString();
+    }
+
+    protected String getTargetUrl(HttpServletRequest request){
+        Optional<String> redirectUri = CookieUtils.getCookie(request, OAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME)
+                .map(Cookie::getValue);
+
+        if(redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {
+            throw new CustomException(
+                    HttpStatus.BAD_REQUEST,
+                    "Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
+        }
+        return  redirectUri.orElse(getDefaultTargetUrl());
     }
 
     protected void clearAuthenticationAttributes(HttpServletRequest request, HttpServletResponse response) {

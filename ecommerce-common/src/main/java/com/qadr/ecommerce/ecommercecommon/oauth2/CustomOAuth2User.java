@@ -1,5 +1,6 @@
 package com.qadr.ecommerce.ecommercecommon.oauth2;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -7,8 +8,10 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import java.util.Collection;
 import java.util.Map;
 @RequiredArgsConstructor
+@Getter
 public class CustomOAuth2User implements OAuth2User {
     private final OAuth2User oAuth2User;
+    private final String clientName;
 
     @Override
     public Map<String, Object> getAttributes() {

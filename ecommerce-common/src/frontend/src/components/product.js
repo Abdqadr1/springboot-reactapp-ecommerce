@@ -5,6 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import MyCarousel from "./image-carousel";
 import { getDiscountPrice, getShortName, formatPrice } from "./utilities";
 import useSettings from "./use-settings";
+import Search from "./search";
 
 const Product = () => {
     const {alias} = useParams();
@@ -199,6 +200,7 @@ const Product = () => {
 
     return ( 
         <>
+            <Search />
             {breadCrumbs()}
             {listProduct()}
         </>

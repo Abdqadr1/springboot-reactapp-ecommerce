@@ -91,7 +91,7 @@ public class CustomerService implements UserDetailsService {
         customerRepo.changeAuthType(id, type);
     }
 
-    public Customer createCustomerFromOAuth(String name, String email, String countryCode){
+    public Customer createCustomerFromOAuth(String name, String email, String countryCode, AuthType authType){
         Customer customer = new Customer();
         setName(name, customer);
         customer.setCreatedTime(LocalDateTime.now());
@@ -104,7 +104,7 @@ public class CustomerService implements UserDetailsService {
         customer.setCity("your city");
         customer.setState("your state");
         customer.setCountry(findCountryByCode(countryCode));
-        customer.setAuthenticationType(AuthType.GOOGLE);
+        customer.setAuthenticationType(authType);
         return customerRepo.save(customer);
     }
 
@@ -120,7 +120,7 @@ public class CustomerService implements UserDetailsService {
         } else {
             String firstName = names[0];
             customer.setFirstName(firstName);
-            customer.setLastName(name.replace(firstName, ""));
+            customer.setLastName(name.replace(firstName+ " ", ""));
         }
     }
 }

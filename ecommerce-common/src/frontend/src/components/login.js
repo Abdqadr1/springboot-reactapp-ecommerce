@@ -65,12 +65,18 @@ const Login = () => {
                             <Form.Label className="text-start w-100">Password:</Form.Label>
                             <Form.Control name="password" type="password" placeholder="Enter password" minLength="5" required/>
                         </Form.Group>
-                        <Button ref={btnRef} variant="primary" className="py-2" style={{width: "100%"}} type="submit">Login</Button>
+                        <Button ref={btnRef} variant="primary" className="py-2" style={{ width: "100%" }} type="submit">Login</Button>
+                        <br/>
                         <a
                             href={`${oauthURL}/google?redirect_uri=${redirectUri}`}
                             className="py-2 my-2 btn btn-success"
                             style={{ width: "100%" }}
-                        ><i className="bi bi-google text-warning"></i> &nbsp; Continue with google</a>
+                        ><i className="bi bi-google text-warning"></i> &nbsp; Log In with Google</a>
+                         <a
+                            href={`${oauthURL}/facebook?redirect_uri=${redirectUri}`}
+                            className="py-2 my-2 btn btn-success"
+                            style={{ width: "100%" }}
+                        ><i className="bi bi-facebook"></i> &nbsp; Log In with Facebook</a>
                     </Form>
                 </Col>
             </Row>
