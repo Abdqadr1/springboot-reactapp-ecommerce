@@ -12,6 +12,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
@@ -77,6 +78,23 @@ public class CustomerController {
         return customerService.verifyCustomer(code);
     }
 
+
+    @GetMapping("/details")
+    public Customer getCustomerDetails(){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Customer customer = customerService.getByEmail(email)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "No user found with email " + email));
+        customer.setPassword("");
+        return customer;
+    }
+
+    @PostMapping("/update-customer")
+    public String UpdateCustomerDetails(@Valid Customer customer){
+        customerService.editCustomer(customer);
+        return "Your details have been updated";
+    }
+
+
     void sendVerificationEmail(HttpServletRequest request, Customer customer) {
         EmailSettingBag emailSettings = customerService.getEmailSettings();
         JavaMailSenderImpl javaMailSender = Util.prepareMailSender(emailSettings);
@@ -106,5 +124,8 @@ public class CustomerController {
         System.out.println("to Address = " +toAddress);
         System.out.println("verify url = " + url);
     }
+
+
+
 
 }

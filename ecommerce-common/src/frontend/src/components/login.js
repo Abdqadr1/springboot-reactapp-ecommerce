@@ -49,9 +49,9 @@ const Login = () => {
 
     return ( 
         <>
-            <Row className="mx-0 justify-content-center mt-3">
-                <Col xs="11" md="5">
-                    <Form className="my-4 border p-4 rounded" onSubmit={handleSubmit}>
+            <Row className="mx-0 justify-content-center mt-5">
+                <Col xs="11" md="5" className="p-4 my-4 border rounded">
+                    <Form onSubmit={handleSubmit}>
                         <h3>Customer Login</h3>
                         <Alert ref={alertRef} tabIndex={-1} variant={alert.variant} show={alert.show} dismissible
                             onClose={() => setAlert(s => ({ ...s, show: false }))} className="my-3">
@@ -65,19 +65,21 @@ const Login = () => {
                             <Form.Label className="text-start w-100">Password:</Form.Label>
                             <Form.Control name="password" type="password" placeholder="Enter password" minLength="5" required/>
                         </Form.Group>
-                        <Button ref={btnRef} variant="primary" className="py-2" style={{ width: "100%" }} type="submit">Login</Button>
-                        <br/>
-                        <a
-                            href={`${oauthURL}/google?redirect_uri=${redirectUri}`}
-                            className="py-2 my-2 btn btn-success"
-                            style={{ width: "100%" }}
-                        ><i className="bi bi-google text-warning"></i> &nbsp; Log In with Google</a>
-                         <a
-                            href={`${oauthURL}/facebook?redirect_uri=${redirectUri}`}
-                            className="py-2 my-2 btn btn-success"
-                            style={{ width: "100%" }}
-                        ><i className="bi bi-facebook"></i> &nbsp; Log In with Facebook</a>
+                        <Button ref={btnRef} variant="success" className="py-2" style={{ width: "100%" }} type="submit">Login</Button>
                     </Form>
+                    <h6 className="my-3">Or</h6>
+                    <a
+                        href={`${oauthURL}/google?redirect_uri=${redirectUri}`}
+                        className="py-2 btn  border-secondary"
+                        style={{ width: "100%" }}
+                    ><i className="bi bi-google text-warning"></i> &nbsp; Log In with Google</a>
+                        <a
+                        href={`${oauthURL}/facebook?redirect_uri=${redirectUri}`}
+                        className="py-2 my-2 btn btn-primary"
+                        style={{ width: "100%" }}
+                    ><i className="bi bi-facebook"></i> &nbsp; Log In with Facebook</a>
+                    <div className="text-end my-2"><a href="/forgot-password">Forgot Password ?</a></div>
+                    <div className="mt-2">Don't have an account yet? <a href="/register" className="fw-bold">Sign UP</a></div>
                 </Col>
             </Row>
         </>

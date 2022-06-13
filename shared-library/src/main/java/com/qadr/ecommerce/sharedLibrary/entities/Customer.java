@@ -19,7 +19,6 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank(message = "Enter your email address")
     @Email(message = "Enter a valid email address")
     @Size(max = 64, message = "Email address is too long")
     @Column(nullable = false,unique = true, length = 64)
@@ -31,8 +30,7 @@ public class Customer {
     @Column(nullable = false, length = 45)
     private String firstName;
 
-    @NotBlank(message = "Enter your password")
-    @Size(min = 8, message = "Password can not be less than 8 characters")
+    @Size(max = 64, message = "Password can not be less than 8 characters")
     @Column(nullable = false, length = 64)
     private String password;
 

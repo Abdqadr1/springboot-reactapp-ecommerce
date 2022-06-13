@@ -3,7 +3,7 @@ package com.qadr.ecommerce.ecommerceadmin.filter;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
-import com.qadr.sharedLibrary.util.JWTUtil;
+import com.qadr.ecommerce.sharedLibrary.util.JWTUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

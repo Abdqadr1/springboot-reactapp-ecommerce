@@ -123,4 +123,32 @@ public class CustomerService implements UserDetailsService {
             customer.setLastName(name.replace(firstName+ " ", ""));
         }
     }
+
+    public void editCustomer(Customer customer) {
+        if(customer.getId() != null){
+            Customer oldCustomer = customerRepo.findById(customer.getId())
+                    .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "No user found with id"));
+            customer.setEmail(oldCustomer.getEmail());
+            customer.setAuthenticationType(oldCustomer.getAuthenticationType());
+            customer.setVerificationCode(oldCustomer.getVerificationCode());
+            customer.setEnabled(oldCustomer.isEnabled());
+            customer.setCreatedTime(oldCustomer.getCreatedTime());
+
+            AuthType authType = oldCustomer.getAuthenticationType();
+            if(authType.equals(AuthType.DATABASE) && !customer.getPassword().isBlank()){
+                encodePassword(customer);
+            }else {
+                customer.setPassword(oldCustomer.getPassword());
+            }
+
+            customerRepo.save(customer);
+        }else {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "No user id found");
+        }
+    }
+
+    public void forgotPassword(String email) {
+        Customer customer = customerRepo.findByEmail(email)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Email does not exist"));
+    }
 }

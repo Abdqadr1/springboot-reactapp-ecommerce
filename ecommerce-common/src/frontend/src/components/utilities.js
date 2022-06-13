@@ -68,6 +68,15 @@ export function listProducts(results, keyword, type="category", formatPrice){
 }
 
 
+export const isTokenExpired = (response) => {
+    const message = response.data.message.toLowerCase()
+    if (Number(response.status) === 400
+        && message.indexOf("token") > -1
+        && message.indexOf("expired") > -1) return true
+    
+    return false
+}
+
 
 export function listFormData(data){
       for (const pair of data.entries()) {
