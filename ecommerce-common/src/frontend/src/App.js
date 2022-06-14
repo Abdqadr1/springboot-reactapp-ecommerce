@@ -15,6 +15,7 @@ import Logout from "./components/logout";
 import OAuth2Redirect from "./components/oauth_redirect";
 import ForgotPassword from "./components/forgot-password";
 import ResetPassword from "./components/reset-password";
+import ShoppingCart from "./components/shopping-cart";
 
 function App() {
 
@@ -39,6 +40,7 @@ function App() {
               <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset_password" element={<ResetPassword />} />
+              <Route path="/shopping_cart" element={<ShoppingCart />} />
               <Route path="*" element={<div className="my-4">Not found</div>} />
           </Routes>
         </BrowserRouter>

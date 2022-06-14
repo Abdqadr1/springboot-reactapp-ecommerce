@@ -4,7 +4,7 @@ import useAuth from "./custom_hooks/use-auth";
 import { useState, useEffect,useRef } from 'react';
 import useArray from './custom_hooks/use-array';
 import axios from 'axios';
-import {isTokenExpired,listFormData, SPINNERS_BORDER_HTML} from './utilities'
+import {isTokenExpired, SPINNERS_BORDER_HTML} from './utilities'
 
 const NavBar = () => {
   const logoUrl = `${process.env.REACT_APP_SERVER_URL}site-logo/`;
@@ -51,21 +51,27 @@ const NavBar = () => {
 
   useEffect(() => {
     if (auth?.accessToken) {
-      
-    axios.get(`${url}/countries`)
-        .then(response => {
-            const data = response.data;
-            setCountries(data)
-        })
-        .catch(err => {
-            console.error(err)
-        })
+
+      if (countries.length < 1) {
+         axios.get(`${url}/countries`)
+          .then(response => {
+              const data = response.data;
+              setCountries(data)
+          })
+          .catch(err => {
+              console.error(err)
+          })
+      }
+
+      if (customer?.id) {
+        return;
+      }
 
        axios.get(`${url}/details`, {
-      headers: {
-        "Authorization": `Bearer ${auth?.accessToken}`
-      }
-    })
+        headers: {
+          "Authorization": `Bearer ${auth?.accessToken}`
+        }
+      })
         .then(response => {
           const data = response.data;
           setCustomer(data)
@@ -110,14 +116,12 @@ const NavBar = () => {
     const data = new FormData(form);
     const pass = passRef.current;
     const rePass = rPassRef.current;
-    if (pass !== null || pass !== undefined) {
+    if (pass !== null && pass !== undefined) {
       if (pass.value !== rePass.value) {
           setAlert({show: true, message: "Confirm your password", variant: "danger" })
         return;
       }
     }
-    listFormData(data)
-
     btn.disabled = true;
     btn.innerHTML = SPINNERS_BORDER_HTML;
     
@@ -132,6 +136,7 @@ const NavBar = () => {
         .catch(res => {
           const response = res.response;
           if (isTokenExpired(response)) {
+              setAuth({})
               window.location.href = "/login";
           }
           setAlert({show: true, message: response.data.message, variant: "danger" })
@@ -181,21 +186,38 @@ const NavBar = () => {
                         Login
                       </NavLink>
                     </>
-                    : <Dropdown>
-                            <Dropdown.Toggle as={NavLink} className="border-0" split variant="dark" id="dropdown-split-basic">
-                              <i className="bi bi-person-fill"></i>&nbsp;
-                              {customer?.firstName ?? auth?.firstName}
-                              &nbsp;
-                              {customer?.lastName ?? auth?.lastName}
-                              &nbsp;
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu variant="dark">
-                                <NavLink className="dropdown-item ps-4" data-rr-ui-dropdown-item="" href="#" onClick={()=>setShowModal(true)}>Account Info</NavLink>
-                                <NavLink className="dropdown-item ps-4" data-rr-ui-dropdown-item="" href="/orders">Orders</NavLink>
-                                <NavLink className="dropdown-item ps-4" data-rr-ui-dropdown-item="" href="/questions">Questions</NavLink>
-                                <NavLink className="dropdown-item ps-4 text-danger" href="/logout">Logout</NavLink>
-                            </Dropdown.Menu>
+                    : <>
+                        <Dropdown>
+                          <Dropdown.Toggle as={NavLink} className="border-0" split variant="dark" id="dropdown-split-basic">
+                            <i className="bi bi-person-fill"></i>&nbsp;
+                            {customer?.firstName ?? auth?.firstName}
+                            &nbsp;
+                            {customer?.lastName ?? auth?.lastName}
+                            &nbsp;
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu variant="dark">
+                              <NavLink className="dropdown-item ps-4" data-rr-ui-dropdown-item="" href="#" onClick={()=>setShowModal(true)}>Account Info</NavLink>
+                              <NavLink className="dropdown-item ps-4" data-rr-ui-dropdown-item="" href="/orders">Orders</NavLink>
+                              <NavLink className="dropdown-item ps-4" data-rr-ui-dropdown-item="" href="/addresses">Addresses</NavLink>
+                              <NavLink className="dropdown-item ps-4" data-rr-ui-dropdown-item="" href="/reviews">Reviews</NavLink>
+                              <NavLink className="dropdown-item ps-4" data-rr-ui-dropdown-item="" href="/questions">Questions</NavLink>
+                              <NavLink className="dropdown-item ps-4 text-danger" href="/logout">Logout</NavLink>
+                          </Dropdown.Menu>
                         </Dropdown>
+                        <NavLink className="nav-link" href="/shopping_cart" title="Shopping cart">
+                          <i className="bi bi-cart4 fs-5 text-warning position-relative">
+                          {
+                            (auth?.cart && auth?.cart > 0)
+                              ?
+                              <span style={{ fontSize: "x-small" }}
+                                className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                              </span>
+                              : ""
+                          } 
+                          </i>
+                        </NavLink>
+                    </>
+                  
                 }
                 
               </Nav>

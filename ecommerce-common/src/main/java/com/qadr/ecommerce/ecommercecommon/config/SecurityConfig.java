@@ -45,7 +45,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             return configuration;
         });
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers("/customer/details", "/customer/update-customer").authenticated();
+        http.authorizeRequests().antMatchers("/customer/details", "/customer/update-customer",
+                "/cart/**").authenticated();
 
         http.authorizeRequests().anyRequest().permitAll();
         http.formLogin().disable();

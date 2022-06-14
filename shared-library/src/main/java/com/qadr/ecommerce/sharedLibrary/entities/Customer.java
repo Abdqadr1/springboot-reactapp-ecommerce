@@ -88,6 +88,10 @@ public class Customer {
     @Column(length = 10, name = "authentication_type")
     private AuthType authenticationType;
 
+    public Customer(Integer id){
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "[email = " + email +", " +

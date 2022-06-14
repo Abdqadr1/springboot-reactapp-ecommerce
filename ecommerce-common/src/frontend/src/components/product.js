@@ -6,6 +6,7 @@ import MyCarousel from "./image-carousel";
 import { getDiscountPrice, getShortName, formatPrice } from "./utilities";
 import useSettings from "./use-settings";
 import Search from "./search";
+import Stock from "./stock";
 
 const Product = () => {
     const {alias} = useParams();
@@ -41,24 +42,6 @@ const Product = () => {
                 console.log("not found")
             })
     }, [alias])
-
-    function isInStock(){
-        if(product.inStock){
-            return (
-              <>
-                <p className="fw-bold text-success">In Stock</p>
-                <InputGroup className="mb-3 mx-auto" style={{"maxWidth": "110px"}} >
-                  <InputGroup.Text>-</InputGroup.Text>
-                  <FormControl aria-label="Number" disabled defaultValue={1} className="text-center"/>
-                  <InputGroup.Text>+</InputGroup.Text>
-                </InputGroup>
-                <Button variant="primary">Add to Cart</Button>
-              </>
-            );
-        } else {
-            <p className="fw-bold text-danger">Out of stock</p>
-        }
-    }
 
     function breadCrumbs() {
         if(product){
@@ -177,7 +160,7 @@ const Product = () => {
                             <p className="text-start fs-6 mb-1" dangerouslySetInnerHTML={{__html: product.shortDescription}}></p>
                         </Col>
                         <Col sm={9} md={2}>
-                            {isInStock()}
+                            {(product.inStock) ? <Stock product={product} /> : <p className="fw-bold text-danger">Out of stock</p> }
                         </Col>
                     </Row>  
                     <hr/>

@@ -1,6 +1,5 @@
 package com.qadr.ecommerce.sharedLibrary.entities;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity @Table(name = "products")
-@NoArgsConstructor @Getter @Setter @Data
+@NoArgsConstructor @Getter @Setter
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -77,4 +76,14 @@ public class Product {
         details.add(new ProductDetail(key, value, this));
     }
 
+    public Product(Integer id){
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }
