@@ -5,6 +5,7 @@ import { useState, useEffect,useRef } from 'react';
 import useArray from './custom_hooks/use-array';
 import axios from 'axios';
 import {isTokenExpired, SPINNERS_BORDER_HTML} from './utilities'
+import { Link } from 'react-router-dom';
 
 const NavBar = () => {
   const logoUrl = `${process.env.REACT_APP_SERVER_URL}site-logo/`;
@@ -164,27 +165,27 @@ const NavBar = () => {
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className="ms-auto text-end">
-                <NavLink className="nav-link" href="/careers">
+                <Link className="nav-link" to="/careers">
                   Careers
-                </NavLink>
-                <NavLink className="nav-link" href="/payments">
+                </Link>
+                <Link className="nav-link" to="/payments">
                   Payments
-                </NavLink>
-                <NavLink className="nav-link" href="/shipping">
+                </Link>
+                <Link className="nav-link" to="/shipping">
                   Shipping & Delivery
-                </NavLink>
-                <NavLink className="nav-link" href="/contact">
+                </Link>
+                <Link className="nav-link" to="/contact">
                   Contact
-                </NavLink>
+                </Link>
                 {
                   (auth?.firstName === undefined || auth?.firstName === null)
                   ? <>
-                      <NavLink className="nav-link" href="/register">
+                      <Link className="nav-link" to="/register">
                         Register
-                      </NavLink>
-                      <NavLink className="nav-link" href="/login">
+                      </Link>
+                      <Link className="nav-link" to="/login">
                         Login
-                      </NavLink>
+                      </Link>
                     </>
                     : <>
                         <Dropdown>
@@ -196,26 +197,24 @@ const NavBar = () => {
                             &nbsp;
                           </Dropdown.Toggle>
                           <Dropdown.Menu variant="dark">
-                              <NavLink className="dropdown-item ps-4" data-rr-ui-dropdown-item="" href="#" onClick={()=>setShowModal(true)}>Account Info</NavLink>
+                              <Link className="dropdown-item ps-4" data-rr-ui-dropdown-item="" to="#" onClick={()=>setShowModal(true)}>Account Info</Link>
                               <NavLink className="dropdown-item ps-4" data-rr-ui-dropdown-item="" href="/orders">Orders</NavLink>
                               <NavLink className="dropdown-item ps-4" data-rr-ui-dropdown-item="" href="/addresses">Addresses</NavLink>
                               <NavLink className="dropdown-item ps-4" data-rr-ui-dropdown-item="" href="/reviews">Reviews</NavLink>
                               <NavLink className="dropdown-item ps-4" data-rr-ui-dropdown-item="" href="/questions">Questions</NavLink>
-                              <NavLink className="dropdown-item ps-4 text-danger" href="/logout">Logout</NavLink>
+                              <Link className="dropdown-item ps-4 text-danger" to="/logout">Logout</Link>
                           </Dropdown.Menu>
                         </Dropdown>
-                        <NavLink className="nav-link" href="/shopping_cart" title="Shopping cart">
+                        <Link className="nav-link" to="/shopping_cart" title="Shopping cart">
                           <i className="bi bi-cart4 fs-5 text-warning position-relative">
                           {
-                            (auth?.cart && auth?.cart > 0)
-                              ?
+                            (auth?.cart && auth?.cart > 0) &&
                               <span style={{ fontSize: "x-small" }}
-                                className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                                  className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
                               </span>
-                              : ""
                           } 
                           </i>
-                        </NavLink>
+                        </Link>
                     </>
                   
                 }

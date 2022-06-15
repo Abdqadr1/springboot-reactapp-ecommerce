@@ -23,9 +23,9 @@ function App() {
 
   return (
     <div className="App">
-      <NavBar />
-      <div className="content">
           <BrowserRouter>
+          <NavBar />
+          <div className="content">
           <Routes>
               <Route path="/" element={<ListCategories />} />
               <Route path="/login" element={<Login />} />
@@ -43,8 +43,8 @@ function App() {
               <Route path="/shopping_cart" element={<ShoppingCart />} />
               <Route path="*" element={<div className="my-4">Not found</div>} />
           </Routes>
+          </div>
         </BrowserRouter>
-      </div>
       
         <footer className="bg-dark py-3 text-light fw-bold">{COPYRIGHT ?? ""}</footer>
     </div>

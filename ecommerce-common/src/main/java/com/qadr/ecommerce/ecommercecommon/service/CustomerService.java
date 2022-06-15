@@ -169,6 +169,7 @@ public class CustomerService implements UserDetailsService {
         customer.setResetToken(token);
         return sendForgotPasswordEmail(request, email, token);
     }
+
     @Transactional
     public String resetPassword(String token, String password) {
         Customer customer = customerRepo.findByResetToken(token)

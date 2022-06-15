@@ -1,14 +1,13 @@
 package com.qadr.ecommerce.ecommercecommon.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
 import com.qadr.ecommerce.sharedLibrary.entities.Product;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "cart_items")
@@ -19,6 +18,7 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
@@ -39,14 +39,31 @@ public class CartItem {
         this.product = product;
         this.quantity = quantity;
     }
+    public CartItem (Customer customer, Product product){
+        this.customer = customer;
+        this.product = product;
+    }
 
     @Override
     public String toString() {
         return "CartItem{" +
                 "id=" + id +
-                ", customer=" + customer.toString() +
-                ", product=" + product.toString() +
+                ", customer=" + customer.getId() +
+                ", product=" + product.getId() +
                 ", quantity=" + quantity +
                 '}';
     }
+
+    public Float getSubTotal(){
+        float price;
+        if(product.getDiscountPrice() > 0){
+            price = product.getPrice() * (100 - product.getDiscountPrice()) / 100;
+        }else {
+            price = product.getPrice();
+        }
+//        float total = price * quantity;
+//        System.out.printf("%f * %d = %f%n", price, quantity, total);
+        return price * quantity;
+    }
+
 }

@@ -89,7 +89,8 @@ public class CustomerController {
     }
 
     @PostMapping("/update-customer")
-    public String UpdateCustomerDetails(@Valid Customer customer){
+    public String UpdateCustomerDetails(@Valid Customer customer, HttpServletRequest request){
+
         customerService.editCustomer(customer);
         return "Your details have been updated";
     }

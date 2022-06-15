@@ -91,6 +91,7 @@ public class Customer {
     public Customer(Integer id){
         this.id = id;
     }
+    public Customer(String email){this.email = email;}
 
     @Override
     public String toString() {

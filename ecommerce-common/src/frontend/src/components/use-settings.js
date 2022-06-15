@@ -1,27 +1,24 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const useSettings = () => {
+const useSettings = (r = false) => {
     const url = process.env.REACT_APP_SERVER_URL + "set/get";
     const [settings, setSettings] = useState({});
-    const [refresh, setRefresh] = useState(false);
 
-
-     useEffect(() => {
-         const savedSettings = getFromStorage();
-         if (savedSettings) {
-             setSettings(savedSettings);
-         } else {
-             fetchSettings();
-         }
-         
-     }, [])
 
     useEffect(() => {
-        if (refresh) {
-            fetchSettings();
-         }
-     }, [refresh])
+        if (r) {
+             fetchSettings();
+        } else {
+            const savedSettings = getFromStorage();
+            if (savedSettings) {
+                setSettings(savedSettings);
+            } else {
+                fetchSettings()
+            }
+        }
+         
+     }, [r])
 
     function getFromStorage() {
         return JSON.parse(localStorage.getItem("settings"));
@@ -42,7 +39,7 @@ const useSettings = () => {
          })
     }
      
-    
+
     return settings
 }
  

@@ -1,18 +1,16 @@
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
-import { Row, Col, Button, InputGroup, FormControl, Breadcrumb} from "react-bootstrap";
+import { Row, Col, Breadcrumb} from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import MyCarousel from "./image-carousel";
 import { getDiscountPrice, getShortName, formatPrice } from "./utilities";
 import useSettings from "./use-settings";
 import Search from "./search";
-import Stock from "./stock";
+import { Stock } from './stock';
 
 const Product = () => {
     const {alias} = useParams();
     const [product, setProduct] = useState(null);
-
-    
     
     const { CURRENCY_SYMBOL, CURRENCY_SYMBOL_POSITION, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE,SITE_NAME } = useSettings();
 
@@ -133,6 +131,7 @@ const Product = () => {
     function listProduct(){
         if(product){
             const images = [product.mainImage, ...product.extraImages.map(m => m.path)]
+            const discountPrice = priceFormatter()(getDiscountPrice(product.discountPrice, product.price));
             return (
                 <>
                     <Row className="justify-content-center p-4 mx-0">
@@ -149,7 +148,7 @@ const Product = () => {
                                     <p className="text-start fs-6 mb-1">List price <del>{priceFormatter()(product.price)}</del></p>
                                     <p className="text-start fs-5 mb-1">
                                         Price 
-                                        <span className="text-danger mx-1 fw-bold">{priceFormatter()(product.price,getDiscountPrice(product.discountPrice, product.price))}</span>
+                                        <span className="text-danger mx-1 fw-bold">{discountPrice}</span>
                                         <span className="mx-2 fs-6 fw-bold">({product.discountPrice}% off)</span>
                                     </p>
                                 </> 
@@ -160,7 +159,7 @@ const Product = () => {
                             <p className="text-start fs-6 mb-1" dangerouslySetInnerHTML={{__html: product.shortDescription}}></p>
                         </Col>
                         <Col sm={9} md={2}>
-                            {(product.inStock) ? <Stock product={product} /> : <p className="fw-bold text-danger">Out of stock</p> }
+                            {(product.inStock) ? <Stock id={product.id} /> : <p className="fw-bold text-danger">Out of stock</p> }
                         </Col>
                     </Row>  
                     <hr/>

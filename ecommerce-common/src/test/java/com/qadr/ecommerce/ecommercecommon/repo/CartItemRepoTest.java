@@ -25,6 +25,16 @@ class CartItemRepoTest {
     @Autowired private TestEntityManager entityManager;
 
     @Test
+    void testAdd(){
+        List<CartItem> cartItems = List.of(new CartItem(1, new Customer(1), new Product(1)),
+                new CartItem(2, new Customer(10), new Product(2)),
+                new CartItem(3, new Customer(4), new Product(6))
+        );
+        CartItem item = cartItemRepo.save(new CartItem(2, new Customer(7), new Product(8)));
+        assertThat(item).isNotNull();
+    }
+
+    @Test
     void testAddCartItem(){
         List<CartItem> cartItems = List.of(new CartItem(1, new Customer(1), new Product(1)),
                 new CartItem(2, new Customer(10), new Product(2)),

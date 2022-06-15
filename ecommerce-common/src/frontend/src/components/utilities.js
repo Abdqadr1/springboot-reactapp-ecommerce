@@ -23,7 +23,10 @@ export const getPrices = (discount, price, formatPrice) => {
       </h5>
     );
 }
-export const getDiscountPrice = (discount, price) => Number(price * (100 - discount) / 100);
+export const getDiscountPrice = (discount, price) => {
+    const total = Number(price * (100 - discount) / 100);
+    return total; 
+}
 
 export const formatPrice = (price, s, m, t, pos) => {
     t = t === "COMMA" ? "," : ".";
@@ -69,11 +72,12 @@ export function listProducts(results, keyword, type="category", formatPrice){
 
 
 export const isTokenExpired = (response) => {
-    const message = response.data.message.toLowerCase()
-    if (Number(response.status) === 400
-        && message.indexOf("token") > -1
-        && message.indexOf("expired") > -1) return true
-    
+    if (response?.data) {
+        const message = response.data.message.toLowerCase()
+        if (Number(response.status) === 400
+            && message.indexOf("token") > -1
+            && message.indexOf("expired") > -1) return true
+    }
     return false
 }
 
