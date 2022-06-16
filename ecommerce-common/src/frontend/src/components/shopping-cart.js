@@ -1,22 +1,28 @@
 import useArray from "./custom_hooks/use-array";
 import useAuth from "./custom_hooks/use-auth";
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router";
+import { useNavigate } from "react-router";
 import axios from "axios";
 import { getShortName, isTokenExpired,formatPrice } from "./utilities";
 import Search from "./search";
 import { Row, Col, Button} from "react-bootstrap";
 import {CartItemQuantity} from "./stock";
 import useSettings from "./use-settings";
+import DeleteModal from "./delete_modal";
+import CustomToast from "./custom_toast";
 
 const ShoppingCart = () => {
+    const navigate = useNavigate();
     const url = process.env.REACT_APP_SERVER_URL + "cart";
     const viewURL = `${url}/view`;
-    const deleteURL = `${url}/delete`
+    const deleteURL = `${url}/remove`
     const fileUrl = process.env.REACT_APP_SERVER_URL + "product-images/";
     const [auth, setAuth] = useAuth();
-    const { array, setArray } = useArray();
+    const { array, setArray, filterArray } = useArray();
     const [total, setTotal] = useState(0);
+    const [showDelete, setShowDelete] = useState({show:false, id:-1})
+    const [toast, setToast] = useState({ show: false, message: "" })
+    const abortController = new AbortController();
 
     
     const { CURRENCY_SYMBOL, CURRENCY_SYMBOL_POSITION, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, SITE_NAME } = useSettings();
@@ -30,58 +36,85 @@ const ShoppingCart = () => {
     }
 
     useEffect(() => {
-        if (auth.accessToken) {
+        if (auth?.accessToken) {
             axios.get(viewURL, {
                 headers: {
-                "Authorization": `Bearer ${auth?.accessToken}`
-                }
+                    "Authorization": `Bearer ${auth?.accessToken}`,
+                },
+                signal: abortController.signal
             })
             .then(response => {
-                const data = response.data;
-                setArray(data.items);
-                setTotal(data.total)
+                setArray(response.data);
             })
             .catch(res => {
-            console.error(res)
-            if (isTokenExpired(res.response)) {
-                setAuth({})
-                window.location.reload();
-            }
+                console.error(res)
+                if (isTokenExpired(res.response)) {
+                    setAuth({})
+                    window.location.reload();
+                }
+                const message = res.response.data.message ?? "An error ocurred, Try again";
+                setToast(s=>({...s, show:true, message }))
             })
+        } else {
+           navigate("/login") 
         }
+        // return () => {
+        //     abortController.abort();
+        // }
     }, [auth?.accessToken])
 
-    function handleDelete(e) {
-        console.log(e.target);
-         axios.get(`${deleteURL}`, {
+
+    useEffect(() => {
+        let total = 0;
+        total = array.map(c => c.subTotal).reduce((tot, num) => tot + num, total)
+        setTotal(total)
+
+    }, [array])
+
+    function handleDelete() {
+        const index = showDelete.id
+        const item = array[index];
+
+         axios.delete(`${deleteURL}/${item.product.id}`, {
                 headers: {
                     "Authorization": `Bearer ${auth?.accessToken}`
-                }
+                },
+                signal: abortController.signal
             })
             .then(response => {
                 const data = response.data;
-                setArray(data.items);
-                setTotal(data.total)
+                setAuth({ ...auth, cart: --auth.cart })
+                filterArray(index)
+                setToast(s=> ({...s, show:true, message: data}))
             })
             .catch(res => {
-            console.error(res)
-            if (isTokenExpired(res.response)) {
-                setAuth({})
-                window.location.reload();
-            }
-            })
+                console.error(res)
+                if (isTokenExpired(res.response)) {
+                    setAuth({})
+                    window.location.reload();
+                }
+                alert(res.response?.data.message)
+            }).finally(() => setShowDelete(s=>({...s, show:false})))
     }
 
 
     function listCartItems() {
         const formatPrice = priceFormatter();
         return (
-            <Row className="mx-0">
+            <Row className="mx-0 justify-content-start">
                 <Col md={8}>
                     {
                         array.map((c,i) =>
                             <Row className="mx-0 my-2 border rounded px-2 py-3" key={i}>
                                 <Col>
+                                    <div
+                                        style={{ width: "7%" }}
+                                        className="fw-bold"
+                                        onClick={() => setShowDelete(s=>({show:true, id: i}))}
+                                    >
+                                        <span className="d-block">{i+1}</span>
+                                        <i className="bi bi-trash3-fill text-danger d-block"></i>
+                                    </div>
                                     <img src={`${fileUrl}${c.product.id}/${c.product.mainImage}`} 
                                     alt="product" className="main-image" style={{maxHeight: "200px"}} />
                                 </Col>
@@ -92,12 +125,9 @@ const ShoppingCart = () => {
                                         </a>
                                     </h5>
                                     <CartItemQuantity
-                                        quantity={c.quantity}
-                                        price={c.product.price}
-                                        discount={c.product.discountPrice}
-                                        id={c.product.id}
+                                        item={c}
                                         format={formatPrice}
-                                        updateTotal={setTotal}
+                                        updateItem={setArray}
                                     />
                                 </Col>
                             </Row>
@@ -105,15 +135,14 @@ const ShoppingCart = () => {
                     }
                     
                 </Col>
-                <Col md={4}>
-                    Checkout here
-                    Estimated Total {formatPrice(total)}
+                <Col md={4} className="text-start text-md-center mt-4">
+                    <div>Estimated Total :</div>
+                    <h4 className="my-2 fw-bold">{formatPrice(total)}</h4>
+                    <Button className="my-2" variant="danger">Checkout</Button>
                 </Col>
             </Row>
         )
     }
-
-    if(!auth?.accessToken) return <Navigate to="/login" />
     return ( 
         <>
             <Search />
@@ -121,8 +150,16 @@ const ShoppingCart = () => {
             {
                 (array.length > 0)
                 ? listCartItems()
-                : <div>No items in the cart</div>
+                :<div className="mt-5">
+                    <h4 className="my-3">You have not chosen any product yet</h4>
+                    <a href="/" className="d-block mx-auto my-3 fs-3">
+                        <i className="bi bi-cart-plus-fill text-secondary" style={{fontSize: "5em"}}></i><br/>
+                        Go shopping
+                    </a>
+                </div>
             }
+            <DeleteModal deleteObject={showDelete} setDeleteObject={setShowDelete} deletingFunc={handleDelete} type="Item" />
+            <CustomToast {...toast} setToast={setToast} position="bottom-end" />
         </>
      );
 }

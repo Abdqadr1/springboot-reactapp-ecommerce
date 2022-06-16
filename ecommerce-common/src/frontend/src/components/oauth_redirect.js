@@ -10,12 +10,13 @@ const OAuth2Redirect = () => {
     const refreshToken = searchParams.get("refreshToken")
     const firstName = searchParams.get("firstName")
     const lastName = searchParams.get("lastName");
+    const cart = searchParams.get("cart");
     const error = searchParams.get("error");
 
     useEffect(() => {
         if (accessToken && refreshToken && firstName && lastName) {
             setAuth({
-                accessToken, refreshToken, firstName, lastName
+                accessToken, refreshToken, firstName, lastName, cart
             })
             window.location.href = "/"
         } else if (error) {

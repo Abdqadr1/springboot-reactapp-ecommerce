@@ -208,7 +208,7 @@ const NavBar = () => {
                         <Link className="nav-link" to="/shopping_cart" title="Shopping cart">
                           <i className="bi bi-cart4 fs-5 text-warning position-relative">
                           {
-                            (auth?.cart && auth?.cart > 0) &&
+                            (Number(auth?.cart) > 0) &&
                               <span style={{ fontSize: "x-small" }}
                                   className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
                               </span>

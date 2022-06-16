@@ -1,28 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const useSettings = (r = false) => {
+const useSettings = () => {
     const url = process.env.REACT_APP_SERVER_URL + "set/get";
-    const [settings, setSettings] = useState({});
-
-
-    useEffect(() => {
-        if (r) {
-             fetchSettings();
-        } else {
-            const savedSettings = getFromStorage();
-            if (savedSettings) {
-                setSettings(savedSettings);
-            } else {
-                fetchSettings()
-            }
-        }
-         
-     }, [r])
-
     function getFromStorage() {
-        return JSON.parse(localStorage.getItem("settings"));
+            return JSON.parse(localStorage.getItem("settings")) ;
     }
+
     function fetchSettings() {
         axios.get(url)
         .then(response => {
@@ -38,6 +22,21 @@ const useSettings = (r = false) => {
             console.log(response)
          })
     }
+
+    const [settings, setSettings] = useState(getFromStorage() ?? {});
+
+    useEffect(() => {
+        const savedSettings = getFromStorage();
+        if (savedSettings) {
+            setSettings(savedSettings);
+        } else {
+            fetchSettings()
+        } 
+        
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+     }, [])
+
+  
      
 
     return settings

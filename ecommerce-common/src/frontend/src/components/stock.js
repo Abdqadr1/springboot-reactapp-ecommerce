@@ -2,7 +2,7 @@ import { InputGroup, FormControl, Button, Form, ToastContainer, Toast } from "re
 import { useState, useRef,useEffect } from "react";
 import useAuth from "./custom_hooks/use-auth";
 import axios from "axios";
-import { isTokenExpired, SPINNERS_BORDER_HTML, getDiscountPrice,listFormData } from "./utilities";
+import { isTokenExpired, SPINNERS_BORDER_HTML, getDiscountPrice } from "./utilities";
 
 const Stock = ({ id, quantity }) => {
     const url = `${process.env.REACT_APP_SERVER_URL}cart/add`;
@@ -18,7 +18,6 @@ const Stock = ({ id, quantity }) => {
             return;
         }
         const data = new FormData(e.target);
-        listFormData(data)
 
         const btn = btnRef.current;
         btn.disabled = true;
@@ -28,9 +27,9 @@ const Stock = ({ id, quantity }) => {
             "Authorization": `Bearer ${auth?.accessToken}`
             }
         })
-        .then(response => {
-          const data = response.data;
-            setAuth({ ...auth, cart: data })
+        .then(() => {
+            const cart = auth.cart > 0 ? auth.cart : auth.cart + 1;
+            setAuth({ ...auth, cart })
             setShowToast(s => ({ ...s, show: true, message: "items added to shopping cart" }))
         })
         .catch(res => {
@@ -95,33 +94,42 @@ const QuantityNumber = ({ number, w, show, fn }) => {
     );
 }
 
-const CartItemQuantity = ({ quantity, price, discount, id, format, updateTotal }) => {
+const CartItemQuantity = ({ item, format, updateItem }) => {
     const url = `${process.env.REACT_APP_SERVER_URL}cart/update`;
-    // const [inputRef] = [useRef()]
-    const [number, setNumber] = useState(Number(quantity))
+    const [number, setNumber] = useState(Number(item.quantity))
     const [showToast, setShowToast] = useState(null)
     const [auth, setAuth] = useAuth();
+    const {discountPrice : discount, price, id:productId} = item.product;
     const realPrice = (discount > 0) ? getDiscountPrice(discount, price) : price;
+    const abortController = new AbortController();
+
+    useEffect(() => {
+        return() => {
+            abortController.abort();
+        }
+    })
     
 
     const addItem = (e, val) => {
         const data = new FormData();
-        data.set("quantity", val)
-        data.set("product_id", id)
+        data.set("quantity", val);
+        data.set("product_id", productId);
         const oldNumber = number;
         const el = e.target;
 
         el.disabled = true;
         axios.post(url,data, {
             headers: {
-            "Authorization": `Bearer ${auth?.accessToken}`
-            }
+                "Authorization": `Bearer ${auth?.accessToken}`
+            },
+            signal: abortController.signal
         })
-        .then(() => {
-            setAuth({ ...auth, cart: auth.cart+1 })
-            setNumber(val)
-            const diff = val - oldNumber;
-            updateTotal(s=>s+Number(diff*realPrice))
+        .then((res) => {
+            setAuth({ ...auth, cart: auth.cart + 1 });
+            item.quantity = val;
+            item.subTotal = Number(res.data);
+            updateItem(s => ([...s]));
+            setNumber(val);
         })
         .catch(res => {
             console.error(res)
@@ -151,8 +159,7 @@ const CartItemQuantity = ({ quantity, price, discount, id, format, updateTotal }
                     <div> = {format(price * number)}</div>
                 </>
             }
-            
-            {/* <input ref={inputRef} type="hidden" value={number} /> */}
+        
         </>
     )
 }

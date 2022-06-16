@@ -31,18 +31,9 @@ public class CartController {
     }
 
     @GetMapping("/view")
-    public Map<String, Object> getShoppingCartItems(){
+    public List<CartItem> getShoppingCartItems(){
         Customer customer = getCustomerDetails();
-        List<CartItem> items = cartService.getItemsByCustomer(customer);
-        Map<String, Object> result = new HashMap<>();
-        float total = 0.0F;
-        for(CartItem item : items){
-            total += item.getSubTotal();
-        }
-
-        result.put("items", items);
-        result.put("total", total);
-        return result;
+        return cartService.getItemsByCustomer(customer);
     }
 
     @PostMapping("/add")
@@ -65,9 +56,10 @@ public class CartController {
         return cartService.updateItem(quantity, productId, customer);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public String deleteItemInShoppingCart(@PathVariable("id") Integer id){
-        return cartService.deleteById(id);
+    @DeleteMapping("/remove/{id}")
+    public String removeItemInShoppingCart(@PathVariable("id") Integer id){
+        Customer customer = getCustomerDetails();
+        return cartService.removeByCustomerAndProduct(customer, id);
     }
 
 }

@@ -28,6 +28,7 @@ function App() {
           <div className="content">
           <Routes>
               <Route path="/" element={<ListCategories />} />
+              <Route path="/shop" element={<ListCategories />} />
               <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<Logout />} />
               <Route path="/register" element={<Register />} />

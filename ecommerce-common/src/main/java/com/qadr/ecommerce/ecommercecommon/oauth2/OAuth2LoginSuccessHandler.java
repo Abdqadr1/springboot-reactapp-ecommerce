@@ -2,6 +2,7 @@ package com.qadr.ecommerce.ecommercecommon.oauth2;
 
 import com.qadr.ecommerce.ecommercecommon.config.AppConfig;
 import com.qadr.ecommerce.ecommercecommon.model.CustomerDetails;
+import com.qadr.ecommerce.ecommercecommon.service.CartService;
 import com.qadr.ecommerce.ecommercecommon.service.CustomerService;
 import com.qadr.ecommerce.sharedLibrary.entities.AuthType;
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
@@ -25,6 +26,7 @@ import java.util.Optional;
 @Component
 public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
     @Autowired private CustomerService customerService;
+    @Autowired private CartService cartService;
     @Autowired private AppConfig appConfig;
     @Autowired private OAuth2AuthorizationRequestRepository oAuth2AuthorizationRequestRepository;
 
@@ -62,11 +64,13 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
         String firstName =  customer.getFirstName();
         String lastName = customer.getLastName();
 
+
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("accessToken", accessToken)
                 .queryParam("refreshToken", refreshToken)
                 .queryParam("firstName", firstName)
                 .queryParam("lastName", lastName)
+                .queryParam("cart", cartService.getItemsByCustomer(customer).size())
                 .build().toUriString();
     }
 

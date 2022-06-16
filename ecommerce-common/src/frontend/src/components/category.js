@@ -66,7 +66,6 @@ const Category = () => {
                     });
                 }).catch(err => {
                     setProducts([])
-                    console.log("not found")
                 })
             }
             return () => abortController.abort();

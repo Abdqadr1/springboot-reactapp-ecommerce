@@ -15,12 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 @Service
 public class CartService {
     @Autowired private CartItemRepo cartItemRepo;
     @Autowired private ProductRepo productRepo;
 
-    @Transactional
     public Integer addItem(Integer number, Integer productId, Customer customer) {
         Product product = productRepo.findById(productId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "This product does not exist"));
@@ -47,7 +47,6 @@ public class CartService {
     public void addNewItem(Integer number, Customer customer, Product product){
     }
 
-    @Transactional
     public Float updateItem(Integer quantity, Integer productId, Customer customer) {
         Product product = productRepo.findById(productId)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "This product does not exist"));
@@ -56,10 +55,14 @@ public class CartService {
         return byCustomerAndProduct.map(CartItem::getSubTotal).get();
     }
 
-    public String deleteById(Integer id) {
-        cartItemRepo.findById(id)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "This item no longer exist in your cart"));
-        cartItemRepo.deleteById(id);
-        return "Item deleted";
+    public String removeByCustomerAndProduct(Customer customer, Integer productId) {
+        Product product = new Product(productId);
+        Optional<CartItem> byCustomerAndProduct = cartItemRepo.findByCustomerAndProduct(customer, product);
+        if (byCustomerAndProduct.isPresent()){
+            cartItemRepo.deleteByCustomerAndProduct(customer.getId() , product.getId());
+        }else {
+            throw new CustomException(HttpStatus.BAD_REQUEST, "This item does not exist in your shopping cart");
+        }
+        return "Item removed from shopping cart";
     }
 }

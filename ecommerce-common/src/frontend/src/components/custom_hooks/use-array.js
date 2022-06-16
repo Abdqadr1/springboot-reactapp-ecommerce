@@ -13,9 +13,14 @@ const useArray = () => {
 
     const addToArray = (item) => setArray(state => ([...state, item]));
 
+      const filterWithId = (item) => {
+        const newArray = array.filter(arr => arr.id !== item.id);
+        setArray(newArray);
+    }
+
     
 
-    return {array, setArray, filterArray, addToArray, showOnlyUpdated};
+    return {array, setArray, filterArray, filterWithId, addToArray, showOnlyUpdated};
 }
  
 export default useArray;
