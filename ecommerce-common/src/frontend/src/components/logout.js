@@ -1,12 +1,14 @@
-import { useEffect } from "react";
-import useAuth from "./custom_hooks/use-auth";
+import { useEffect, useContext } from "react";
+import { useNavigate } from "react-router";
+import {AuthContext} from "./custom_hooks/use-auth";
 
 const Logout = () => {
-    const [, setAuth] = useAuth();
+    const { setAuth } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        setAuth({})
-        window.location.href= "/login"
+        setAuth(null); navigate("/login");
+        navigate("/login");
     },[])
 }
  

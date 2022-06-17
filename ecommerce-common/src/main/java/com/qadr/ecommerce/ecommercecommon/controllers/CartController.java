@@ -25,9 +25,8 @@ public class CartController {
 
     public Customer getCustomerDetails(){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Customer customer = customerService.getByEmail(email)
+        return customerService.getByEmail(email)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "No user found with email " + email));
-        return customer;
     }
 
     @GetMapping("/view")

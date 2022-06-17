@@ -1,0 +1,81 @@
+package com.qadr.ecommerce.ecommercecommon.controllers;
+
+import com.qadr.ecommerce.ecommercecommon.model.Address;
+import com.qadr.ecommerce.ecommercecommon.service.AddressService;
+import com.qadr.ecommerce.ecommercecommon.service.CustomerService;
+import com.qadr.ecommerce.sharedLibrary.entities.Country;
+import com.qadr.ecommerce.sharedLibrary.entities.Customer;
+import com.qadr.ecommerce.sharedLibrary.entities.State;
+import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
+
+@RestController
+@RequestMapping("/address")
+public class AddressController {
+    @Autowired private AddressService addressService;
+    @Autowired private CustomerService customerService;
+
+    @GetMapping("/countries")
+    public List<Country> getAllCountries (){
+        return addressService.findAllCountries();
+    }
+
+    @GetMapping("/states")
+    public List<State> getAllCountries (@RequestParam Integer id){
+        return addressService.findStates(new Country(id));
+    }
+
+    @GetMapping
+    public List<Address> getByCustomer(){
+        Customer customer = getCustomerDetails();
+        Address address = new Address();
+        address.setFirstName(customer.getFirstName());
+        address.setLastName(customer.getLastName());
+        address.setMainAddress(customer.getMainAddress());
+        address.setExtraAddress(customer.getExtraAddress());
+        address.setPhoneNumber(customer.getPhoneNumber());
+        address.setState(customer.getState());
+        address.setCity(customer.getCity());
+        address.setPostalCode(customer.getPostalCode());
+        address.setCountry(customer.getCountry());
+        List<Address> addresses = new ArrayList<>();
+        addresses.add(address);
+        List<Address> all = addressService.getAllByCustomer(customer);
+        addresses.addAll(all);
+        return addresses;
+    }
+
+    @PostMapping({"/add", "/edit"})
+    public Address saveAddress(@Valid Address address){
+        Customer customer = getCustomerDetails();
+        address.setCustomer(customer);
+        return addressService.saveAddress(address);
+    }
+
+    @DeleteMapping("/remove/{id}")
+    public String removeItemInShoppingCart(@PathVariable("id") Integer id){
+        Customer customer = getCustomerDetails();
+        addressService.deleteByCustomer(id, customer);
+        return  "Address removed successfully";
+    }
+
+    @GetMapping("/default/{id}")
+    public String setDefault(@PathVariable("id") Integer id){
+        getCustomerDetails();
+        addressService.setDefaultAddress(id);
+        return  "Address has been set has default";
+    }
+
+    public Customer getCustomerDetails(){
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return customerService.getByEmail(email)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "No user found with email " + email));
+    }
+}

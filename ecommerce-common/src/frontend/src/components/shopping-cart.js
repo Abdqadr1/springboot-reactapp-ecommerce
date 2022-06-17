@@ -1,6 +1,6 @@
 import useArray from "./custom_hooks/use-array";
-import useAuth from "./custom_hooks/use-auth";
-import { useEffect, useState } from "react";
+import {AuthContext} from "./custom_hooks/use-auth";
+import { useEffect, useState,useContext } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import { getShortName, isTokenExpired,formatPrice } from "./utilities";
@@ -17,7 +17,7 @@ const ShoppingCart = () => {
     const viewURL = `${url}/view`;
     const deleteURL = `${url}/remove`
     const fileUrl = process.env.REACT_APP_SERVER_URL + "product-images/";
-    const [auth, setAuth] = useAuth();
+    const {auth, setAuth} = useContext(AuthContext);
     const { array, setArray, filterArray } = useArray();
     const [total, setTotal] = useState(0);
     const [showDelete, setShowDelete] = useState({show:false, id:-1})
@@ -49,8 +49,7 @@ const ShoppingCart = () => {
             .catch(res => {
                 console.error(res)
                 if (isTokenExpired(res.response)) {
-                    setAuth({})
-                    window.location.reload();
+                    setAuth(null); navigate("/login");
                 }
                 const message = res.response.data.message ?? "An error ocurred, Try again";
                 setToast(s=>({...s, show:true, message }))
@@ -61,7 +60,7 @@ const ShoppingCart = () => {
         // return () => {
         //     abortController.abort();
         // }
-    }, [auth?.accessToken])
+    }, [auth])
 
 
     useEffect(() => {
@@ -90,8 +89,7 @@ const ShoppingCart = () => {
             .catch(res => {
                 console.error(res)
                 if (isTokenExpired(res.response)) {
-                    setAuth({})
-                    window.location.reload();
+                    setAuth(null); navigate("/login");
                 }
                 alert(res.response?.data.message)
             }).finally(() => setShowDelete(s=>({...s, show:false})))

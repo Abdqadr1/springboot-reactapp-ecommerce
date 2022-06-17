@@ -16,39 +16,52 @@ import OAuth2Redirect from "./components/oauth_redirect";
 import ForgotPassword from "./components/forgot-password";
 import ResetPassword from "./components/reset-password";
 import ShoppingCart from "./components/shopping-cart";
+import { AuthContext, getAuthFromLocalStorage, setAuthToLocalStorage } from "./components/custom_hooks/use-auth";
+import { useState } from "react";
+import Addresses from "./components/addresses";
 
 function App() {
 
-  const {COPYRIGHT} = useSettings();
+  const { COPYRIGHT } = useSettings();
+  const saved = getAuthFromLocalStorage();
+  const [auth, setA] = useState(saved ?? null)
+  const setAuth = (a) => {
+    setA(a);
+    setAuthToLocalStorage(a);
+  }
 
   return (
-    <div className="App">
-          <BrowserRouter>
-          <NavBar />
-          <div className="content">
-          <Routes>
-              <Route path="/" element={<ListCategories />} />
-              <Route path="/shop" element={<ListCategories />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/logout" element={<Logout />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/register-success" element={<RegisterSuccess />} />
-              <Route path="/c" element={<ListCategories />} />
-              <Route path="/c/:alias" element={<Category />} />
-              <Route path="/p" element={<Category />} />
-              <Route path="/p/:alias" element={<Product />} />
-              <Route path="/p/search/:keyword" element={<ProductSearch />} />
-              <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset_password" element={<ResetPassword />} />
-              <Route path="/shopping_cart" element={<ShoppingCart />} />
-              <Route path="*" element={<div className="my-4">Not found</div>} />
-          </Routes>
-          </div>
-        </BrowserRouter>
-      
-        <footer className="bg-dark py-3 text-light fw-bold">{COPYRIGHT ?? ""}</footer>
-    </div>
+    <AuthContext.Provider value={{auth, setAuth}}>
+        <div className="App">
+            <BrowserRouter>
+            <NavBar />
+            <div className="content">
+            <Routes>
+                <Route path="/" element={<ListCategories />} />
+                <Route path="/shop" element={<ListCategories />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/logout" element={<Logout />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/register-success" element={<RegisterSuccess />} />
+                <Route path="/c" element={<ListCategories />} />
+                <Route path="/c/:alias" element={<Category />} />
+                <Route path="/p" element={<Category />} />
+                <Route path="/p/:alias" element={<Product />} />
+                <Route path="/p/search/:keyword" element={<ProductSearch />} />
+                <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset_password" element={<ResetPassword />} />
+                <Route path="/shopping_cart" element={<ShoppingCart />} />
+                <Route path="/addresses" element={<Addresses />} />
+                <Route path="*" element={<div className="my-4">Not found</div>} />
+            </Routes>
+            </div>
+          </BrowserRouter>
+        
+          <footer className="bg-dark py-3 text-light fw-bold">{COPYRIGHT ?? ""}</footer>
+      </div>
+    </AuthContext.Provider>
+    
   );
 }
 

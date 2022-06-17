@@ -75,7 +75,7 @@ const MyNavbar = () => {
                                         }
                                         {
                                             (hasAnyAuthority(auth, ["Admin", "Salesperson"]))
-                                            ?  <Link className="dropdown-item" to="/account/shipping">Shipping</Link>
+                                            ?  <Link className="dropdown-item" to="/account/shipping_rate">Shipping</Link>
                                             : ""
                                         }
                                     </NavDropdown>

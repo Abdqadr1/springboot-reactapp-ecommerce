@@ -18,9 +18,15 @@ const useArray = () => {
         setArray(newArray);
     }
 
+       const updateArray = (item) => {
+        const index = array.findIndex(arr => arr.id === item.id);
+        array[index] = item;
+        setArray([...array]);
+    }
+
     
 
-    return {array, setArray, filterArray, filterWithId, addToArray, showOnlyUpdated};
+    return {array, setArray, filterArray, filterWithId, addToArray, showOnlyUpdated, updateArray};
 }
  
 export default useArray;

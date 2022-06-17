@@ -3,8 +3,12 @@ import { useEffect, useState } from "react";
 
 const useSettings = () => {
     const url = process.env.REACT_APP_SERVER_URL + "set/get";
-    const [settings, setSettings] = useState({});
 
+    function getFromStorage() {
+        return JSON.parse(localStorage.getItem("settings"));
+    }
+
+    const [settings, setSettings] = useState(getFromStorage() ?? {});
 
      useEffect(() => {
           const savedSettings = getFromStorage();
@@ -15,9 +19,6 @@ const useSettings = () => {
          }
      }, [])
 
-    function getFromStorage() {
-        return JSON.parse(localStorage.getItem("settings"));
-    }
     function fetchSettings() {
         axios.get(url)
         .then(response => {

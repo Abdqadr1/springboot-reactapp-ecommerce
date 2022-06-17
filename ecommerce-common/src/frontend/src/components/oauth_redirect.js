@@ -1,10 +1,11 @@
-import { useSearchParams } from "react-router-dom";
-import useAuth from "./custom_hooks/use-auth";
-import { useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import {AuthContext} from "./custom_hooks/use-auth";
+import { useEffect,useContext } from "react";
 
 const OAuth2Redirect = () => {
     const [searchParams,] = useSearchParams();
-    const [, setAuth] = useAuth();
+    const { setAuth } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const accessToken = searchParams.get("accessToken")
     const refreshToken = searchParams.get("refreshToken")
@@ -18,9 +19,9 @@ const OAuth2Redirect = () => {
             setAuth({
                 accessToken, refreshToken, firstName, lastName, cart
             })
-            window.location.href = "/"
+            navigate("/"); 
         } else if (error) {
-            window.location.href = "/login?error=" + error;
+            navigate("/login?error=" + error)
         }
     }, [])
 

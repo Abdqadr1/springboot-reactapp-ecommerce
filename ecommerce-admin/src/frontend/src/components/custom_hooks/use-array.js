@@ -24,12 +24,19 @@ const useArray = () => {
         setArray([...array]);
     }
 
+    const updateItemProp = (id, prop, val) => {
+        const index = array.findIndex(c => c.id === id);
+        const item = array[index];
+        item[prop] = val;
+        setArray([...array])
+    }
+
     useEffect(() => {
         // console.log("updating")
     }, [array])
     
 
-    return {array, setArray, filterArray, addToArray, showOnlyUpdated, updateArray, filterWithId};
+    return {array, setArray, filterArray, addToArray, showOnlyUpdated, updateArray, filterWithId, updateItemProp};
 }
  
 export default useArray;

@@ -1,3 +1,41 @@
 /* *{
     border: 2px solid red;
 } */
+
+.form-label {
+    width: 25% !important;
+    align-self: center;
+    margin-bottom: 0 !important;
+    color: #495057;
+}
+.form-input {
+    width: 70% !important;
+    color: #495057;
+}
+.modal-body {
+    max-width: 900px;
+    margin: 0 auto;
+    width: 800px
+}
+/* small phone screen */
+@media screen and (min-width: 200px) and (max-width: 768px) {
+
+    .modal-body,
+    .product_modal_body {
+        width: 100% !important;
+    }
+
+    .form-label,
+    .data-label {
+        width: 100%;
+        align-self: center;
+        margin-bottom: 0 !important;
+        padding-left: 0;
+    }
+
+
+    .form-input,
+    .data-input {
+        width: 100% !important;
+    }
+}

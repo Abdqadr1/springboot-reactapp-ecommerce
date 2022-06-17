@@ -23,7 +23,7 @@ const DeleteModal = ({ deleteObject, setDeleteObject, deletingFunc, type }) => {
     return ( 
          <Modal show={deleteObject.show}>
             <Modal.Header closeButton={false}>
-                <Modal.Title>Delete {type} {deleteObject.id + 1}</Modal.Title>
+                <Modal.Title>Delete {type}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
                 <p>This action cannot be undone.</p>

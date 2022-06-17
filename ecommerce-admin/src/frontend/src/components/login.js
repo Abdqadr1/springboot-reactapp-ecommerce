@@ -55,9 +55,9 @@ const Login = () => {
 
     return ( 
         <Row className="login-body p-3 justify-content-center">
-            <Col xs={12} md={8} lg={6} className="h-fit-content my-auto">
+            <Col xs={12} md={8} lg={6} className="border p-4 rounded h-fit-content my-auto">
                 <img className='login-logo' alt="logo" src={logo} />
-                <Form className="border p-4 rounded" onSubmit={handleSubmit} encType="multipart/form-data">
+                <Form className="" onSubmit={handleSubmit} encType="multipart/form-data">
                     <h4 className={`text-center py-3` + param.show}>{param.message}</h4>
                     <Alert ref={alertRef} className="text-center" tabIndex={-1} variant="danger" show={alert.show} dismissible onClose={toggleAlert}>
                         {alert.msg}

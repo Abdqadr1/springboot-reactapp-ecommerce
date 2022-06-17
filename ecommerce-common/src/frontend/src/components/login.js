@@ -1,9 +1,9 @@
 import { Row, Col, Form, Alert , Button} from "react-bootstrap";
-import { useEffect, useRef, useState } from "react";
-import useAuth from "./custom_hooks/use-auth";
+import { useContext, useEffect, useRef, useState } from "react";
+import { AuthContext } from "./custom_hooks/use-auth";
 import { SPINNERS_BORDER_HTML } from "./utilities";
 import axios from "axios";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const Login = () => {
     const url = `${process.env.REACT_APP_SERVER_URL}customer/login`;
@@ -15,7 +15,8 @@ const Login = () => {
 
     const [alertRef, btnRef] = [useRef(), useRef()];
     const [alert, setAlert] = useState({ show: (error) ? true :false, message: error ?? "", variant: 'danger' })
-    const [, setAuth] = useAuth();
+    const { setAuth } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (!alert.show) return;
@@ -33,7 +34,7 @@ const Login = () => {
         axios.post(url,data)
             .then((res) => { 
                 setAuth(res.data);
-                window.location.href="/";
+                navigate("/")
             })
             .catch(err => { 
                 const data = err.response.data;

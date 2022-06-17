@@ -1,7 +1,6 @@
 import { Col, Row } from "react-bootstrap";
 
 const Customer = ({ customer, showUpdate, setDeleteCustomer, toggleEnable, type }) => {
-    const fileURI = process.env.REACT_APP_SERVER_URL + "customer-photos/";
 
     function deleteCustomer() {
         setDeleteCustomer({

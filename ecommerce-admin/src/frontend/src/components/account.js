@@ -7,6 +7,7 @@ import Users from "./user/users";
 import Products from "./product/products";
 import SettingsPage from "./settings";
 import Customers from "./customers/customers";
+import ShippingRates from "./shipping_rate/shipping-rates";
 
 const Account = () => {
 
@@ -22,6 +23,7 @@ const Account = () => {
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/settings/:which" element={<SettingsPage />} />
                 <Route path="/customers" element={<Customers />} />
+                <Route path="/shipping_rate" element={<ShippingRates />} />
                 <Route path='*' element={<h2 className='text-center text-danger'>Page not found</h2>}></Route>
             </Routes>
         </div>

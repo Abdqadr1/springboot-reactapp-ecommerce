@@ -4,34 +4,37 @@ import { Col, Form, Row, Table, Button } from "react-bootstrap";
 import '../../css/users.css';
 import DeleteModal from "../delete_modal";
 import MyPagination from "../paging";
-import Customer from "./customer";
+import ShippingRate from "./shipping-rate";
 import { Navigate, useNavigate } from 'react-router-dom';
 import useAuth from "../custom_hooks/use-auth";
 import { isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML } from "../utilities";
 import useThrottle from "../custom_hooks/use-throttle";
 import useArray from "../custom_hooks/use-array";
-import ViewCustomer from "./view_customer";
+import AddShippingRate from "./add_shipping_rate";
+import UpdateShippingRate from "./update_shipping_rate";
 
-const Customers = () => {
-    const serverUrl = process.env.REACT_APP_SERVER_URL + "customer/";
+const ShippingRates = () => {
+    const serverUrl = process.env.REACT_APP_SERVER_URL + "shipping_rate/";
     const [width, setWidth] = useState(window.innerWidth);
     const navigate = useNavigate();
     const [{accessToken}] = useAuth();
     
     const searchRef = useRef();
     const searchBtnRef = useRef();
-    const {array:customers, setArray:setCustomers, filterWithId:removeCustomer, updateItemProp} = useArray();
-    const [updateCustomer, setUpdateCustomer] = useState({type:"View",show:false, id: -1, customer: {}});
-    const [deleteCustomer, setDeleteCustomer] = useState({show:false, id: -1});
+    const [countries, setCountries] = useState([]);
+    const {array:rates, setArray:setShippingRates,updateItemProp, filterWithId:removeShippingRate} = useArray();
+    const [updateRate, setUpdateRate] = useState({show:false, id: -1, rate: {}});
+    const [deleteRate, setDeleteRate] = useState({show:false, id: -1});
+    const [showAdd, setShowAdd] = useState(false);
     const showUpdate = (type, id) => {
-        const customer = customers.filter(u => u.id === id)[0]
-        setUpdateCustomer(s=> ({...s, type, show: true, id, customer}))
+        const rate = rates.filter(u => u.id === id)[0]
+        setUpdateRate(s=> ({...s, type, show: true, id, rate}))
     };
     const [pageInfo, setPageInfo] = useState({
         number: 1, totalPages: 1, startCount: 1,
         endCount: null, totalElements: null,numberPerPage: 1
     })
-    const [sort, setSort] = useState({ field: "firstName", dir: "asc" })
+    const [sort, setSort] = useState({ field: "id", dir: "asc" })
     
      const changePage = useCallback(function (number, keyword, button) {
         number = number ?? 1;
@@ -55,7 +58,7 @@ const Customers = () => {
                      totalElements: data.totalElements,
                      numberPerPage: data.numberPerPage
                  }))
-                 setCustomers(data.customers)
+                 setShippingRates(data.rates)
              })
              .catch(error => {
                 const response = error.response
@@ -75,6 +78,22 @@ const Customers = () => {
     useEffect(() => {
         changePage(pageInfo.number, "")
     }, [changePage, pageInfo?.number])
+
+    
+    useEffect(() => {
+        axios.get(`${serverUrl}countries`,{
+            headers: {
+                "Authorization": `Bearer ${accessToken}`
+            }
+        })
+            .then(response => {
+                const data = response.data;
+                setCountries(data)
+            })
+            .catch(err => {
+                console.error(err)
+            })
+    }, [])
     
     useEffect(() => {
         window.addEventListener("resize", handleWindowWidthChange)
@@ -83,15 +102,15 @@ const Customers = () => {
         }
     })
     
-    function toggleEnable(id, status) {
-        const url = serverUrl + `${id}/enable/${status}`;
+    function toggleCOD(id, status) {
+        const url = serverUrl + `${id}/cod/${status}`;
         axios.get(url,{
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
                 }
             })
             .then((response) => {
-                updateItemProp(id, "enabled", status)
+                updateItemProp(id, "cod", status)
                 alert(response.data)
             })
             .catch(error => {
@@ -99,27 +118,31 @@ const Customers = () => {
                 if(isTokenExpired(response)) navigate("/login/2")
             }) 
     }
-    function deletingCustomer() {
-        const id = deleteCustomer.id
+    function deletingShippingRate() {
+        const id = deleteRate.id
         const url = serverUrl + "delete/" + id;
         axios.get(url, {
              headers: {
                  "Authorization": `Bearer ${accessToken}`
              }
         })
-            .then(() => {
-                removeCustomer(customers)
-                setDeleteCustomer({...deleteCustomer, show:false})
-                alert("customer deleted!")
+            .then((res) => {
+                removeShippingRate(res.data)
+                setDeleteRate({...deleteRate, show:false})
+                alert("Shipping rate deleted")
             })
             .catch(error => {
             console.log(error.response)
         })
     }
 
-    function updatingCustomer(customer) {
-        setCustomers([customer])
-        searchRef.current.value = customer.email.split("@")[0]
+    function updatingRate(rate) {
+        setShippingRates([rate])
+        searchRef.current.value = rate.state;
+    }
+
+    function addShippingRate(rate) {
+        setShippingRates(s=>[...s, rate])
     }
 
     function handleFilter(event) {
@@ -152,13 +175,13 @@ const Customers = () => {
         else setSort({ field: id, dir: "asc" })
     }
 
-    function listCustomers(customers, type) {
-        return (customers.length > 0)
-            ? customers.map(customer => <Customer key={customer.id} type={type} customer={customer} toggleEnable={toggleEnable}
-                showUpdate={showUpdate} setDeleteCustomer={setDeleteCustomer} />)
+    function listShippingRates(rates, type) {
+        return (rates.length > 0)
+            ? rates.map(rate => <ShippingRate key={rate.id} type={type} rate={rate} toggleCOD={toggleCOD}
+                showUpdate={showUpdate} setDeleteRate={setDeleteRate} />)
             : ((type === 'detailed')
-                ? <tr><td colSpan={8} className="text-center" >No customer found</td></tr>
-                : <div className="text-center">No customer found</div>)
+                ? <tr><td colSpan={8} className="text-center" >No rate found</td></tr>
+                : <div className="text-center">No rate found</div>)
     }
 
     if(!accessToken) return <Navigate to="/login/2" />
@@ -166,11 +189,11 @@ const Customers = () => {
         <>
             <Row className="justify-content-between align-items-center p-3 mx-0">
                 <Col xs={12} md={5} className="my-2">
-                    <h3 className="">Manage Customers</h3>
+                    <h3 className="">Manage ShippingRates</h3>
                     <div>
-                        <a href={`${serverUrl}export/csv`} className="text-secondary cursor-pointer">
-                            <i title="Export customers to csv" className="bi bi-filetype-csv fs-2 ms-2"></i>  
-                        </a>
+                        <span onClick={() => setShowAdd(true)} className="text-secondary cursor-pointer">
+                            <i title="Add new shipping rate" className="bi bi-folder-plus fs-2"></i>
+                        </span>
                     </div>
                 </Col>
                 <Col xs={12} md={7} className="my-2">
@@ -201,33 +224,32 @@ const Customers = () => {
                     <Table bordered responsive hover className="more-details">
                     <thead className="bg-dark text-light">
                         <tr>
-                            <th onClick={handleSort} id="id" className="cursor-pointer">customer ID {isSort("id")}</th>
-                            <th onClick={handleSort} id="firstName" className="cursor-pointer">First Name {isSort("firstName")}</th>
-                            <th onClick={handleSort} id="lastName" className="cursor-pointer">Last Name {isSort("lastName")}</th>
-                            <th onClick={handleSort} id="email" className="cursor-pointer  hideable-col">Email {isSort("email")}</th>
+                            <th onClick={handleSort} id="id" className="cursor-pointer">ID {isSort("id")}</th>
                             <th onClick={handleSort} id="country" className="cursor-pointer">Country {isSort("country")}</th>
-                            <th onClick={handleSort} id="state" className="cursor-pointer  hideable-col">State {isSort("state")}</th>
-                            <th onClick={handleSort} id="city" className="cursor-pointer  hideable-col">City {isSort("city")}</th>
-                            <th>Enabled</th>
+                            <th onClick={handleSort} id="state" className="cursor-pointer">State {isSort("state")}</th>
+                            <th onClick={handleSort} id="rate" className="cursor-pointer  hideable-col">Rate {isSort("rate")}</th>
+                            <th onClick={handleSort} id="days" className="cursor-pointer">Days {isSort("days")}</th>
+                            <th>COD Supported</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {listCustomers(customers,"detailed")}
+                        {listShippingRates(rates,"detailed")}
                     </tbody>
                 </Table> : ""
             }
             {
                 (width <= 768)
                     ? <div className="less-details p-2">
-                        {listCustomers(customers, "less")}
+                        {listShippingRates(rates, "less")}
                     </div> : ""
             }
-            {(customers.length > 0) ? <MyPagination pageInfo={pageInfo} setPageInfo={setPageInfo} /> : ""}
-            <ViewCustomer data={updateCustomer} setData={setUpdateCustomer} updatingCustomer={updatingCustomer}/>
-            <DeleteModal deleteObject={deleteCustomer} setDeleteObject={setDeleteCustomer}   deletingFunc={deletingCustomer} type="customer" />
+            {(rates.length > 0) ? <MyPagination pageInfo={pageInfo} setPageInfo={setPageInfo} /> : ""}
+            <AddShippingRate show={showAdd} setShow={setShowAdd} addShippingRate={addShippingRate} countries={countries} />
+            <UpdateShippingRate updateRate={updateRate} setUpdateRate={setUpdateRate} updatingRate={updatingRate} countries={countries} />
+            <DeleteModal deleteObject={deleteRate} setDeleteObject={setDeleteRate} deletingFunc={deletingShippingRate} type="Shipping Rate" />
         </>
      );
 }
  
-export default Customers;
+export default ShippingRates;

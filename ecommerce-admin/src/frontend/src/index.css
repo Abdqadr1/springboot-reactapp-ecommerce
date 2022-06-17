@@ -56,7 +56,7 @@ code {
 .modal-body {
   max-width: 900px;
   margin: 0 auto;
-  min-width: 650px
+  min-width: 700px
 }
 .product_modal_body{
     width: 100% !important;
@@ -117,9 +117,19 @@ i.edit:hover {
   margin-bottom: 0 !important;
   color: #495057;
 }
+.data-label{
+  width: 30% !important;
+  align-self: center;
+  margin-bottom: 0 !important;
+  color: #495057;
+}
 
 .form-input {
   width: 70% !important;
+  color: #495057;
+}
+.data-input {
+  width: 65% !important;
   color: #495057;
 }
 
@@ -183,7 +193,7 @@ i.edit:hover {
     min-width: 100% !important;
   }
 
-  .form-label{
+  .form-label, .data-label{
     width: 100%;
     align-self: center;
     margin-bottom: 0 !important;
@@ -194,7 +204,7 @@ i.edit:hover {
     max-width: 80%;
   }
 
-  .form-input {
+  .form-input, .data-input {
     width: 100% !important;
   }
 
