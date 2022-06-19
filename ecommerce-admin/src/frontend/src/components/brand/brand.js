@@ -39,22 +39,21 @@ const Brand = ({ brand, showUpdate, setDeleted, type }) => {
             <Col xs="7">
               <span className="d-block mb-3">{brand.name}</span>
               <span className="d-block mb-3">{brandCategories}</span>
-              <Row className="justify-content-start align-item-center">
-                <Col xs="4">
+              <div className="justify-content-start d-flex">
+                
                   <i
-                    className="bi bi-pencil-fill edit fs-6"
+                    className="bi bi-pencil-fill edit fs-6 mx-4"
                     title="edit category"
                     onClick={() => showUpdate(brand.id)}
                   ></i>
-                </Col>
-                  <Col xs="4">
+                  
                     <i
-                      className="bi bi-archive-fill delete fs-6"
+                      className="bi bi-archive-fill delete fs-6 mx-4"
                       title="delete category"
                       onClick={deleteBrand}
                     ></i>
-                  </Col>
-              </Row>
+                  
+              </div>
             </Col>
           </Row>
         );

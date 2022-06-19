@@ -168,7 +168,7 @@ const ViewCustomer = ({ data, setData, updatingCustomer }) => {
                                 </Form.Group>
                             </fieldset>
                         </Tab>
-                        <Tab as={NavLink} eventKey="access" title="Access" className="px-2" disabled={false}>
+                        <Tab as={NavLink} eventKey="address" title="Address" className="px-2" disabled={false}>
                             <fieldset disabled={data.type === "View"}>
                                 <Form.Group className="mb-3 row justify-content-center mx-0" controlId="mainAddress">
                                     <Form.Label className="form-label">Address 1:</Form.Label>

@@ -21,6 +21,7 @@ const AddAddressModal = ({ countries, show, setShow,setAdd }) => {
     const toggleAlert = () => setAlert({ ...alert, show: !alert.show })
 
     useEffect(() => {
+        const abortController = new AbortController();
         if (country !== null) {
             axios.get(`${url}/states?id=${country.id}`,{
             headers: {
@@ -35,7 +36,9 @@ const AddAddressModal = ({ countries, show, setShow,setAdd }) => {
                 console.error(err)
             })
          }
-        
+          return () => {
+            abortController.abort();
+        }
     }, [country])
 
     
@@ -50,7 +53,6 @@ const AddAddressModal = ({ countries, show, setShow,setAdd }) => {
         setAlert((state) => ({ ...state, show: false }));
 
         const data = new FormData(event.target);
-        listFormData(data)
 
         const button = submitBtnRef.current
         button.disabled=true

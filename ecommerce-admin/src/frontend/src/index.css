@@ -56,6 +56,7 @@ code {
 .modal-body {
   max-width: 900px;
   margin: 0 auto;
+  width: 90%;
   min-width: 700px
 }
 .product_modal_body{
@@ -65,12 +66,13 @@ code {
 
 
 i.delete {
+  display: inline-block;
   cursor: pointer;
   border: 1px solid #dc3545;
   border-radius: 5px;
   color: #dc3545;
   margin: 3px;
-  padding: 7px;
+  padding: 5px 6px;
 }
 
 i.delete:hover {
@@ -186,6 +188,12 @@ i.edit:hover {
     display: none;
   }
 }
+.main-image {
+  display: inline-block;
+  max-width: 92%;
+  max-height: 250px;
+  margin: 0 auto;
+}
 
 /* small phone screen */
 @media screen and (min-width: 200px) and (max-width: 768px) {
@@ -194,10 +202,10 @@ i.edit:hover {
   }
 
   .form-label, .data-label{
-    width: 100%;
+    width: 100% !important;
     align-self: center;
-    margin-bottom: 0 !important;
-    padding-left: 0;
+    margin-bottom: 10px !important;
+    padding-left: 0 !important;
   }
 
   .person-span {
@@ -222,11 +230,6 @@ i.edit:hover {
 
   .less-details {
     display: block;
-  }
-
-  i.delete,i.edit, i.view {
-    margin: 1px;
-    padding: 5px;
   }
 
   .table-dp {

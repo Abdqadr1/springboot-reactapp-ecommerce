@@ -2,7 +2,7 @@ import { Modal, Form, Alert, Button, Row } from "react-bootstrap";
 import { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "./custom_hooks/use-auth";
-import { listFormData,SPINNERS_BORDER_HTML, isTokenExpired } from "./utilities";
+import { SPINNERS_BORDER_HTML, isTokenExpired } from "./utilities";
 
 import useArray from "./custom_hooks/use-array";
 import { useNavigate } from "react-router";
@@ -16,16 +16,20 @@ const EditAddressModal = ({ countries, showEdit, setShowEdit, updateAddresses })
     const [alert, setAlert] = useState({ show: false, message: "", variant: "success" });
     const alertRef = useRef();
     const submitBtnRef = useRef();
-    const {auth} = useContext(AuthContext)
+    const { auth, setAuth } = useContext(AuthContext);
+    
+    const [form, setForm] = useState({});
 
     const toggleAlert = () => setAlert({ ...alert, show: !alert.show })
 
     useEffect(() => {
+        const abortController = new AbortController();
         if (country !== null) {
             axios.get(`${url}/states?id=${country.id}`,{
             headers: {
                 "Authorization": `Bearer ${auth?.accessToken}`
-            }
+                },
+            signal: abortController.signal
         })
             .then(response => {
                 const data = response.data;
@@ -33,41 +37,58 @@ const EditAddressModal = ({ countries, showEdit, setShowEdit, updateAddresses })
             })
             .catch(err => {
                 console.error(err)
+                if (isTokenExpired(err.response)) {
+                    setAuth(null); navigate("/login");
+                }
             })
-         }
+        }
+        return () => abortController.abort();
         
     }, [country])
 
-    
     useEffect(() => {
         if (!alert.show) return;
         alertRef.current && alertRef.current.focus()
     }, [alert])
 
-    
+    useEffect(() => {
+        setAlert(state => ({ ...state, show: false}));
+        const address = showEdit.address;
+        if (address.id) {
+            setForm({ ...address })
+            setState(address.state)
+            setCountry({...address.country})
+        }
+    }, [showEdit?.address])
+
+    const handleInput = (event) => {
+        setForm({
+            ...form,
+            [event.target.id]: event.target.value
+        })
+    }
+
     const handleSubmitEdit = (event) => {
         event.preventDefault();
         setAlert((state) => ({ ...state, show: false }));
 
         const data = new FormData(event.target);
-        listFormData(data)
 
         const button = submitBtnRef.current
         button.disabled=true
         button.innerHTML = SPINNERS_BORDER_HTML
-        axios.post(`${url}/add`, data, {
+        axios.post(`${url}/edit`, data, {
             headers: {
                 "Authorization": `Bearer ${auth?.accessToken}`
             }
         })
             .then(response => {
-                console.log(response.data)
-                // setAdd(s=>([...s, response.data]));
-                setAlert({ show: true, message: "Address added" })
+                updateAddresses(response.data)
+                setAlert({ show: true, message: "Address updated" })
             })
             .catch(error => { 
                 const response = error.response
-                if(isTokenExpired(response)) navigate("/login/2")
+                if (isTokenExpired(response)) { setAuth(null); navigate("/login/2"); }
                 else setAlert({show:true, message: response.data.message, variant: "danger"})
             }).finally(() => {
                 button.disabled=false
@@ -90,32 +111,33 @@ const EditAddressModal = ({ countries, showEdit, setShowEdit, updateAddresses })
         <>
          <Modal show={showEdit.show} fullscreen={true} onHide={()=> setShowEdit(s=>({...s, show:false}))}>
             <Modal.Header closeButton>
-                <Modal.Title>Edit Address (ID : {showEdit.address?.id ?? ""})</Modal.Title>
+                <Modal.Title>Edit Address (ID : {form?.id ?? ""})</Modal.Title>
             </Modal.Header>
             <Modal.Body className="border modal-body">
                 <Alert ref={alertRef} tabIndex={-1} variant={alert.variant} show={alert.show} dismissible onClose={toggleAlert}>
                     {alert.message}
                 </Alert>
-                <Form className="my-4" onSubmit={handleSubmitEdit}>
+                    <Form className="my-4" onSubmit={handleSubmitEdit}>
+                        <input name="id" type="hidden" value={form?.id ?? ""} />
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="firstName">
                             <Form.Label className="form-label">First Name:</Form.Label>
-                            <Form.Control name="firstName" className="form-input" placeholder="Enter first name" required maxLength="45"/>
+                            <Form.Control value={form?.firstName ?? ""} onChange={handleInput} name="firstName" className="form-input" required maxLength="45"/>
                         </Form.Group>
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="lastName">
                             <Form.Label className="form-label">Last Name:</Form.Label>
-                            <Form.Control name="lastName" className="form-input" placeholder="Enter last name" required maxLength="45"/>
+                            <Form.Control value={form?.lastName ?? ""} onChange={handleInput} name="lastName" className="form-input" required maxLength="45"/>
                         </Form.Group>
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="phoneNumber">
                             <Form.Label className="form-label">Phone Number:</Form.Label>
-                            <Form.Control name="phoneNumber" className="form-input" placeholder="Enter phone number" required maxLength="15"/>
+                            <Form.Control value={form?.phoneNumber ?? ""} onChange={handleInput} name="phoneNumber" className="form-input" required maxLength="15"/>
                         </Form.Group>
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="mainAddress">
                             <Form.Label className="form-label">Address 1:</Form.Label>
-                            <Form.Control name="mainAddress" className="form-input" required maxLength="64"/>
+                            <Form.Control value={form?.mainAddress ?? ""} onChange={handleInput} name="mainAddress" className="form-input" required maxLength="64"/>
                         </Form.Group>
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="extraAddress">
                             <Form.Label className="form-label">Address 2 (Optional):</Form.Label>
-                            <Form.Control name="extraAddress" className="form-input"  maxLength="65"/>
+                            <Form.Control value={form?.extraAddress ?? ""} onChange={handleInput} name="extraAddress" className="form-input"  maxLength="65"/>
                         </Form.Group>
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="country">
                             <Form.Label className="form-label">Country:</Form.Label>
@@ -126,18 +148,18 @@ const EditAddressModal = ({ countries, showEdit, setShowEdit, updateAddresses })
                         </Form.Group>
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="state">
                             <Form.Label className="form-label">State:</Form.Label>
-                            <Form.Control value={state ?? ""} onChange={e=>handleSelect(e,"s")} list="statesList" name="state" className="form-input" placeholder="Enter state" required  maxLength="45"/>
+                            <Form.Control value={state ?? ""} onChange={e=>handleSelect(e,"s")} list="statesList" name="state" className="form-input" required  maxLength="45"/>
                                 <datalist id="statesList">
                                     {states.map(s => <option key={s.id} value={s.name}/>)}
                                 </datalist>
                         </Form.Group>
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="city">
                             <Form.Label className="form-label">City:</Form.Label>
-                            <Form.Control name="city" className="form-input" placeholder="Enter city" required  maxLength="45"/>
+                            <Form.Control value={form?.city ?? ""} onChange={handleInput} name="city" className="form-input" required  maxLength="45"/>
                         </Form.Group>
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="postalCode">
                             <Form.Label className="form-label">Postal Code:</Form.Label>
-                            <Form.Control name="postalCode" className="form-input" placeholder="Enter postal code" required  maxLength="15"/>
+                            <Form.Control value={form?.postalCode ?? ""} onChange={handleInput} name="postalCode" className="form-input" required  maxLength="15"/>
                         </Form.Group>
                         
                         <Row className="justify-content-center">

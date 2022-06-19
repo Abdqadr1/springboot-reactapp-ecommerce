@@ -69,14 +69,6 @@ class AddressRepoTest {
     }
 
     @Test
-    void testSetDefaultAddress(){
-        int id = 1;
-        addressRepo.setDefaultAddress(id);
-        Address address = addressRepo.findById(id).get();
-        assertThat(address.isDefaultAddress()).isTrue();
-    }
-
-    @Test
     void testDeleteByCustomerAndId(){
         Customer customer = new Customer(12);
         int id  = 1;

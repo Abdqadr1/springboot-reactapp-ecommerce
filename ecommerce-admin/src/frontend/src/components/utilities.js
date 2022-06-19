@@ -144,3 +144,25 @@ export const getCategoriesWithHierarchy = async (token) => {
     })
     return hierarchies
 }
+
+export function formatDate(date) {
+    if (date) {
+        const formatter = new Intl.DateTimeFormat("en-GB", {dateStyle: "short", timeStyle: "short"});
+         return formatter.format(new Date(date))
+    }
+    return "";
+}
+
+export const formatPrice = (price, s, m, t, pos) => {
+    t = t === "COMMA" ? "," : ".";
+    if (price || price === 0) {
+        const re = '\\d(?=(\\d{3})' + (m > 0 ? '\\.' : '$') + ')';
+        let f = price.toFixed(Math.max(0, ~~m)).replace(new RegExp(re, 'g'), '$&' + t);
+        if (pos.toLowerCase().startsWith("before")) {
+            return `${s}${f}`;
+        } else {
+            return `${f}${s}`;
+        }
+    }
+    
+}

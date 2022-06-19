@@ -159,7 +159,7 @@ const AccountDetails = ({show, setShow}) => {
                         <Form.Label className="form-label"  style={{alignSelf: "start"}}>Photo:</Form.Label>
                         <div className="form-input row">
                             <Form.Control onChange={handleSelectImage} className="col-10" type="file" accept="image/jpg, image/png, image/jpeg" />
-                            <label htmlFor="photo" className="ms-0 w-50 person-span mt-3 cursor-pointer bg-secondary">
+                            <label htmlFor="photo" className="ms-0 w-50 person-span mt-3 cursor-pointer bg-light">
                                 {image}
                             </label>
                         </div>

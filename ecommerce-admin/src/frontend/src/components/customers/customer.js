@@ -41,12 +41,12 @@ const Customer = ({ customer, showUpdate, setDeleteCustomer, toggleEnable, type 
                 </Col>
                 <Col xs="7">
                     <span className="d-block mb-3">{customer.country.name}</span>
-                    <Row className="justify-content-start align-item-center">
-                        <Col xs="3">{enabled}</Col>
-                        <Col xs="3"><i className="bi bi-journal-text view fs-2" title="view details" onClick={() => showUpdate("View",customer.id)}></i></Col>
-                        <Col xs="3"><i className="bi bi-pencil-fill edit fs-6" title="edit customer" onClick={()=> showUpdate("Edit",customer.id)}></i></Col>
-                        <Col xs="3"><i className="bi bi-archive-fill delete fs-6" title="delete customer" onClick={deleteCustomer}></i></Col>
-                    </Row>
+                    <div className="d-flex justify-content-start align-item-center">
+                        {enabled}
+                        <i className="bi bi-journal-text view fs-2 ms-4 me-2" title="view details" onClick={() => showUpdate("View",customer.id)}></i>
+                        <i className="bi bi-pencil-fill edit fs-6 mx-3" title="edit customer" onClick={()=> showUpdate("Edit",customer.id)}></i>
+                        <i className="bi bi-archive-fill delete fs-6 mx-3" title="delete customer" onClick={deleteCustomer}></i>
+                    </div>
                 </Col>
             </Row>
         )

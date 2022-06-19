@@ -22,9 +22,10 @@ const Addresses = () => {
     const [showDelete, setShowDelete] = useState({show:false, id:-1})
     const [showEdit, setShowEdit] = useState({show:false, address:{}})
     const [showAdd, setShowAdd] = useState(false)
-    const abortController = new AbortController();
+    // const abortController = new AbortController();
 
     useEffect(() => {
+        const abortController = new AbortController();
         if (auth) {
             axios.get(url, {
                 headers: {
@@ -37,25 +38,27 @@ const Addresses = () => {
             })
             .catch(res => {
                 console.error(res)
-                if (isTokenExpired(res.response)) {
+                if (isTokenExpired(res?.response)) {
                     setAuth(null); navigate("/login");
                 }
-                const message = res.response.data.message ?? "An error ocurred, Try again";
+                const message = res.response.data?.message ?? "An error ocurred, Try again";
                 setToast(s=>({...s, show:true, message }))
             })
         } else {
            navigate("/login") 
         }
-        // return () => {
-        //     abortController.abort();
-        // }
+        return () => {
+            abortController.abort();
+        }
     }, [auth])
 
     useEffect(() => {
+        const abortController = new AbortController();
         axios.get(`${url}/countries`,{
             headers: {
                 "Authorization": `Bearer ${auth?.accessToken}`
-            }
+            },
+            signal: abortController.signal
         })
             .then(response => {
                 const data = response.data;
@@ -63,18 +66,23 @@ const Addresses = () => {
             })
             .catch(err => {
                 console.error(err)
+                if (isTokenExpired(err?.response)) {
+                    setAuth(null); navigate("/login");
+                }
             })
+
+        return () => {
+            abortController.abort();
+        }
     }, [])
 
 
-     function handleDelete() {
+    function handleDelete() {
         const id = showDelete.id
-
          axios.delete(`${deleteURL}/${id}`, {
                 headers: {
                     "Authorization": `Bearer ${auth?.accessToken}`
-                },
-                signal: abortController.signal
+                }
             })
             .then(response => {
                 const data = response.data;
@@ -89,11 +97,32 @@ const Addresses = () => {
                 alert(res.response?.data.message)
             }).finally(() => setShowDelete(s=>({...s, show:false})))
     }
+    function setDefaultAddress(id) {
+         axios.get(`${url}/default/${id}`,{
+            headers: {
+                "Authorization": `Bearer ${auth?.accessToken}`
+            }
+        })
+        .then(() => {
+            const newArray = array.map(a => {
+                a.defaultAddress = (a.id === id);
+                return a;
+            })
+            setArray([...newArray])
+        })
+        .catch(err => {
+            console.error(err)
+            if (isTokenExpired(err?.response)) {
+                setAuth(null); navigate("/login");
+            }
+            setToast(s=>({...s, show:true, message: "Could not set address as default"}))
+        })
+    }
 
 
      function listAddresses() {
         return (
-            <Row className="mx-0 justify-content-start mt-3">
+            <Row className="mx-0 justify-content-center justify-content-md-start mt-3">
                 {
                     array.map((c,i) => 
                         <Col xs={11} md={6} key={c.id} className="my-2">
@@ -104,15 +133,18 @@ const Addresses = () => {
                                         &nbsp;
                                         {c.defaultAddress ?
                                             <span className="text-danger">[Default]</span>
-                                            : <span className="text-success">[Set as Default]</span>}
+                                            : <span onClick={e=>setDefaultAddress(c.id)} className="text-success action">[Set as Default]</span>}
                                     </span>
                                     <span className="fs-5 fw-bold">
-                                        {(c.id) && <>
-                                            <i onClick={e=>setShowEdit(s=>({...s, show:true, address:c}))} className="bi bi-pencil-square mx-1 px-2" title="edit"></i>
-                                            <i
+                                        {(c.id > 0) && <>
+                                                <i onClick={e=>setShowEdit(s=>({...s, show:true, address:c}))} 
+                                                    className="bi bi-pencil-square mx-1 px-2 action text-primary" title="edit"
+                                                ></i>
+                                                <i
                                             onClick={e => setShowDelete(s => ({...s, show:true, id:c.id})) } 
-                                            className="bi bi-archive-fill mx-1 px-2" title="delete">
-                                            </i></>}
+                                            className="bi bi-archive-fill mx-1 px-2 text-danger action" title="delete">
+                                            </i>
+                                        </>}
                                     </span>
                                 </Card.Header>
                                 <Card.Body className="px-3 pb-5">

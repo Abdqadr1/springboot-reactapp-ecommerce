@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Transactional
 @Service
@@ -39,10 +42,13 @@ public class AddressService {
         return address;
     }
 
-    public void setDefaultAddress(Integer id){
-        addressRepo.findById(id)
-                .orElseThrow(()-> new CustomException(HttpStatus.BAD_REQUEST, "Address does not exist"));
-        addressRepo.setDefaultAddress(id);
+    public void setDefaultAddress(Integer id, Customer customer){
+        List<Address> addresses = addressRepo.findByCustomer(customer)
+                .stream()
+                .peek(address -> {
+                    address.setDefaultAddress(Objects.equals(address.getId(), id));
+                }).collect(Collectors.toList());
+        addressRepo.saveAll(addresses);
     }
 
 

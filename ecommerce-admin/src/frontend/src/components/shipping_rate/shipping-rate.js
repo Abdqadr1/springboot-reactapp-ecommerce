@@ -38,11 +38,11 @@ const ShippingRate = ({ rate, showUpdate, setDeleteRate, toggleCOD, type }) => {
                 </Col>
                 <Col xs="7">
                     <span className="d-block mb-3">{rate.days} days</span>
-                    <Row className="justify-content-start align-item-center">
-                        <Col xs="3">{cod}</Col>
-                        <Col xs="3"><i className="bi bi-pencil-fill edit fs-6" title="edit rate" onClick={()=> showUpdate("Edit",rate.id)}></i></Col>
-                        <Col xs="3"><i className="bi bi-archive-fill delete fs-6" title="delete rate" onClick={deleteCustomer}></i></Col>
-                    </Row>
+                    <div className="justify-content-start d-flex">
+                        {cod}
+                        <i className="bi bi-pencil-fill edit fs-6 ms-4 me-3" title="edit rate" onClick={()=> showUpdate("Edit",rate.id)}></i>
+                        <i className="bi bi-archive-fill delete fs-6 mx-3" title="delete rate" onClick={deleteCustomer}></i>
+                    </div>
                 </Col>
             </Row>
         )

@@ -36,6 +36,7 @@ const ShoppingCart = () => {
     }
 
     useEffect(() => {
+        const abortController = new AbortController();
         if (auth?.accessToken) {
             axios.get(viewURL, {
                 headers: {
@@ -57,9 +58,9 @@ const ShoppingCart = () => {
         } else {
            navigate("/login") 
         }
-        // return () => {
-        //     abortController.abort();
-        // }
+        return () => {
+            abortController.abort();
+        }
     }, [auth])
 
 

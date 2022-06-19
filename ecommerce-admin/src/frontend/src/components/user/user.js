@@ -45,11 +45,11 @@ const User = ({ user, showUpdate, setDeleteUser, toggleEnable, type }) => {
                 <Col xs="7">
                     <span className="d-block mb-3">{user.firstName} {user.lastName}</span>
                     <span className="d-block mb-3 word-break">[{roles}]</span>
-                    <Row className="justify-content-start align-item-center">
-                        <Col xs="3">{enabled}</Col>
-                        <Col xs="4"><i className="bi bi-pencil-fill edit fs-6" title="edit user" onClick={()=> showUpdate(user.id)}></i></Col>
-                        <Col xs="4"><i className="bi bi-archive-fill delete fs-6" title="delete user" onClick={deleteUser}></i></Col>
-                    </Row>
+                    <div className="d-flex justify-content-start align-item-center">
+                        {enabled}
+                        <i className="bi bi-pencil-fill edit fs-6 ms-4 me-2" title="edit user" onClick={()=> showUpdate(user.id)}></i>
+                        <i className="bi bi-archive-fill delete fs-6 ms-4 mx-2" title="delete user" onClick={deleteUser}></i>
+                    </div>
                 </Col>
             </Row>
         )

@@ -36,6 +36,7 @@ public class AddressController {
     public List<Address> getByCustomer(){
         Customer customer = getCustomerDetails();
         Address address = new Address();
+        address.setId(-1);
         address.setFirstName(customer.getFirstName());
         address.setLastName(customer.getLastName());
         address.setMainAddress(customer.getMainAddress());
@@ -45,9 +46,14 @@ public class AddressController {
         address.setCity(customer.getCity());
         address.setPostalCode(customer.getPostalCode());
         address.setCountry(customer.getCountry());
+
         List<Address> addresses = new ArrayList<>();
-        addresses.add(address);
         List<Address> all = addressService.getAllByCustomer(customer);
+        boolean isDefaultAddress = all.stream().anyMatch(Address::isDefaultAddress);
+
+         if (!isDefaultAddress) address.setDefaultAddress(true);
+
+        addresses.add(address);
         addresses.addAll(all);
         return addresses;
     }
@@ -68,8 +74,8 @@ public class AddressController {
 
     @GetMapping("/default/{id}")
     public String setDefault(@PathVariable("id") Integer id){
-        getCustomerDetails();
-        addressService.setDefaultAddress(id);
+        Customer customer = getCustomerDetails();
+        addressService.setDefaultAddress(id, customer);
         return  "Address has been set has default";
     }
 

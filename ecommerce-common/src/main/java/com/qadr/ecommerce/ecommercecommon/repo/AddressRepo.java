@@ -21,7 +21,4 @@ public interface AddressRepo extends JpaRepository<Address, Integer> {
     @Query("DELETE FROM Address a WHERE a.id =?1 AND a.customer.id=?2")
     void deleteByIdAndCustomer(Integer integer, Integer customerId);
 
-    @Modifying
-    @Query("UPDATE Address a SET a.defaultAddress=true WHERE a.id=?1")
-    void setDefaultAddress(Integer id);
 }

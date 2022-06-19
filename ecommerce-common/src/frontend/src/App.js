@@ -21,6 +21,10 @@ import { useState } from "react";
 import Addresses from "./components/addresses";
 
 function App() {
+  
+  // if ("serviceWorker" in window.navigator) {
+  //   navigator.serviceWorker.register("worker.js");
+  // }
 
   const { COPYRIGHT } = useSettings();
   const saved = getAuthFromLocalStorage();

@@ -49,7 +49,7 @@ const ViewProduct = ({ viewProduct, setViewProduct }) => {
          
         <Modal show={viewProduct.show} fullscreen={true} onHide={hideModal}>
             <Modal.Header closeButton>
-                <Modal.Title>Edit Product (ID : {product?.id})</Modal.Title>
+                <Modal.Title>View Product (ID : {product?.id})</Modal.Title>
             </Modal.Header>
             <Modal.Body className="border product_modal_body">
                 <Form className="add-user-form"  disabled>

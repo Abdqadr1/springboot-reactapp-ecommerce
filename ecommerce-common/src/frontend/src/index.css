@@ -17,6 +17,14 @@
     margin: 0 auto;
     width: 800px
 }
+
+.action{
+    cursor: pointer;
+}
+.action:hover{
+    filter: brightness(200%);
+}
+
 /* small phone screen */
 @media screen and (min-width: 200px) and (max-width: 768px) {
 

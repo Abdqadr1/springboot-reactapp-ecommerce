@@ -46,27 +46,27 @@ const Category = ({ category, showUpdate, setDeleted, toggleEnable, type }) => {
             <Col xs="7">
               <span className="d-block mb-3">{category.name}</span>
               <span className="d-block mb-3">{category.alias}</span>
-              <Row className="justify-content-start align-item-center mx-0">
-                <Col xs="3">{enabled}</Col>
-                <Col xs="4">
+              <div className="justify-content-start d-flex">
+                {enabled}
+                
                   <i
-                    className="bi bi-pencil-fill edit fs-6"
+                    className="bi bi-pencil-fill edit fs-6 ms-4 me-3"
                     title="edit category"
                     onClick={() => showUpdate(category.id)}
                   ></i>
-                </Col>
+                
                 {category.parent ? (
-                  <Col xs="4">
+                  
                     <i
-                      className="bi bi-archive-fill delete fs-6"
+                      className="bi bi-archive-fill delete fs-6 mx-3"
                       title="delete category"
                       onClick={deleteCategory}
                     ></i>
-                  </Col>
+                  
                 ) : (
                   ""
                 )}
-              </Row>
+              </div>
             </Col>
           </Row>
         );

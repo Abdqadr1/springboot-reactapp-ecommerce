@@ -76,45 +76,42 @@ const Product = ({ product, showUpdate, setDeleted, toggleEnable, type, showView
             <Col xs="7">
               <span className="d-block mb-3">{product.name}</span>
               <span className="d-block mb-3">{product.brand.name}</span>
-              <Row className="justify-content-start align-item-center">
+              <div className="justify-content-start d-flex">
                 {
                   hasAnyAuthority(auth, ["Admin", "Editor", "Salesperson", "Shipper"]) 
                   ?  
-                  <Col xs="3">
                       <i 
-                        className="bi bi-journal-text view fs-4"
+                        className="bi bi-journal-text view fs-4 ms-2 me-3"
                         title="view details"
                         onClick={() => showView(product.id)}
-                      ></i>
-                  </Col>: "" 
+                      ></i>: "" 
                 }
                 {
                     hasAnyAuthority(auth, ["Admin", "Editor"])
                     ? (
                         <>
-                        <Col xs="3">{enabled}</Col>
+                        {enabled}
                           
-                          <Col xs="3">
                             <i
-                              className="bi bi-archive-fill delete fs-6"
+                              className="bi bi-archive-fill delete fs-6 ms-3 me-2"
                               title="delete product"
                               onClick={deleteProduct}
                             ></i>
-                          </Col>
+                          
                       </>
                       ) : ""
                 }
                 {
                   hasAnyAuthority(auth, ["Admin", "Editor", "Salesperson"])
-                 ? <Col xs="3">
+                 ? 
                       <i
-                        className="bi bi-pencil-fill edit fs-6"
+                        className="bi bi-pencil-fill edit fs-6 mx-2"
                         title="edit product"
                         onClick={() => showUpdate(product.id)}
                       ></i>
-                  </Col>  : ""
+                    : ""
                 }
-              </Row>
+              </div>
               
             </Col>
           </Row>

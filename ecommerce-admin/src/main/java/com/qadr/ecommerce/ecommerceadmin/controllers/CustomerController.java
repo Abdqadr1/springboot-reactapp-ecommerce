@@ -53,12 +53,12 @@ public class CustomerController {
     }
 
     @PostMapping("/edit/{id}")
-    public Customer editCategory(@Valid Customer customer, @PathVariable("id") Integer id) throws IOException {
+    public Customer editCustomer(@Valid Customer customer, @PathVariable("id") Integer id) throws IOException {
         return customerService.editCustomer(id, customer);
     }
 
     @GetMapping("/delete/{id}")
-    public Customer deleteCategory(@PathVariable("id") Integer id){
+    public Customer deleteCustomer(@PathVariable("id") Integer id){
         return customerService.deleteCustomer(id);
     }
 
