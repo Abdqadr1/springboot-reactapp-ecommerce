@@ -1,6 +1,8 @@
-package com.qadr.ecommerce.sharedLibrary.entities;
+package com.qadr.ecommerce.sharedLibrary.entities.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.qadr.ecommerce.sharedLibrary.entities.IdBasedEntity;
+import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -13,10 +15,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class OrderDetail {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class OrderDetail extends IdBasedEntity {
 
     private int quantity;
     private float shippingCost;

@@ -1,6 +1,6 @@
 package com.qadr.ecommerce.ecommercecommon.repo;
 
-import com.qadr.ecommerce.sharedLibrary.entities.Product;
+import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
 import com.qadr.ecommerce.sharedLibrary.repo.ProductRepo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

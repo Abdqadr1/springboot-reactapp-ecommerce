@@ -2,10 +2,10 @@ package com.qadr.ecommerce.ecommerceadmin.controllers;
 
 import com.qadr.ecommerce.ecommerceadmin.repo.CurrencyRepo;
 import com.qadr.ecommerce.ecommerceadmin.service.SettingsService;
-import com.qadr.ecommerce.sharedLibrary.entities.GeneralSettingBag;
+import com.qadr.ecommerce.sharedLibrary.entities.setting.GeneralSettingBag;
 import com.qadr.ecommerce.sharedLibrary.entities.Currency;
-import com.qadr.ecommerce.sharedLibrary.entities.Setting;
-import com.qadr.ecommerce.sharedLibrary.entities.SettingsBag;
+import com.qadr.ecommerce.sharedLibrary.entities.setting.Setting;
+import com.qadr.ecommerce.sharedLibrary.entities.setting.SettingsBag;
 import com.qadr.ecommerce.sharedLibrary.util.FileUploadUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;

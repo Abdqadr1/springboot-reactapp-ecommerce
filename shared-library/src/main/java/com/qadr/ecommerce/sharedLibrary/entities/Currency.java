@@ -12,10 +12,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class Currency {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Currency extends IdBasedEntity{
 
     @Column(nullable = false, length = 128)
     private String name;

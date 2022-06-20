@@ -4,7 +4,6 @@ import com.qadr.ecommerce.ecommercecommon.model.CartItem;
 import com.qadr.ecommerce.ecommercecommon.service.CartService;
 import com.qadr.ecommerce.ecommercecommon.service.CustomerService;
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
-import com.qadr.ecommerce.sharedLibrary.entities.Product;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,9 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/cart")

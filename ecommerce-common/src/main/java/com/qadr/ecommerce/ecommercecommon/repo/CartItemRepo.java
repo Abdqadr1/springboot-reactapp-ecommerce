@@ -2,7 +2,7 @@ package com.qadr.ecommerce.ecommercecommon.repo;
 
 import com.qadr.ecommerce.ecommercecommon.model.CartItem;
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
-import com.qadr.ecommerce.sharedLibrary.entities.Product;
+import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

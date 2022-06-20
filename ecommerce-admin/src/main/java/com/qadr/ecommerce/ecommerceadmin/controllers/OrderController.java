@@ -1,8 +1,7 @@
 package com.qadr.ecommerce.ecommerceadmin.controllers;
 
 import com.qadr.ecommerce.ecommerceadmin.service.OrderService;
-import com.qadr.ecommerce.sharedLibrary.entities.Customer;
-import com.qadr.ecommerce.sharedLibrary.entities.Order;
+import com.qadr.ecommerce.sharedLibrary.entities.order.Order;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingParam;
 import org.slf4j.Logger;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.Map;
 
 @RestController

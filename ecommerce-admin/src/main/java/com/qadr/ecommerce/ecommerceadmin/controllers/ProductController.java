@@ -1,20 +1,16 @@
 package com.qadr.ecommerce.ecommerceadmin.controllers;
 
-import com.qadr.ecommerce.sharedLibrary.entities.Brand;
 import com.qadr.ecommerce.ecommerceadmin.model.CategoryDTO;
-import com.qadr.ecommerce.sharedLibrary.entities.Product;
-import com.qadr.ecommerce.sharedLibrary.entities.ProductImage;
+import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
+import com.qadr.ecommerce.sharedLibrary.entities.product.ProductImage;
 import com.qadr.ecommerce.ecommerceadmin.service.BrandService;
 import com.qadr.ecommerce.ecommerceadmin.service.ProductService;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingParam;
 import com.qadr.ecommerce.sharedLibrary.util.FileUploadUtil;
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,8 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static com.qadr.ecommerce.ecommerceadmin.service.ProductService.PRODUCTS_PER_PAGE;
 
 
 @RestController

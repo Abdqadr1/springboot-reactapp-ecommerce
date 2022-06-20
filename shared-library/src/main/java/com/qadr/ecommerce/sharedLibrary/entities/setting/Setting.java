@@ -1,4 +1,4 @@
-package com.qadr.ecommerce.sharedLibrary.entities;
+package com.qadr.ecommerce.sharedLibrary.entities.setting;
 
 import lombok.*;
 import org.hibernate.Hibernate;

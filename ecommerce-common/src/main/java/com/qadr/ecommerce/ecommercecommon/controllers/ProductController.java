@@ -1,7 +1,7 @@
 package com.qadr.ecommerce.ecommercecommon.controllers;
 
 import com.qadr.ecommerce.ecommercecommon.service.ProductService;
-import com.qadr.ecommerce.sharedLibrary.entities.Product;
+import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;

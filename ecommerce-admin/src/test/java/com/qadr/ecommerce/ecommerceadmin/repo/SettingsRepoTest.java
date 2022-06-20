@@ -1,7 +1,7 @@
 package com.qadr.ecommerce.ecommerceadmin.repo;
 
-import com.qadr.ecommerce.sharedLibrary.entities.Setting;
-import com.qadr.ecommerce.sharedLibrary.entities.SettingsCategory;
+import com.qadr.ecommerce.sharedLibrary.entities.setting.Setting;
+import com.qadr.ecommerce.sharedLibrary.entities.setting.SettingsCategory;
 import com.qadr.ecommerce.sharedLibrary.repo.SettingsRepo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

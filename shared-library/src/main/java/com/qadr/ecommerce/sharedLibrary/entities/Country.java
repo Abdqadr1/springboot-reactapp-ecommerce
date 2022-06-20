@@ -12,10 +12,7 @@ import java.util.Set;
 @Entity
 @Table(name = "countries")
 @RequiredArgsConstructor
-public class Country {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Country extends IdBasedEntity{
 
     @Column(nullable = false, unique = true, length = 64)
     private String name;

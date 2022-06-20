@@ -1,6 +1,6 @@
 package com.qadr.ecommerce.ecommercecommon.service;
 
-import com.qadr.ecommerce.sharedLibrary.entities.Product;
+import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
 import com.qadr.ecommerce.sharedLibrary.repo.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;

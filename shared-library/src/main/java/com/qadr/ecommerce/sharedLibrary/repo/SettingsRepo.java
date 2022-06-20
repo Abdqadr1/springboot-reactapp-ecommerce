@@ -1,13 +1,12 @@
 package com.qadr.ecommerce.sharedLibrary.repo;
 
-import com.qadr.ecommerce.sharedLibrary.entities.Setting;
-import com.qadr.ecommerce.sharedLibrary.entities.SettingsCategory;
+import com.qadr.ecommerce.sharedLibrary.entities.setting.Setting;
+import com.qadr.ecommerce.sharedLibrary.entities.setting.SettingsCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface SettingsRepo extends JpaRepository<Setting, String> {

@@ -2,6 +2,9 @@ package com.qadr.ecommerce.ecommercecommon.service;
 
 import com.qadr.ecommerce.ecommercecommon.model.CustomerDetails;
 import com.qadr.ecommerce.ecommercecommon.utilities.Util;
+import com.qadr.ecommerce.sharedLibrary.entities.setting.EmailSettingBag;
+import com.qadr.ecommerce.sharedLibrary.entities.setting.Setting;
+import com.qadr.ecommerce.sharedLibrary.entities.setting.SettingsCategory;
 import com.qadr.ecommerce.sharedLibrary.repo.CustomerRepo;
 import com.qadr.ecommerce.sharedLibrary.entities.*;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
@@ -11,7 +14,6 @@ import com.qadr.ecommerce.sharedLibrary.repo.StateRepo;
 import net.bytebuddy.utility.RandomString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -23,10 +25,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;

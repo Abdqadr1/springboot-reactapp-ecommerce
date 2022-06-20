@@ -1,6 +1,6 @@
 package com.qadr.ecommerce.sharedLibrary.repo;
 
-import com.qadr.ecommerce.sharedLibrary.entities.Product;
+import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;

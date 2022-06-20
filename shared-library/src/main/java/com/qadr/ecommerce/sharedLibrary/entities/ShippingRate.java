@@ -16,11 +16,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class ShippingRate {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+public class ShippingRate extends IdBasedEntity{
     @ManyToOne
     @JoinColumn(name = "country_id")
     private Country country;

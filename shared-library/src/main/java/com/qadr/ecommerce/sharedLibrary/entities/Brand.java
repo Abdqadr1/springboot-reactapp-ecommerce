@@ -1,22 +1,19 @@
 package com.qadr.ecommerce.sharedLibrary.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import com.qadr.ecommerce.sharedLibrary.entities.Category;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
-
 @Entity
 @Table(name = "brands")
-@Data
-@AllArgsConstructor @NoArgsConstructor
-public class Brand {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+@Getter
+@Setter
+@RequiredArgsConstructor
+@AllArgsConstructor
+public class Brand extends IdBasedEntity{
 
     @Column(nullable = false, length = 128, unique = true)
     private String name;
@@ -55,4 +52,16 @@ public class Brand {
         return name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Brand brand = (Brand) o;
+        return getId() != null && Objects.equals(getId(), brand.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

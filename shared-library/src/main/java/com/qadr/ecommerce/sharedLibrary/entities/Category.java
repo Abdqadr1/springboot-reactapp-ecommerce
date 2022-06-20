@@ -13,10 +13,7 @@ import java.util.Set;
 @Entity @Table(name = "categories")
 @Getter @NoArgsConstructor
 @Setter
-public class Category {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Category extends IdBasedEntity{
 
     @NotBlank
     @Column(nullable = false, length = 128, unique = true, name = "name")

@@ -1,5 +1,6 @@
-package com.qadr.ecommerce.sharedLibrary.entities;
+package com.qadr.ecommerce.sharedLibrary.entities.product;
 
+import com.qadr.ecommerce.sharedLibrary.entities.IdBasedEntity;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -8,12 +9,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "product_images")
 @NoArgsConstructor
-@AllArgsConstructor
-public class ProductImage {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+public class ProductImage extends IdBasedEntity {
     @Column(nullable = false)
     private String path;
 
@@ -24,6 +20,12 @@ public class ProductImage {
     public ProductImage(Integer id){this.id = id;}
 
     public ProductImage(String path, Product product) {
+        this.path = path;
+        this.product = product;
+    }
+
+    public ProductImage(Integer id, String path, Product product) {
+        this.id = id;
         this.path = path;
         this.product = product;
     }

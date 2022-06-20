@@ -3,7 +3,7 @@ package com.qadr.ecommerce.ecommercecommon.controllers;
 import com.qadr.ecommerce.ecommercecommon.repo.CurrencyRepo;
 import com.qadr.ecommerce.ecommercecommon.service.SettingsService;
 import com.qadr.ecommerce.sharedLibrary.entities.Currency;
-import com.qadr.ecommerce.sharedLibrary.entities.Setting;
+import com.qadr.ecommerce.sharedLibrary.entities.setting.Setting;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package com.qadr.ecommerce.ecommerceadmin.service;
 
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
-import com.qadr.ecommerce.sharedLibrary.entities.Product;
+import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
 import com.qadr.ecommerce.ecommerceadmin.repo.BrandRepo;
 import com.qadr.ecommerce.ecommerceadmin.repo.CategoryRepo;
 import com.qadr.ecommerce.sharedLibrary.repo.ProductRepo;

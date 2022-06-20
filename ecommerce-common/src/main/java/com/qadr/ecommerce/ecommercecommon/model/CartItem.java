@@ -2,7 +2,8 @@ package com.qadr.ecommerce.ecommercecommon.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
-import com.qadr.ecommerce.sharedLibrary.entities.Product;
+import com.qadr.ecommerce.sharedLibrary.entities.IdBasedEntity;
+import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -13,10 +14,7 @@ import javax.persistence.*;
 @Table(name = "cart_items")
 @Getter @Setter
 @RequiredArgsConstructor
-public class CartItem {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class CartItem extends IdBasedEntity {
 
     @JsonIgnore
     @ManyToOne

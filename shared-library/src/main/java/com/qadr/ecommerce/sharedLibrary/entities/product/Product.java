@@ -1,5 +1,8 @@
-package com.qadr.ecommerce.sharedLibrary.entities;
+package com.qadr.ecommerce.sharedLibrary.entities.product;
 
+import com.qadr.ecommerce.sharedLibrary.entities.Brand;
+import com.qadr.ecommerce.sharedLibrary.entities.Category;
+import com.qadr.ecommerce.sharedLibrary.entities.IdBasedEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,10 +14,7 @@ import java.util.Set;
 
 @Entity @Table(name = "products")
 @NoArgsConstructor @Getter @Setter
-public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class Product extends IdBasedEntity {
 
     @Column(unique = true, nullable = false, length = 256)
     private String name;

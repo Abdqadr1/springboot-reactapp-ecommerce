@@ -1,11 +1,9 @@
 package com.qadr.ecommerce.ecommerceadmin.service;
 
-import com.qadr.ecommerce.sharedLibrary.entities.Order;
-import com.qadr.ecommerce.sharedLibrary.entities.Order;
+import com.qadr.ecommerce.sharedLibrary.entities.order.Order;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import com.qadr.ecommerce.sharedLibrary.repo.OrderRepo;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,7 @@
-package com.qadr.ecommerce.sharedLibrary.entities;
+package com.qadr.ecommerce.sharedLibrary.entities.setting;
+
+import com.qadr.ecommerce.sharedLibrary.entities.setting.Setting;
+import com.qadr.ecommerce.sharedLibrary.entities.setting.SettingsBag;
 
 import java.util.List;
 

@@ -12,11 +12,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
-public class State {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class State extends IdBasedEntity {
 
     @Column(nullable = false, length = 64)
     private String name;

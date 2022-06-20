@@ -1,6 +1,6 @@
 package com.qadr.ecommerce.ecommercecommon.utilities;
 
-import com.qadr.ecommerce.sharedLibrary.entities.EmailSettingBag;
+import com.qadr.ecommerce.sharedLibrary.entities.setting.EmailSettingBag;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import javax.servlet.http.HttpServletRequest;

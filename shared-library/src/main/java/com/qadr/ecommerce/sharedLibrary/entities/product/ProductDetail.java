@@ -1,5 +1,6 @@
-package com.qadr.ecommerce.sharedLibrary.entities;
+package com.qadr.ecommerce.sharedLibrary.entities.product;
 
+import com.qadr.ecommerce.sharedLibrary.entities.IdBasedEntity;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -7,10 +8,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "product_details")
 @NoArgsConstructor
-public class ProductDetail {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+public class ProductDetail extends IdBasedEntity {
 
     @Column(nullable = false)
     private String name;
