@@ -19,6 +19,7 @@ import ShoppingCart from "./components/shopping-cart";
 import { AuthContext, getAuthFromLocalStorage, setAuthToLocalStorage } from "./components/custom_hooks/use-auth";
 import { useState } from "react";
 import Addresses from "./components/addresses";
+import Checkout from "./components/checkout";
 
 function App() {
   
@@ -57,6 +58,7 @@ function App() {
                 <Route path="/reset_password" element={<ResetPassword />} />
                 <Route path="/shopping_cart" element={<ShoppingCart />} />
                 <Route path="/addresses" element={<Addresses />} />
+                <Route path="/checkout" element={<Checkout />} />
                 <Route path="*" element={<div className="my-4">Not found</div>} />
             </Routes>
             </div>

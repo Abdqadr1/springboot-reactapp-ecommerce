@@ -3,7 +3,7 @@ import { useState, useRef,useEffect, useContext } from "react";
 import {AuthContext} from "./custom_hooks/use-auth";
 import axios from "axios";
 import { useNavigate } from "react-router";
-import { isTokenExpired, SPINNERS_BORDER_HTML, getDiscountPrice } from "./utilities";
+import { isTokenExpired, SPINNERS_BORDER_HTML } from "./utilities";
 
 const Stock = ({ id, quantity }) => {
     const url = `${process.env.REACT_APP_SERVER_URL}cart/add`;
@@ -100,8 +100,8 @@ const CartItemQuantity = ({ item, format, updateItem }) => {
     const [number, setNumber] = useState(Number(item.quantity))
     const [showToast, setShowToast] = useState(null)
     const {auth, setAuth} = useContext(AuthContext);
-    const {discountPrice : discount, price, id:productId} = item.product;
-    const realPrice = (discount > 0) ? getDiscountPrice(discount, price) : price;
+    const {discountPrice : discount, price, id:productId, realPrice} = item.product;
+    const standardPrice = (discount > 0) ? realPrice : price;
     const navigate = useNavigate();
     const abortController = new AbortController();
 
@@ -128,7 +128,7 @@ const CartItemQuantity = ({ item, format, updateItem }) => {
         })
         .then((res) => {
             item.quantity = val;
-            item.subTotal = Number(res.data);
+            item.subtotal = Number(res.data);
             updateItem(s => ([...s]));
             setNumber(val);
         })
@@ -149,10 +149,10 @@ const CartItemQuantity = ({ item, format, updateItem }) => {
             {   (discount > 0) ? 
                 <>
                     <div className="my-2">
-                        x <span className="text-danger ">{format(realPrice)}</span>&nbsp;
+                        x <span className="text-danger ">{format(standardPrice)}</span>&nbsp;
                         <del>{format(price)}</del>
                     </div>
-                    <div> = {format(realPrice * number)}</div>  
+                    <div> = {format(standardPrice * number)}</div>  
                 </> :
                  <>
                     <div className="my-2"> x &nbsp; {format(price)}</div>

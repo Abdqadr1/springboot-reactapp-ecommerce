@@ -29,6 +29,7 @@ public class Util {
         properties.setProperty("mail.smtp.auth", settingBag.getUseAuth());
         properties.setProperty("mail.smtp.starttls.enable", settingBag.getSMTPSecured());
         javaMailSender.setJavaMailProperties(properties);
+        javaMailSender.setDefaultEncoding("utf-8");
         return javaMailSender;
     }
 }

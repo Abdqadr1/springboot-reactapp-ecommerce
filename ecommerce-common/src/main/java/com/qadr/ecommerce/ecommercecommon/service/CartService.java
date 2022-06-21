@@ -51,7 +51,7 @@ public class CartService {
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "This product does not exist"));
         cartItemRepo.updateQuantity(quantity, customer.getId(), product.getId());
         Optional<CartItem> byCustomerAndProduct = cartItemRepo.findByCustomerAndProduct(customer, product);
-        return byCustomerAndProduct.map(CartItem::getSubTotal).get();
+        return byCustomerAndProduct.map(CartItem::getSubtotal).get();
     }
 
     public String removeByCustomerAndProduct(Customer customer, Integer productId) {
@@ -63,5 +63,9 @@ public class CartService {
             throw new CustomException(HttpStatus.BAD_REQUEST, "This item does not exist in your shopping cart");
         }
         return "Item removed from shopping cart";
+    }
+
+    public void deleteByCustomer(Customer customer){
+        cartItemRepo.deleteByCustomer(customer.getId());
     }
 }

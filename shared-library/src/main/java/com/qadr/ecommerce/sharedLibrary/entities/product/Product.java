@@ -86,4 +86,14 @@ public class Product extends IdBasedEntity {
                 "name='" + name + '\'' +
                 '}';
     }
+
+    public float getRealPrice(){
+        float realPrice;
+        if(discountPrice > 0){
+            realPrice = price * (100 - discountPrice) / 100;
+        }else {
+            realPrice = price;
+        }
+        return realPrice;
+    }
 }

@@ -491,7 +491,7 @@ const SettingsPage = () => {
                                  <Form className="add-user-form" onSubmit={handleSubmit} data-action="save_order_template">
                                     <Form.Group className="mb-3 row justify-content-center" controlId="ORDER_CONFIRMATION_SUBJECT">
                                         <Form.Label className="form-label">Email Subject:</Form.Label>
-                                        <Form.Control onChange={handleChange} value={settings.CORDER_CONFIRMATION_SUBJECT ?? ""} name="ORDER_CONFIRMATION_SUBJECT" className="form-input" type="name"/>
+                                        <Form.Control onChange={handleChange} value={settings.ORDER_CONFIRMATION_SUBJECT ?? ""} name="ORDER_CONFIRMATION_SUBJECT" className="form-input" type="name"/>
                                     </Form.Group>
                                     <Form.Group className="mb-3 row justify-content-center" controlId="ORDER_CONFIRMATION_CONTENT">
                                         <Form.Label className="form-label">Email Content:</Form.Label>
@@ -511,6 +511,28 @@ const SettingsPage = () => {
                         </Tabs>
                     </Tab>
                     <Tab eventKey="payment" title="Payment">
+                        <Form className="add-user-form" onSubmit={handleSubmit} data-action="save_payment">
+                            <Form.Group className="mb-3 row justify-content-center" controlId="PAYPAL_API_BASE_URL">
+                                <Form.Label className="form-label">Paypal Api Base URL:</Form.Label>
+                                <Form.Control onChange={handleChange} value={settings.PAYPAL_API_BASE_URL ?? ""} name="PAYPAL_API_BASE_URL" className="form-input"/>
+                            </Form.Group>
+                            <Form.Group className="mb-3 row justify-content-center" controlId="PAYPAL_API_CLIENT_ID">
+                                <Form.Label className="form-label">Paypal Api Client ID:</Form.Label>
+                                <Form.Control onChange={handleChange} value={settings.PAYPAL_API_CLIENT_ID ?? ""} name="PAYPAL_API_CLIENT_ID" className="form-input"/>
+                            </Form.Group>
+                            <Form.Group className="mb-3 row justify-content-center" controlId="PAYPAL_API_CLIENT_SECRET">
+                                <Form.Label className="form-label">Paypal Api Client Secret:</Form.Label>
+                                <Form.Control onChange={handleChange} value={settings.PAYPAL_API_CLIENT_SECRET ?? ""} name="PAYPAL_API_CLIENT_SECRET" className="form-input"/>
+                            </Form.Group>
+                            <Row className="justify-content-center">
+                                <div className="w-25"></div>
+                                <div className="form-input ps-0 my-3">
+                                    <Button ref={submitBtnRef} className="fit-content mx-1" variant="primary" type="submit">
+                                        Save
+                                    </Button>
+                                </div>
+                            </Row> 
+                        </Form>
                     </Tab>
                 </Tabs>
             </Col>

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "./custom_hooks/use-auth";
 import useArray from "./custom_hooks/use-array";
@@ -13,6 +13,16 @@ import AddAddressModal from "./add_address";
 import EditAddressModal from "./edit_address";
 const Addresses = () => {
     const navigate = useNavigate();
+    const [searchParams,] = useSearchParams();
+    let redirectURL = searchParams.get("r");
+    let head = "Your Addresses", select="Set as Default", defaultSelect="Default";
+    if (redirectURL === "checkout") {
+        head = "Choose your shipping address";
+        defaultSelect = "Currently Selected";
+        select = "Choose";
+    }
+    redirectURL = redirectURL ? "/" + redirectURL : redirectURL;
+
     const url = process.env.REACT_APP_SERVER_URL + "address";
     const deleteURL = `${url}/remove`;
     const { auth, setAuth } = useContext(AuthContext)
@@ -109,6 +119,7 @@ const Addresses = () => {
                 return a;
             })
             setArray([...newArray])
+            if (redirectURL) navigate(redirectURL);
         })
         .catch(err => {
             console.error(err)
@@ -132,8 +143,8 @@ const Addresses = () => {
                                         <span className="fw-bold">{(c.id) ? `Address #${i + 1}` : "Your Primary Address"}</span>
                                         &nbsp;
                                         {c.defaultAddress ?
-                                            <span className="text-danger">[Default]</span>
-                                            : <span onClick={e=>setDefaultAddress(c.id)} className="text-success action">[Set as Default]</span>}
+                                            <span className="text-danger">[{defaultSelect}]</span>
+                                            : <span onClick={e=>setDefaultAddress(c.id)} className="text-success action">[{select}]</span>}
                                     </span>
                                     <span className="fs-5 fw-bold">
                                         {(c.id > 0) && <>
@@ -166,13 +177,13 @@ const Addresses = () => {
     return ( 
         <>
             <Search />
-            <h3 className="my-2">Your Addresses</h3>
+            <h3 className="my-2">{head}</h3>
             <div><Link className="fs-4 fw-bold my-2" to="#" onClick={e=>setShowAdd(true)}>Add Address</Link></div>
             {
                 (array.length > 0)
                 ? <>
                     {listAddresses()}
-                        <EditAddressModal showEdit={showEdit} setShowEdit={setShowEdit} updateAddresses={updateArray} countries={countries} />
+                        <EditAddressModal showEdit={showEdit} setShowEdit={setShowEdit} updateAddresses={updateArray} countries={countries} redirect={redirectURL} />
                     <DeleteModal deleteObject={showDelete} setDeleteObject={setShowDelete} deletingFunc={handleDelete} type="Address" />
                 </>
                 :<div className="mt-5">

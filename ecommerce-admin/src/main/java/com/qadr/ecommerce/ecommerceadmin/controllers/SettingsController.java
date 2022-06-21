@@ -63,6 +63,14 @@ public class SettingsController {
         return "Mail settings saved";
     }
 
+    @PostMapping("/save_payment")
+    public String savePaymentInfo(HttpServletRequest request){
+        List<Setting> mailSettings = settingsService.getPaymentSettings();
+        SettingsBag mailSettingsBag = new SettingsBag(mailSettings);
+        updateSettings(request, mailSettingsBag);
+        return "Payment settings saved";
+    }
+
 
 
 

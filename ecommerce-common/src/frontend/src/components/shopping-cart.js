@@ -5,11 +5,12 @@ import { useNavigate } from "react-router";
 import axios from "axios";
 import { getShortName, isTokenExpired,formatPrice } from "./utilities";
 import Search from "./search";
-import { Row, Col, Button} from "react-bootstrap";
+import { Row, Col} from "react-bootstrap";
 import {CartItemQuantity} from "./stock";
 import useSettings from "./use-settings";
 import DeleteModal from "./delete_modal";
 import CustomToast from "./custom_toast";
+import { Link } from "react-router-dom";
 
 const ShoppingCart = () => {
     const navigate = useNavigate();
@@ -19,6 +20,7 @@ const ShoppingCart = () => {
     const fileUrl = process.env.REACT_APP_SERVER_URL + "product-images/";
     const {auth, setAuth} = useContext(AuthContext);
     const { array, setArray, filterArray } = useArray();
+    const [variables, setVariables] = useState({usePrimaryAddress: false, addressSupported: false})
     const [total, setTotal] = useState(0);
     const [showDelete, setShowDelete] = useState({show:false, id:-1})
     const [toast, setToast] = useState({ show: false, message: "" })
@@ -45,7 +47,9 @@ const ShoppingCart = () => {
                 signal: abortController.signal
             })
             .then(response => {
-                setArray(response.data);
+                const {items, addressSupported, usePrimaryAddress} = response.data;
+                setVariables({addressSupported,usePrimaryAddress})
+                setArray(items);
             })
             .catch(res => {
                 console.error(res)
@@ -66,7 +70,7 @@ const ShoppingCart = () => {
 
     useEffect(() => {
         let total = 0;
-        total = array.map(c => c.subTotal).reduce((tot, num) => tot + num, total)
+        total = array.map(c => c.subtotal).reduce((tot, num) => tot + num, total)
         setTotal(total)
 
     }, [array])
@@ -137,7 +141,20 @@ const ShoppingCart = () => {
                 <Col md={4} className="text-start text-md-center mt-4">
                     <div>Estimated Total :</div>
                     <h4 className="my-2 fw-bold">{formatPrice(total)}</h4>
-                    <Button className="my-2" variant="danger">Checkout</Button>
+                    {
+                        (variables.addressSupported)
+                            ? <Link to="/checkout" className="btn btn-danger my-2" variant="danger">Checkout</Link>
+                            : <>
+                                <p className="fw-bold text-warning">No shipping available for your location</p>
+                                {
+                                    (variables.usePrimaryAddress)
+                                        ? <Link className="fw-bold " to="/addresses?r=shopping_cart">Update your address</Link>
+                                        : <Link className="fw-bold " to="/addresses?r=shopping_cart">Use another shipping address</Link>
+                                
+                            }
+                            </>
+                    }
+                    
                 </Col>
             </Row>
         )

@@ -56,8 +56,21 @@ class SettingsRepoTest {
                 new Setting("SMTP_SECURED", "true", SettingsCategory.MAIL_SERVER),
                 new Setting("MAIL_FROM", "ecommerce@gmail.com", SettingsCategory.MAIL_SERVER),
                 new Setting("MAIL_SENDER_NAME", "E-commerce app", SettingsCategory.MAIL_SERVER),
-                new Setting("CUSTOMER_VERIFY_SUBJECT", "email verify subject", SettingsCategory.MAIL_SERVER),
+                new Setting("CUSTOMER_VERIFY_SUBJECT", "email verify subject", SettingsCategory.MAIL_TEMPLATE),
                 new Setting("CUSTOMER_VERIFY_CONTENT", "email verify content", SettingsCategory.MAIL_TEMPLATE)
+        ) ;
+        List<Setting> saveAll = settingsRepo.saveAll(settings);
+        assertThat(saveAll.size()).isEqualTo(settings.size());
+    }
+
+    @Test
+    void testAddOrderMailTemplateAndPaymentSettings(){
+        List<Setting> settings = List.of(
+                new Setting("ORDER_CONFIRMATION_SUBJECT", "Order Confirmation", SettingsCategory.MAIL_TEMPLATE),
+                new Setting("ORDER_CONFIRMATION_CONTENT", "Order Confirmation", SettingsCategory.MAIL_TEMPLATE),
+                new Setting("PAYPAL_API_BASE_URL", "https://api-m.sandbox.paypal.com", SettingsCategory.PAYMENT),
+                new Setting("PAYPAL_API_CLIENT_ID", "PAYPAL_CLIENT_ID", SettingsCategory.PAYMENT),
+                new Setting("PAYPAL_API_CLIENT_SECRET", "PAYPAL_CLIENT_SECRET", SettingsCategory.PAYMENT)
         ) ;
         List<Setting> saveAll = settingsRepo.saveAll(settings);
         assertThat(saveAll.size()).isEqualTo(settings.size());

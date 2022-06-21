@@ -1,6 +1,6 @@
 package com.qadr.ecommerce.ecommercecommon.repo;
 
-import com.qadr.ecommerce.ecommercecommon.model.Address;
+import com.qadr.ecommerce.sharedLibrary.entities.Address;
 import com.qadr.ecommerce.sharedLibrary.entities.Country;
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -78,6 +77,13 @@ class AddressRepoTest {
 
         assertThat(byIdAndCustomer).isNotPresent();
 
+    }
+
+    @Test
+    void testFindDefaultAddress(){
+        int id = 7;
+        Optional<Address> address = addressRepo.findDefaultAddressByCustomer(id);
+        assertThat(address).isPresent();
     }
 
 }

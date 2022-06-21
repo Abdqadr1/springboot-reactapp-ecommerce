@@ -1,10 +1,15 @@
 package com.qadr.ecommerce.sharedLibrary.util;
 
-public class CommonUtil {
+import com.qadr.ecommerce.sharedLibrary.entities.setting.CurrencySettingBag;
 
-    public static String getAppName(){
-        return "E-commerce";
-    }
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Objects;
+
+public class CommonUtil {
 
     public static String toSnakeCase(String camelCase){
         char[] arr = camelCase.toCharArray();
@@ -20,5 +25,35 @@ public class CommonUtil {
         }
         System.out.println(result);
         return result.toString().toLowerCase();
+    }
+
+    public static String formatCurrency(float amount, CurrencySettingBag settingBag){
+        String symbol = settingBag.getCurrencySymbol();
+        Integer decimalDigit = settingBag.getDecimalDigit();
+        System.out.println(amount);
+
+        String pattern = settingBag.getSymbolPosition().startsWith("BEFORE") ? symbol : "";
+        pattern += "###,###";
+        if(decimalDigit > 0){
+            pattern += ".";
+            pattern += "#".repeat(decimalDigit);
+        }
+        pattern += settingBag.getSymbolPosition().startsWith("AFTER") ? symbol : "";
+
+        char decimalPointType = Objects.equals(settingBag.getDecimalPointType(), "COMMA") ? ',' : '.';
+        char thousandPointType = Objects.equals(settingBag.getThousandType(), "COMMA") ? ',' : '.';
+
+        DecimalFormatSymbols decimalFormatSymbols = DecimalFormatSymbols.getInstance();
+        decimalFormatSymbols.setDecimalSeparator(decimalPointType);
+        decimalFormatSymbols.setGroupingSeparator(thousandPointType);
+        DecimalFormat formatter = new DecimalFormat(pattern);
+        formatter.setDecimalFormatSymbols(decimalFormatSymbols);
+
+        return formatter.format(amount);
+    }
+
+    public static String dateFormatter(Date date){
+        DateFormat dateFormatter = new SimpleDateFormat("dd-MM-yyyy");
+        return dateFormatter.format(date);
     }
 }

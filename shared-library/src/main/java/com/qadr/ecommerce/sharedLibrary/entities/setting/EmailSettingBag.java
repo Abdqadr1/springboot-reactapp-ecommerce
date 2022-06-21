@@ -41,4 +41,11 @@ public class EmailSettingBag extends SettingsBag {
     public String getVerifyContent(){
         return super.getValue("CUSTOMER_VERIFY_CONTENT");
     }
+
+    public String getOrderConfirmationSubject(){
+        return super.getValue("ORDER_CONFIRMATION_SUBJECT");
+    }
+    public String getOrderConfirmationContent(){
+        return super.getValue("ORDER_CONFIRMATION_CONTENT");
+    }
 }

@@ -1,6 +1,6 @@
 package com.qadr.ecommerce.ecommercecommon.service;
 
-import com.qadr.ecommerce.ecommercecommon.model.Address;
+import com.qadr.ecommerce.sharedLibrary.entities.Address;
 import com.qadr.ecommerce.ecommercecommon.repo.AddressRepo;
 import com.qadr.ecommerce.sharedLibrary.entities.Country;
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Transactional
 @Service
@@ -51,6 +51,9 @@ public class AddressService {
         addressRepo.saveAll(addresses);
     }
 
+    public Optional<Address> findCustomerDefaultAddress(Integer customerId){
+        return addressRepo.findDefaultAddressByCustomer(customerId);
+    }
 
     public List<Country> findAllCountries(){
         return countryRepo.findAllByOrderByNameAsc();
@@ -59,4 +62,5 @@ public class AddressService {
     public List<State> findStates(Country country){
         return stateRepo.findByCountryOrderByNameAsc(country);
     }
+
 }

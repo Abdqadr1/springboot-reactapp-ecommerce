@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SettingsRepo extends JpaRepository<Setting, String> {
@@ -17,6 +18,8 @@ public interface SettingsRepo extends JpaRepository<Setting, String> {
 
     @Query("SELECT s FROM Setting s WHERE s.category = ?1 OR s.category = ?2 ORDER BY s.key ASC")
     List<Setting> findByTwoCategories(SettingsCategory one, SettingsCategory two);
+
+    Optional<Setting> findByKey(String key);
 
 
 }

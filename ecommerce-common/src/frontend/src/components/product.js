@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Row, Col, Breadcrumb} from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import MyCarousel from "./image-carousel";
-import { getDiscountPrice, getShortName, formatPrice } from "./utilities";
+import { getShortName, formatPrice } from "./utilities";
 import useSettings from "./use-settings";
 import Search from "./search";
 import { Stock } from './stock';
@@ -131,7 +131,7 @@ const Product = () => {
     function listProduct(){
         if(product){
             const images = [product.mainImage, ...product.extraImages.map(m => m.path)]
-            const discountPrice = priceFormatter()(getDiscountPrice(product.discountPrice, product.price));
+            const discountPrice = priceFormatter()(product.realPrice);
             return (
                 <>
                     <Row className="justify-content-center p-4 mx-0">

@@ -5,20 +5,18 @@ import { useState, useEffect,useRef, useContext } from 'react';
 import useArray from './custom_hooks/use-array';
 import axios from 'axios';
 import {isTokenExpired, SPINNERS_BORDER_HTML} from './utilities'
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 const NavBar = () => {
   const logoUrl = `${process.env.REACT_APP_SERVER_URL}site-logo/`;
   const { SITE_LOGO } = useSettings();
   const navigate = useNavigate();
-
-
   
   const url = `${process.env.REACT_APP_SERVER_URL}customer`;
   const [submitBtnRef, alertRef, passRef, rPassRef] = [useRef(), useRef(), useRef(), useRef()];
 
   const {auth, setAuth} = useContext(AuthContext)
- const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false)
   const [alert, setAlert] = useState({ show: false, message: "", variant: "danger" })
   const [customer, setCustomer] = useState({});
   const { array: countries, setArray: setCountries } = useArray();
@@ -26,7 +24,9 @@ const NavBar = () => {
   const [country, setCountry] = useState(null);
   const [state, setState] = useState(null);
 
-
+  const [searchParams,] = useSearchParams();
+  let redirectURL = searchParams.get("r");
+  redirectURL = redirectURL ? "/" + redirectURL : redirectURL;
   
   const toggleAlert = e => {
     setAlert(s => ({...s, show: false}))
@@ -93,16 +93,16 @@ const NavBar = () => {
 
   
 
-   const handleSelect = (e, which) => {
-        if (which === "c") {
-            const id = Number(e.target.value);
-            const index = countries.findIndex(c => c.id === id);
-            setCountry({...countries[index]})
-        } else if (which === "s") {
-            const name = e.target.value;
-            setState(name)
-        }
-    }
+  const handleSelect = (e, which) => {
+      if (which === "c") {
+          const id = Number(e.target.value);
+          const index = countries.findIndex(c => c.id === id);
+          setCountry({...countries[index]})
+      } else if (which === "s") {
+          const name = e.target.value;
+          setState(name)
+      }
+  }
 
   const handleInput = e => {
     setCustomer(s => ({
@@ -134,7 +134,8 @@ const NavBar = () => {
         }
     })
         .then(res => {
-          setAlert({show: true, message: res.data, variant: "success" })
+          setAlert({ show: true, message: res.data, variant: "success" })
+          if (redirectURL) navigate(redirectURL);
         })
         .catch(res => {
           const response = res.response;
@@ -201,7 +202,7 @@ const NavBar = () => {
                                       &nbsp;
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu variant="dark">
-                                        <Link className="dropdown-item ps-4" data-rr-ui-dropdown-item="" to="#" onClick={()=>setShowModal(true)}>Account Info</Link>
+                                        <span className="dropdown-item ps-4" data-rr-ui-dropdown-item="" to="#" onClick={()=>setShowModal(true)}>Account Info</span>
                                         <Link className="dropdown-item ps-4" data-rr-ui-dropdown-item="" to="/orders">Orders</Link>
                                         <Link className="dropdown-item ps-4" data-rr-ui-dropdown-item="" to="/addresses">Addresses</Link>
                                         <Link className="dropdown-item ps-4" data-rr-ui-dropdown-item="" to="/reviews">Reviews</Link>

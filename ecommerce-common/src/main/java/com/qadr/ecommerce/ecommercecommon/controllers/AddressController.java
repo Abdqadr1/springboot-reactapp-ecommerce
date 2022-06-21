@@ -1,6 +1,6 @@
 package com.qadr.ecommerce.ecommercecommon.controllers;
 
-import com.qadr.ecommerce.ecommercecommon.model.Address;
+import com.qadr.ecommerce.sharedLibrary.entities.Address;
 import com.qadr.ecommerce.ecommercecommon.service.AddressService;
 import com.qadr.ecommerce.ecommercecommon.service.CustomerService;
 import com.qadr.ecommerce.sharedLibrary.entities.Country;
@@ -35,22 +35,11 @@ public class AddressController {
     @GetMapping
     public List<Address> getByCustomer(){
         Customer customer = getCustomerDetails();
-        Address address = new Address();
-        address.setId(-1);
-        address.setFirstName(customer.getFirstName());
-        address.setLastName(customer.getLastName());
-        address.setMainAddress(customer.getMainAddress());
-        address.setExtraAddress(customer.getExtraAddress());
-        address.setPhoneNumber(customer.getPhoneNumber());
-        address.setState(customer.getState());
-        address.setCity(customer.getCity());
-        address.setPostalCode(customer.getPostalCode());
-        address.setCountry(customer.getCountry());
-
+        Address address = getAddressFromCustomer(customer);
         List<Address> addresses = new ArrayList<>();
         List<Address> all = addressService.getAllByCustomer(customer);
-        boolean isDefaultAddress = all.stream().anyMatch(Address::isDefaultAddress);
 
+        boolean isDefaultAddress = all.stream().anyMatch(Address::isDefaultAddress);
          if (!isDefaultAddress) address.setDefaultAddress(true);
 
         addresses.add(address);
@@ -77,6 +66,22 @@ public class AddressController {
         Customer customer = getCustomerDetails();
         addressService.setDefaultAddress(id, customer);
         return  "Address has been set has default";
+    }
+
+    public static Address getAddressFromCustomer(Customer customer){
+        Address address = new Address();
+        address.setId(-1);
+        address.setFirstName(customer.getFirstName());
+        address.setLastName(customer.getLastName());
+        address.setMainAddress(customer.getMainAddress());
+        address.setExtraAddress(customer.getExtraAddress());
+        address.setPhoneNumber(customer.getPhoneNumber());
+        address.setState(customer.getState());
+        address.setCity(customer.getCity());
+        address.setPostalCode(customer.getPostalCode());
+        address.setCountry(customer.getCountry());
+        address.setDefaultAddress(false);
+        return address;
     }
 
     public Customer getCustomerDetails(){

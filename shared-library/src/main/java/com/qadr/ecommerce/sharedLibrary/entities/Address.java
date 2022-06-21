@@ -1,15 +1,9 @@
-package com.qadr.ecommerce.ecommercecommon.model;
+package com.qadr.ecommerce.sharedLibrary.entities;
 
-import com.qadr.ecommerce.sharedLibrary.entities.AddressBasedEntity;
-import com.qadr.ecommerce.sharedLibrary.entities.Country;
-import com.qadr.ecommerce.sharedLibrary.entities.Customer;
-import com.qadr.ecommerce.sharedLibrary.entities.IdBasedEntity;
 import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @Entity
@@ -46,4 +40,12 @@ public class Address extends AddressBasedEntity {
     public int hashCode() {
         return getClass().hashCode();
     }
+
+    public String toString(){
+        return firstName + " " + lastName + ", " + mainAddress
+                +", " + extraAddress + ", " + city + ", " + state
+                + ", " + country.getName() + ". Postal Code : " + postalCode
+                + ", Phone Number: " + phoneNumber + ".";
+    }
+
 }

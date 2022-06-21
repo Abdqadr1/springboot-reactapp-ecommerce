@@ -1,8 +1,8 @@
 package com.qadr.ecommerce.sharedLibrary.entities.order;
 
+import com.qadr.ecommerce.sharedLibrary.entities.Address;
 import com.qadr.ecommerce.sharedLibrary.entities.AddressBasedEntity;
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
-import com.qadr.ecommerce.sharedLibrary.entities.IdBasedEntity;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -63,5 +63,18 @@ public class Order extends AddressBasedEntity {
     public int hashCode() {
         return getClass().hashCode();
     }
+
+    public void copyShippingAddress(Address address){
+        setFirstName(address.getFirstName());
+        setLastName(address.getLastName());
+        setPhoneNumber(address.getPhoneNumber());
+        setMainAddress(address.getMainAddress());
+        setExtraAddress(address.getExtraAddress());
+        setCity(address.getCity());
+        setState(address.getState());
+        setPostalCode(address.getPostalCode());
+        setCountry(address.getCountry().getName());
+    }
+
 
 }

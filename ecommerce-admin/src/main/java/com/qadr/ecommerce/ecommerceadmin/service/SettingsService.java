@@ -38,4 +38,8 @@ public class SettingsService {
     public void saveAll(List<Setting> settingBag) {
         settingsRepo.saveAll(settingBag);
     }
+
+    public List<Setting> getPaymentSettings() {
+        return settingsRepo.findByCategory(SettingsCategory.PAYMENT);
+    }
 }

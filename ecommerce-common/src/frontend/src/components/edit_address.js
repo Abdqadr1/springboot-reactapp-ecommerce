@@ -7,7 +7,7 @@ import { SPINNERS_BORDER_HTML, isTokenExpired } from "./utilities";
 import useArray from "./custom_hooks/use-array";
 import { useNavigate } from "react-router";
 
-const EditAddressModal = ({ countries, showEdit, setShowEdit, updateAddresses }) => {
+const EditAddressModal = ({ countries, showEdit, setShowEdit, updateAddresses, redirect }) => {
     const navigate = useNavigate();
     const url = process.env.REACT_APP_SERVER_URL + "address";
     const { array: states, setArray: setStates } = useArray();
@@ -85,6 +85,7 @@ const EditAddressModal = ({ countries, showEdit, setShowEdit, updateAddresses })
             .then(response => {
                 updateAddresses(response.data)
                 setAlert({ show: true, message: "Address updated" })
+                if (redirect) navigate(redirect);
             })
             .catch(error => { 
                 const response = error.response
@@ -119,6 +120,7 @@ const EditAddressModal = ({ countries, showEdit, setShowEdit, updateAddresses })
                 </Alert>
                     <Form className="my-4" onSubmit={handleSubmitEdit}>
                         <input name="id" type="hidden" value={form?.id ?? ""} />
+                        <input name="defaultAddress" type="hidden" value={form?.defaultAddress ?? ""} />
                         <Form.Group className="mb-3 row justify-content-center mx-0" controlId="firstName">
                             <Form.Label className="form-label">First Name:</Form.Label>
                             <Form.Control value={form?.firstName ?? ""} onChange={handleInput} name="firstName" className="form-input" required maxLength="45"/>
