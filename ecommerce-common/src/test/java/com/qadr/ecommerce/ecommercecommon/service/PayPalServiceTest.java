@@ -14,8 +14,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class PayPalServiceTest {
     public static final String BASE_URL = "https://api.sandbox.paypal.com";
     public static final String GET_ORDER_API_URL = "/v2/checkout/orders/";
-    public static final String CLIENT_ID = "AcRbadYmqxdZH4G9Sd7QulLnuWBl2pj0bOrFZ5vgY6zVZQXPdQ4op4BXdDGvWQiOJqxmGKLNHliU2UIh";
-    public static final String CLIENT_SECRET = "ENWVX-ZqGk4gGx-EldOmWeMP-a772_URaXKaUMZY12bWohIIp_RmEI09-6BmNvdmN2M6C-AUtwbdxfJu";
+    public static final String CLIENT_ID = "";
+    public static final String CLIENT_SECRET = "";
 
     @Test
     void testGetOrderDetails(){
