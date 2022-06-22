@@ -46,7 +46,9 @@ public class OrderService {
                              PaymentMethod paymentMethod) {
         Order order = new Order();
         order.setOrderTime(new Date());
-        order.setOrderStatus(OrderStatus.NEW);
+
+        order.setOrderStatus(paymentMethod.equals(PaymentMethod.PAYPAL) ? OrderStatus.PAID :OrderStatus.NEW);
+
         order.setPaymentMethod(paymentMethod);
         order.setCustomer(customer);
         order.copyShippingAddress(address);

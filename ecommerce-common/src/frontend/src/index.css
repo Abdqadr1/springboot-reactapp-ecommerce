@@ -2,6 +2,22 @@
     border: 2px solid red;
 } */
 
+.overlay{
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top:0;
+    left: 0;
+    filter: opacity(60%);
+    display: grid;
+    place-content: center;
+    z-index: 9999999;
+}
+.grid{
+    display: grid;
+    place-content: center;
+}
+
 .form-label {
     width: 25% !important;
     align-self: center;

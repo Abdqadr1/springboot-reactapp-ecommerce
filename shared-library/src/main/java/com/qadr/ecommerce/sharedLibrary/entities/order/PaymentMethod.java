@@ -1,5 +1,5 @@
 package com.qadr.ecommerce.sharedLibrary.entities.order;
 
 public enum PaymentMethod {
-    COD, CREDIT_CARD
+    COD, CREDIT_CARD, PAYPAL
 }

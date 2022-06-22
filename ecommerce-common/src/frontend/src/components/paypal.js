@@ -1,12 +1,12 @@
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { Spinner } from "react-bootstrap";
-const Paypal = ({ info:object, setToast }) => {
+const Paypal = ({ info:object, setToast, successHandler }) => {
     const { info, customer } = object;
     // console.log(info)
     const [{ isPending, isRejected }] = usePayPalScriptReducer();
 
     if (isRejected) {
-        setToast(s => ({ ...s, show: true, message: "paypal script could not loaded" }));
+        setToast(s => ({ ...s, show: true, message: "PayPal script could not loaded" }));
     }
 
     return (  
@@ -58,13 +58,12 @@ const Paypal = ({ info:object, setToast }) => {
                 }}
                 onApprove={(data, actions) => {
                     return actions.order.capture().then((details) => {
-                        const name = details.payer.name.given_name;
+                        // const name = details.payer.name.given_name;
                         const id = details.id;
-                        const amount = details.purchase_units[0].amount.value;
-                        const message = `Order ID:${id}
-                         Transaction completed by ${name}
-                          You paid ${amount}`;
-                        setToast(s=> ({...s, show:true, message}))
+                        // const amount = details.purchase_units[0].amount.value;
+                        const data = new FormData();
+                        data.set("orderId", id)
+                        successHandler(data, "paypal_order");
                     });
                 }} 
                 onCancel={(data) => {

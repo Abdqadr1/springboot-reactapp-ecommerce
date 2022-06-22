@@ -59,7 +59,8 @@ public class CheckoutController {
         result.put("info", checkoutInfo);
         result.put("items", cartItems);
         result.put("address", address.toString());
-        result.put("payment", paymentSettings);
+        result.put("paymentId", paymentSettings.getPaymentId());
+        customer.setPassword("");
         result.put("customer", customer);
         result.put("currency", settingsService.getCurrency());
         return result;
@@ -70,6 +71,29 @@ public class CheckoutController {
         String cod = request.getParameter("paymentMethod");
         if(cod == null) throw new CustomException(HttpStatus.BAD_REQUEST, "Invalid parameters");
         PaymentMethod paymentMethod = PaymentMethod.valueOf(cod);
+
+        Customer customer = getCustomerDetails();
+        List<CartItem> cartItems = cartService.getItemsByCustomer(customer);
+
+        Optional<Address> defaultAddress = addressService.findCustomerDefaultAddress(customer.getId());
+        Address address = defaultAddress.orElseGet(()-> getAddressFromCustomer(customer));
+        if(address.getState() == null) address.setState(address.getCity());
+
+        ShippingRate shippingRate = shippingRateService
+                .findByCountryAndState(address.getCountry().getId(), address.getState())
+                .orElseThrow(()-> new CustomException(HttpStatus.BAD_REQUEST,"No shipping available for your location"));
+
+        CheckoutInfo checkoutInfo = checkoutService.prepareCheckout(cartItems, shippingRate);
+        Order order = orderService.createOrder(customer, cartItems, checkoutInfo, address, paymentMethod);
+
+        return "Order successfully placed";
+    }
+
+    @PostMapping("/paypal_order")
+    public String processPayPalOrder(HttpServletRequest request){
+        String orderId = request.getParameter("orderId");
+        if(orderId == null) throw new CustomException(HttpStatus.BAD_REQUEST, "Invalid parameters");
+        PaymentMethod paymentMethod = PaymentMethod.PAYPAL;
 
         Customer customer = getCustomerDetails();
         List<CartItem> cartItems = cartService.getItemsByCustomer(customer);

@@ -24,7 +24,7 @@ public class CheckoutInfo {
     }
 
     public String getPaymentForPayPal(){
-        String pattern = "###,###.##";
+        String pattern = "###.##";
         DecimalFormat formatter = new DecimalFormat(pattern);
         return formatter.format(paymentTotal);
     }

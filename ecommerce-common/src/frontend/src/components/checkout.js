@@ -9,6 +9,7 @@ import { Row, Col, Button, Card, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import Paypal from "./paypal";
+import LoaderScreen from "./fullscreen-loader";
 
 const Checkout = () => {
     const {auth, setAuth} = useContext(AuthContext);
@@ -19,6 +20,7 @@ const Checkout = () => {
     const [info, setInfo] = useState(null);
     const [isCOD, setCOD] = useState(false);
     const [isPlacedOrder, setPlaceOrder] = useState(false);
+    const [fullscreenLoader, setFullscreenLoader] = useState(false);
   const [submitBtnRef] = [useRef()];
     
     const { CURRENCY_SYMBOL, CURRENCY_SYMBOL_POSITION, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, SITE_NAME } = useSettings();
@@ -61,7 +63,7 @@ const Checkout = () => {
     const checkoutSuccess = (url) => {
         return (
             <>
-                <h4 className="mt-5">Your order has been completed!</h4>
+                <h4 className="pt-5">Your order has been completed!</h4>
                 <h5>A confirmation email has been sent to you.</h5>
                 <h5>Kindly check your email for details.</h5>
                 <h4>
@@ -73,23 +75,23 @@ const Checkout = () => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        const btn = submitBtnRef.current;
         const form = e.target;
         const action = form.getAttribute("data-action");
         const data = new FormData(form);
+        placeOrder(data, action);
+    }
+    const placeOrder = (data, action) => {
         listFormData(data);
-        const text = btn.textContent;
-        btn.disabled = true;
-        btn.innerHTML = SPINNERS_BORDER_HTML;
+        setFullscreenLoader(true)
         axios.post(`${url}/${action}`, data, {
             headers: {
-            "Authorization": `Bearer ${auth?.accessToken}`
+                "Authorization": `Bearer ${auth?.accessToken}`
             }
         })
         .then(res => {
             console.log(res)
             setPlaceOrder(true);
-            setAuth({...auth, cart: 0})
+            setAuth({ ...auth, cart: 0 })
         })
         .catch(res => {
             const response = res.response;
@@ -98,10 +100,9 @@ const Checkout = () => {
             }
             if(response) setToast(s => ({...s, show:true, message:response.data.message}))
         }).finally(() => {
-            btn.disabled = false;
-            btn.textContent = text;
-        })
+            setFullscreenLoader(false);
             
+        })
     }
 
     const handleChange = e => { 
@@ -130,7 +131,7 @@ const Checkout = () => {
                                 {
                                     (info.info.codSupported) &&
                                     <>
-                                        <Form onSubmit={handleSubmit} data-action="place_order">
+                                        <Form onSubmit={handleSubmit}>
                                             <Form.Group className="mb-3 d-flex justify-content-start" controlId="cod">
                                                 <Form.Check
                                                     type="checkbox"
@@ -151,13 +152,13 @@ const Checkout = () => {
                                 }
                                 <PayPalScriptProvider options={
                                     {
-                                        "client-id": info.payment?.paymentId ?? "",
+                                        "client-id": info?.paymentId ?? "",
                                         currency: info.currency?.code ?? "",
                                         intent: "capture",
                                         
                                     }
                                 }>
-                                    <Paypal info={info} setToast={setToast} />
+                                    <Paypal info={info} setToast={setToast} successHandler={placeOrder} />
                                 </PayPalScriptProvider>
                             </Card.Body>
                         </Card>
@@ -198,7 +199,8 @@ const Checkout = () => {
                 : <>
                    <h3 className="fw-bold my-3">Checkout</h3>
                     {show()}
-                    <CustomToast {...toast} setToast={setToast} position="bottom-end" /> 
+                    <CustomToast {...toast} setToast={setToast} position="bottom-end" />
+                    <LoaderScreen show={fullscreenLoader} />
                 </>
             }
             

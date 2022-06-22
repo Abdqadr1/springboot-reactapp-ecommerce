@@ -167,7 +167,7 @@ const ShoppingCart = () => {
                 (array.length > 0)
                 ? listCartItems()
                 :<div className="mt-5">
-                    <h4 className="my-3">You have not chosen any product yet</h4>
+                    <h4 className="my-3 px-3">You have not chosen any product yet</h4>
                     <a href="/" className="d-block mx-auto my-3 fs-3">
                         <i className="bi bi-cart-plus-fill text-secondary" style={{fontSize: "5em"}}></i><br/>
                         Go shopping
