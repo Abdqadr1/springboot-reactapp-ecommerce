@@ -1,17 +1,19 @@
 import {useEffect, useState } from "react";
 import { Col, Form, Modal, Row, Tab, Tabs, Table } from "react-bootstrap";
-import { formatDate, hasAnyAuthority } from "../utilities"
+import { formatDate } from "../utilities"
 import useThrottle from "../custom_hooks/use-throttle";
-import useAuth from "../custom_hooks/use-auth";
+import { Link } from "react-router-dom";
 
 const ViewOrder = ({ viewOrder, setViewOrder, priceFunction }) => {
     const order = viewOrder?.order;
-    const [auth] = useAuth();
 
     const fileURL = `${process.env.REACT_APP_SERVER_URL}product-images/`;
     const [width, setWidth] = useState(window.innerWidth);
 
-    const hideModal = () => setViewOrder(state => ({...state, show:false}));
+    const hideModal = () => setViewOrder(state => ({ ...state, show: false }));
+    function hasStatus(status){
+        return order.orderTracks.some(track => track.status === status.toUpperCase())
+    }
     
     const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500)
       useEffect(() => {
@@ -23,8 +25,9 @@ const ViewOrder = ({ viewOrder, setViewOrder, priceFunction }) => {
 
     const listOrderTracks = () => {
         if (order) {
+            let map = "";
             if (width >= 769) {
-                return (
+                map =  (
                     <Table bordered responsive hover className="more-details">
                         <thead className="bg-dark text-light">
                             <tr>
@@ -45,13 +48,49 @@ const ViewOrder = ({ viewOrder, setViewOrder, priceFunction }) => {
                     </Table>
                 )
             } else {
-                return order.orderTracks.map(track =>
+                map =  order.orderTracks.map(track =>
                     <div key={track.id} className="my-2">
                         <div className="my-1">{formatDate(track.updatedTime, "short", "medium")}</div>
                         <div className="ms-4 my-"><strong>{track.status}</strong> {track.note}</div>
                     </div>
                 )
             }
+            return (<div>
+                <div className="d-flex justify-content-around my-3">
+                    <div className="text-center">
+                      <i title="processing"
+                            className={`cs fs-3 ${hasStatus("processing") ? 'text-success' : 'text-secondary'} bi bi-arrow-repeat`}></i>
+                        <p className="fs-5 d-none d-md-block">processing</p>
+                    </div>
+                     
+                    <div className="text-center">
+                        <i title="picked" 
+                          className={`cs fs-3 ${hasStatus("picked") ? 'text-success' : 'text-secondary'} bi bi-basket3-fill`}></i>
+                        <p className="fs-5 d-none d-md-block">picked</p>
+                    </div>
+                    <div className="text-center">
+                      <i title="shipping" 
+                          className={`cs fs-3 ${hasStatus("shipping") ? 'text-success' : 'text-secondary'} bi bi-truck`}></i>
+                        <p className="fs-5 d-none d-md-block">shipping</p>
+                    </div>
+                    <div className="text-center">
+                      <i title="delivered"  
+                          className={`cs fs-3 ${hasStatus("delivered") ? 'text-success' : 'text-secondary'} bi bi-box2-fill`}></i>
+                        <p className="fs-5 d-none d-md-block">delivered</p>
+                    </div>
+                    {
+                        (hasStatus("returned")) &&
+                        <div className="text-center">
+                            <i title="returned"
+                                className={`cs fs-3 text-success bi bi-arrow-counterclockwise`}></i>
+                            <p className="fs-5 d-none d-md-block">returned</p>
+                        </div>
+                    }
+                    
+                </div>
+                {map}
+            </div>
+            );
         }
         return "";
     }
@@ -69,16 +108,10 @@ const ViewOrder = ({ viewOrder, setViewOrder, priceFunction }) => {
                                     alt="product" className="main-image"/>
                             </Col>
                             <Col xs={11} md={6}>
-                                <div className="fw-bold my-2">{detail.product.name}</div>
-                                {
-                                    (hasAnyAuthority(auth, ["Admin", "Salesperson"])) && 
-                                    <>
-                                        <div className="my-2">Product Cost {priceFunction(detail.productCost)}</div>
-                                        <div className="my-2">Subtotal {`${detail.quantity} x ${priceFunction(detail.unitPrice)} = ${priceFunction(detail.subtotal)}`}</div>
-                                        <div className="my-2">Shipping Cost {priceFunction(detail.shippingCost)}</div>
-                                    </>
-                                }
-                                
+                                <div className="fw-bold my-2">
+                                    <Link to={"/p/"+encodeURIComponent(detail.product.alias)}>{detail.product.name}</Link>
+                                </div>
+                                <div className="my-2">Subtotal {`${detail.quantity} x ${priceFunction(detail.unitPrice)} = ${priceFunction(detail.subtotal)}`}</div>
                             </Col>
                         </Row>
                     </Col>
@@ -103,32 +136,18 @@ const ViewOrder = ({ viewOrder, setViewOrder, priceFunction }) => {
                                     <Form.Label className="form-label">Order ID:</Form.Label>
                                     <Form.Control readOnly value={order?.id ?? ""} name="id" required className="form-input" disabled/>
                                 </Form.Group>
-                                {
-                                    (hasAnyAuthority(auth, ["Admin", "Salesperson"])) && 
-                                    <>
-                                        <Form.Group className="mb-3 row justify-content-center" controlId="customer">
-                                            <Form.Label className="form-label">Customer:</Form.Label>
-                                            <Form.Control readOnly value={`${order?.firstName} ${order?.lastName}` ?? ""} name="customer" className="form-input" type="text"/>
-                                        </Form.Group>
-                                        <Form.Group className="mb-3 row justify-content-center" controlId="productCost">
-                                            <Form.Label className="form-label">Product Cost:</Form.Label>
-                                            <Form.Control readOnly name="productCost" className="form-input" type="text" value={priceFunction(order?.productCost) ?? ""} />
-                                        </Form.Group>
-                                        <Form.Group className="mb-3 row justify-content-center" controlId="subtotal">
-                                            <Form.Label className="form-label">Subtotal:</Form.Label>
-                                            <Form.Control readOnly name="subtotal" className="form-input" value={priceFunction(order?.subtotal) ?? ""}/>
-                                        </Form.Group>
-                                        <Form.Group className="mb-3 row justify-content-center" controlId="shippingCost">
-                                            <Form.Label className="form-label">Shipping Cost:</Form.Label>
-                                            <Form.Control readOnly value={priceFunction(order?.shippingCost)} name="shippingCost" step="0.01" required className="form-input" />
-                                        </Form.Group>
-                                        <Form.Group className="mb-3 row justify-content-center" controlId="tax">
-                                            <Form.Label className="form-label">Tax:</Form.Label>
-                                            <Form.Control readOnly value={priceFunction(order?.tax )?? ""} name="tax" step="0.01" required className="form-input"/>
-                                        </Form.Group>
-
-                                    </>
-                                }
+                                <Form.Group className="mb-3 row justify-content-center" controlId="subtotal">
+                                    <Form.Label className="form-label">Subtotal:</Form.Label>
+                                    <Form.Control readOnly name="subtotal" className="form-input" value={priceFunction(order?.subtotal) ?? ""}/>
+                                </Form.Group>
+                                <Form.Group className="mb-3 row justify-content-center" controlId="shippingCost">
+                                    <Form.Label className="form-label">Shipping Cost:</Form.Label>
+                                    <Form.Control readOnly value={priceFunction(order?.shippingCost)} name="shippingCost" step="0.01" required className="form-input" />
+                                </Form.Group>
+                                <Form.Group className="mb-3 row justify-content-center" controlId="tax">
+                                    <Form.Label className="form-label">Tax:</Form.Label>
+                                    <Form.Control readOnly value={priceFunction(order?.tax )?? ""} name="tax" step="0.01" required className="form-input"/>
+                                </Form.Group>
 
                                 <Form.Group className="mb-3 row justify-content-center" controlId="total">
                                     <Form.Label className="form-label">Total:</Form.Label>
@@ -138,11 +157,15 @@ const ViewOrder = ({ viewOrder, setViewOrder, priceFunction }) => {
 
                                 <Form.Group className="mb-3 row justify-content-center" controlId="paymentMethod">
                                     <Form.Label className="form-label">Payment Method:</Form.Label>
-                                    <Form.Control readOnly value={order?.paymentMethod ?? ""} name="paymentMethod" required className="form-input"/>
+                                    <span name="paymentMethod" className="form-input">
+                                        {order?.paymentMethod ?? ""}
+                                    </span>
                                 </Form.Group>
                                 <Form.Group className="mb-3 row justify-content-center" controlId="orderStatus">
                                     <Form.Label className="form-label">Status:</Form.Label>
-                                    <Form.Control readOnly value={order?.orderStatus ?? ""} name="orderStatus" required className="form-input"/>
+                                    <span name="orderStatus" className="form-input">
+                                        {order?.orderStatus ?? ""}
+                                    </span>
                                 </Form.Group>
                                 <Form.Group className="mb-3 row justify-content-center" controlId="orderTime">
                                     <Form.Label className="form-label">Order Date:</Form.Label>

@@ -5,15 +5,13 @@ import com.qadr.ecommerce.ecommercecommon.model.CheckoutInfo;
 import com.qadr.ecommerce.ecommercecommon.utilities.Util;
 import com.qadr.ecommerce.sharedLibrary.entities.Address;
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
-import com.qadr.ecommerce.sharedLibrary.entities.ShippingRate;
-import com.qadr.ecommerce.sharedLibrary.entities.order.Order;
-import com.qadr.ecommerce.sharedLibrary.entities.order.OrderDetail;
-import com.qadr.ecommerce.sharedLibrary.entities.order.OrderStatus;
-import com.qadr.ecommerce.sharedLibrary.entities.order.PaymentMethod;
+import com.qadr.ecommerce.sharedLibrary.entities.order.*;
 import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
 import com.qadr.ecommerce.sharedLibrary.entities.setting.CurrencySettingBag;
 import com.qadr.ecommerce.sharedLibrary.entities.setting.EmailSettingBag;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
+import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
+import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingParam;
 import com.qadr.ecommerce.sharedLibrary.repo.OrderRepo;
 import com.qadr.ecommerce.sharedLibrary.util.CommonUtil;
 import org.slf4j.Logger;
@@ -28,26 +26,45 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.mail.internet.MimeMessage;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Service
 @Transactional
 public class OrderService {
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderService.class);
-    @Autowired
-    private OrderRepo orderRepo;
-    @Autowired
-    private CartService cartService;
-    @Autowired
-    private SettingsService settingsService;
+    public static final int ORDERS_PER_PAGE = 5;
+    @Autowired private OrderRepo orderRepo;
+    @Autowired private CartService cartService;
+    @Autowired private SettingsService settingsService;
 
+    public Map<String, Object> getPage(int pageNumber, Customer customer,
+                                       @PagingAndSortingParam("orders") PagingAndSortingHelper helper){
+        return helper.getCustomerOrders(pageNumber, customer, ORDERS_PER_PAGE, orderRepo);
+    }
 
     public Order createOrder(Customer customer, List<CartItem> cartItems, CheckoutInfo checkoutInfo, Address address,
                              PaymentMethod paymentMethod) {
         Order order = new Order();
         order.setOrderTime(new Date());
+        OrderTrack newTrack = new OrderTrack();
+        newTrack.setOrder(order);
+        newTrack.setStatus(OrderStatus.NEW);
+        newTrack.setUpdatedTime(new Date());
+        newTrack.setNote(OrderStatus.NEW.getDescription());
+        order.getOrderTracks().add(newTrack);
 
-        order.setOrderStatus(paymentMethod.equals(PaymentMethod.PAYPAL) ? OrderStatus.PAID :OrderStatus.NEW);
+        if(paymentMethod.equals(PaymentMethod.PAYPAL)){
+            order.setOrderStatus(OrderStatus.PAID);
+            OrderTrack paidTrack = new OrderTrack();
+            newTrack.setOrder(order);
+            newTrack.setStatus(OrderStatus.PAID);
+            newTrack.setUpdatedTime(new Date());
+            newTrack.setNote(OrderStatus.PAID.getDescription());
+            order.getOrderTracks().add(paidTrack);
+        }else {
+            order.setOrderStatus(OrderStatus.NEW);
+        }
 
         order.setPaymentMethod(paymentMethod);
         order.setCustomer(customer);
@@ -80,6 +97,25 @@ public class OrderService {
         sendConfirmationEmail(save, address);
         return save;
     }
+
+    public OrderTrack requestReturn(Customer customer, Integer id, String reason, String note){
+        Order order = orderRepo.findByCustomerAndId(customer, id)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Could not find your order id " + id));
+        if (order.hasStatus(OrderStatus.RETURN_REQUESTED)){
+            throw new CustomException(HttpStatus.BAD_REQUEST, "Return has already been requested for this order");
+        }
+        OrderTrack track = new OrderTrack();
+        track.setUpdatedTime(new Date());
+        track.setOrder(order);
+        track.setStatus(OrderStatus.RETURN_REQUESTED);
+        track.setNote("Reason: "+reason + ((note.isBlank() ? "" : ", "+ note)));
+        order.getOrderTracks().add(track);
+        order.setOrderStatus(OrderStatus.RETURN_REQUESTED);
+        orderRepo.save(order);
+        return track;
+    }
+
+
 
     private void sendConfirmationEmail(Order order, Address address) {
         try {

@@ -1,6 +1,10 @@
 package com.qadr.ecommerce.sharedLibrary.paging;
 
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
+import com.qadr.ecommerce.sharedLibrary.entities.order.Order;
+import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
+import com.qadr.ecommerce.sharedLibrary.repo.OrderRepo;
+import com.qadr.ecommerce.sharedLibrary.repo.ProductRepo;
 import com.qadr.ecommerce.sharedLibrary.repo.SearchRepository;
 import com.qadr.ecommerce.sharedLibrary.util.CommonUtil;
 import lombok.Getter;
@@ -44,6 +48,25 @@ public class PagingAndSortingHelper {
         }
         return mapInfo(number, pageSze, page);
     }
+
+    public Map<String, Object> getShipperOrders(Integer number, Integer pageSze, OrderRepo repo){
+        Sort sort = Sort.by(sortField);
+        sort = (dir.equals("asc")) ? sort.ascending() : sort.descending();
+        PageRequest pageable = PageRequest.of(number - 1, pageSze, sort);
+        Page<Order> page = repo.shipperSearch(keyword, pageable);
+        return mapInfo(number, pageSze, page);
+    }
+
+    public Map<String, Object> getCustomerOrders(Integer number, Customer customer, Integer pageSze, OrderRepo repo){
+        Sort sort = Sort.by(sortField);
+        sort = (dir.equals("asc")) ? sort.ascending() : sort.descending();
+        PageRequest pageable = PageRequest.of(number - 1, pageSze, sort);
+        Page<Order> page =
+                (keyword == null || keyword.isBlank()) ? repo.findAllByCustomer(customer, pageable) :
+                        repo.searchAllByCustomer(customer.getId(), keyword, pageable);
+        return mapInfo(number, pageSze, page);
+    }
+
     private Map<String, Object> mapInfo(Integer number, Integer pageSze, Page<?> page){
         int startCount = (number-1) * pageSze + 1;
         int endCount = pageSze * number;
@@ -56,7 +79,13 @@ public class PagingAndSortingHelper {
         pageInfo.put("totalElements", page.getTotalElements());
         pageInfo.put(name, page.getContent());
         pageInfo.put("numberPerPage", pageSze);
-
         return pageInfo;
+    }
+
+    public Map<String, Object> searchProduct(Integer number, Integer pageSze, ProductRepo repo){
+        Sort sort = Sort.by("name").ascending();
+        PageRequest pageable = PageRequest.of(number - 1, pageSze, sort);
+        Page<Product> page = repo.search(keyword, pageable);
+        return mapInfo(number, pageSze, page);
     }
 }

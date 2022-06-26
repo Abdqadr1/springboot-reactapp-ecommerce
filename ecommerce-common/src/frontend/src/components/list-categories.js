@@ -32,9 +32,10 @@ const ListCategories = () => {
                 <i className="bi bi-image-fill"></i>
             </span>
             return (
-                <Col className="my-3" key={cat.name+cat.id} xs={6} md={3} lg={2}>
-                    {photo}
-                    <h5 className="my-2"><Link to={"c/"+cat.alias} >{cat.name}</Link></h5>
+                <Col className="my-3 mx-1" key={cat.name + cat.id} xs={6} md={3} lg={2}
+                    as={Link} to={"/c/" + encodeURIComponent(cat.alias)}>
+                        {photo}
+                        <h5 className="my-2">{cat.name}</h5>
                 </Col>
             )
     })

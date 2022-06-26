@@ -34,9 +34,9 @@ const Brands = () => {
     const [sort, setSort] = useState({ field: "name", dir: "asc" })
     const [categories, setCategories] = useState([])
     
-     const changePage = useCallback(function (number, keyword, button) {
+     const changePage = useCallback(function (number, button) {
         number = number ?? 1;
-         keyword = keyword ?? ""
+        const keyword = encodeURIComponent(searchRef.current.value);
          if (button) {
             button.disabled = true
             button.innerHTML = SPINNERS_BORDER_HTML
@@ -75,7 +75,7 @@ const Brands = () => {
     const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500)
     
     useEffect(() => {
-        changePage(pageInfo.number, "")
+        changePage(pageInfo.number)
     }, [changePage, pageInfo?.number])
     
     useEffect(() => {
@@ -117,15 +117,13 @@ const Brands = () => {
 
     function handleFilter(event) {
         event.preventDefault();
-        const value = searchRef.current.value
-        if (value) {
-            changePage(null, value, searchBtnRef.current)
-        }
-        
+        pageInfo.number = 1;
+        changePage(null, searchBtnRef.current)
     }
     function clearFilter() {
-        if (searchRef.current?.value) {
+       if (searchRef.current?.value) {
             searchRef.current.value = "";
+            pageInfo.number = 1;
             changePage(null)
         }
     }
@@ -175,7 +173,7 @@ const Brands = () => {
                                 <label className="d-block text-start text-md-end fs-5" htmlFor="keyword">Filter:</label>
                             </Col>
                             <Col sm="9" md="6">
-                                <Form.Control ref={searchRef}  type="text" placeholder="keyword" />
+                                <Form.Control ref={searchRef}  type="text" placeholder="keyword" required/>
                             </Col>
                             <Col sm="12" md="4">
                             <div className="mt-md-0 mt-2">

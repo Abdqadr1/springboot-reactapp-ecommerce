@@ -5,13 +5,16 @@ import com.qadr.ecommerce.sharedLibrary.entities.Country;
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
 import com.qadr.ecommerce.sharedLibrary.entities.ShippingRate;
 import com.qadr.ecommerce.sharedLibrary.entities.State;
+import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
@@ -33,6 +36,17 @@ public class ShippingRateController {
     @GetMapping("/states")
     public List<State> listStates(@RequestParam("id") Integer id){
         return shippingRateService.getCountryStates(new Country(id));
+    }
+
+    @PostMapping("/get_shipping_rate")
+    public float getShippingRate(HttpServletRequest request){
+        String productId = request.getParameter("product");
+        String countryId = request.getParameter("country");
+        String state = request.getParameter("state");
+        if(productId == null || countryId == null || state == null){
+            throw new CustomException(HttpStatus.BAD_REQUEST, "Invalid parameters");
+        }
+        return shippingRateService.getShippingRate(Integer.valueOf(productId), Integer.valueOf(countryId), state);
     }
 
     @GetMapping("/page/{number}")

@@ -81,7 +81,6 @@ const Checkout = () => {
         placeOrder(data, action);
     }
     const placeOrder = (data, action) => {
-        listFormData(data);
         setFullscreenLoader(true)
         axios.post(`${url}/${action}`, data, {
             headers: {
@@ -89,7 +88,6 @@ const Checkout = () => {
             }
         })
         .then(res => {
-            console.log(res)
             setPlaceOrder(true);
             setAuth({ ...auth, cart: 0 })
         })
@@ -131,7 +129,7 @@ const Checkout = () => {
                                 {
                                     (info.info.codSupported) &&
                                     <>
-                                        <Form onSubmit={handleSubmit}>
+                                        <Form onSubmit={handleSubmit} data-action="place_order">
                                             <Form.Group className="mb-3 d-flex justify-content-start" controlId="cod">
                                                 <Form.Check
                                                     type="checkbox"

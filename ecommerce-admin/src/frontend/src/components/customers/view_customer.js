@@ -105,8 +105,7 @@ const ViewCustomer = ({ data, setData, updatingCustomer }) => {
     const handleSelect = (e, which) => {
         if (which === "c") {
             const id = Number(e.target.value);
-            const index = countries.findIndex(c => c.id === id);
-            const country = countries[index]
+            const country = countries.find(c => c.id === id);
             setCountry({ ...country })
             setForm(s=>({...s, country}))
         } else if (which === "s") {

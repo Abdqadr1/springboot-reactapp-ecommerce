@@ -77,8 +77,8 @@ const AddShippingRate = ({ show, setShow, addShippingRate, countries }) => {
      const handleSelect = (e, which) => {
         if (which === "c") {
             const id = Number(e.target.value);
-            const index = countries.findIndex(c => c.id === id);
-            setCountry({...countries[index]})
+            const country = countries.find(c => c.id === id);
+            setCountry({...country})
         } else if (which === "s") {
             const name = e.target.value;
             setState(name)

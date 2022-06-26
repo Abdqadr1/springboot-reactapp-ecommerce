@@ -66,10 +66,6 @@ const NavBar = () => {
           })
       }
 
-      if (customer?.id) {
-        return;
-      }
-
        axios.get(`${url}/details`, {
         headers: {
           "Authorization": `Bearer ${auth?.accessToken}`

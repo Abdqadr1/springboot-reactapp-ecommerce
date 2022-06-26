@@ -40,6 +40,9 @@
 .action:hover{
     filter: brightness(200%);
 }
+.add-user-form{
+    padding: 10px;
+}
 
 /* small phone screen */
 @media screen and (min-width: 200px) and (max-width: 768px) {
@@ -51,10 +54,10 @@
 
     .form-label,
     .data-label {
-        width: 100%;
+        width: 100% !important;
         align-self: center;
-        margin-bottom: 0 !important;
-        padding-left: 0;
+        margin-bottom: 5px !important;
+        padding-left: 0 !important;
     }
 
 

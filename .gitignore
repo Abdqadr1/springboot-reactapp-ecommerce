@@ -21,6 +21,9 @@ target/
 *.yaml
 *.yml
 
+## paypal test file
+PayPalServiceTest.java
+
 ### IntelliJ IDEA ###
 .idea
 *.iws

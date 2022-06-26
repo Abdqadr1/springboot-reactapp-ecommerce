@@ -17,6 +17,7 @@ import java.util.*;
 public class ProductService {
 
     public static final int PRODUCTS_PER_PAGE = 10;
+    public static final int PRODUCTS_PER_SEARCH_PAGE = 5;
     @Autowired
     private ProductRepo productRepo;
     @Autowired
@@ -95,5 +96,9 @@ public class ProductService {
         brandRepo.findById(save.getBrand().getId()).ifPresent(save::setBrand);
         categoryRepo.findById(save.getCategory().getId()).ifPresent(save::setCategory);
         return save;
+    }
+
+    public Map<String, Object> searchProducts(int pageNumber, PagingAndSortingHelper helper){
+        return helper.searchProduct(pageNumber, PRODUCTS_PER_SEARCH_PAGE, productRepo);
     }
 }

@@ -25,8 +25,7 @@ const useArray = () => {
     }
 
     const updateItemProp = (id, prop, val) => {
-        const index = array.findIndex(c => c.id === id);
-        const item = array[index];
+        const item = array.find(c => c.id === id);
         item[prop] = val;
         setArray([...array])
     }

@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers(
                 "/user/export/**","/category/export/**","/brand/export/**", "/brand-photos/**",
                 "/customer/export/**","/user-photos/**","/category-photos/**", "/product-images/**",
-                "/product/export/**","/site-logo/**", "/set/get","/countries/list").permitAll();
+                "/product/export/**","/site-logo/**", "/set/get","/countries/list", "/states/get").permitAll();
 
         http.authorizeRequests().antMatchers("/category/get-hierarchy/**")
                 .hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper");
@@ -67,9 +67,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/customer/**", "/shipping_rate")
                 .hasAnyAuthority("Admin", "Salesperson");
 
-
-        http.authorizeRequests().antMatchers("/orders/**")
+        http.authorizeRequests().antMatchers("/orders/page/**")
                 .hasAnyAuthority("Admin", "Salesperson", "Shipper");
+
+        http.authorizeRequests().antMatchers("/orders/**" )
+                .hasAnyAuthority("Admin", "Salesperson");
+
+        http.authorizeRequests().antMatchers("/orders/update_status/**")
+                .hasAnyAuthority("Shipper");
+
 
         http.authorizeRequests().antMatchers("/set/**", "/countries/**", "/states/**").hasAuthority("Admin");
 

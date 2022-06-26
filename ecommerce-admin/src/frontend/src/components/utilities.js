@@ -1,9 +1,8 @@
 import axios from "axios";
-import { Spinner } from "react-bootstrap";
+import { Col, Row, Spinner } from "react-bootstrap";
 
 export  function alterArrayEnable(allUser, id, status, callback){
-    const index = allUser.findIndex((u) => id === u.id);
-    const user = allUser[index];
+    const user = allUser.find((u) => id === u.id);
     user.enabled = status;
     callback([...allUser])
 }
@@ -117,10 +116,14 @@ export const hasAnyAuthority = (auth, roles) => {
         return isInArray(role.name, roles)
     })
 }
+export const hasOnlyAuthority =(auth, role) => {
+    if (auth.roles.length > 1) return false;
+    return auth.roles[0].name === role;
+}
 
-export const isInArray = (role, roles) => {
-    for (let i = 0; i < roles.length; i++){
-        if(role === roles[i]) return true
+export const isInArray = (needle, haystack) => {
+    for (let i = 0; i < haystack.length; i++){
+        if(needle === haystack[i]) return true
     }
     return false
 }
@@ -145,12 +148,21 @@ export const getCategoriesWithHierarchy = async (token) => {
     return hierarchies
 }
 
-export function formatDate(date) {
+export function formatDate(date, dateStyle="short", timeStyle="short") {
     if (date) {
-        const formatter = new Intl.DateTimeFormat("en-GB", {dateStyle: "short", timeStyle: "short"});
+        const formatter = new Intl.DateTimeFormat("en-US", {dateStyle, timeStyle});
          return formatter.format(new Date(date))
     }
     return "";
+}
+ const formatDateForInput = (val, separator = "-") => {
+        if (!val) return "";
+        const parts = Intl.DateTimeFormat("en", { month: "2-digit", day: "2-digit", year: "numeric" }).formatToParts(new Date(val))
+        const year = parts[4].value;
+        const month = parts[0].value;
+        const day = parts[2].value;
+        const str = `${year}${separator}${month}${separator}${day}`;
+        return str;
 }
 
 export const formatPrice = (price, s, m, t, pos) => {
@@ -165,4 +177,49 @@ export const formatPrice = (price, s, m, t, pos) => {
         }
     }
     
+}
+export const getShortName = (name, len=60) => {
+    if(name.length > len){
+        return name.substring(0,len) + "...";
+    }
+    return name;
+}
+export const getPrices = (discount, price, realPrice, formatPrice) => {
+    if(discount > 0){
+        return (
+          <h5 className="text-dark text-start fw-bold fs-6">
+            <span>{formatPrice(realPrice)}</span>
+            <del className="text-danger mx-2">{formatPrice(price)}</del>
+          </h5>
+        );
+    }
+    return (
+      <h5 className="text-dark text-start fw-bold">
+        <span>{formatPrice(price)}</span>
+      </h5>
+    );
+}
+
+export function listProducts(results, keyword, formatPrice, handler){
+    if(results.length > 0){
+        const fileURI = process.env.REACT_APP_SERVER_URL + "product-images/";
+        return (
+            <>
+                <h3 className="mt-4 mb-2"> Search Results for "{keyword}"</h3>
+                <Row className="justify-content-around p-4 mx-0">
+                    {
+                        results.map((p) => (
+                            <Col onClick={e=>handler(p)} key={p.name} xs={6} sm={4} md={3} lg={2} xlg={2} className="cs mx-1 border rounded">
+                                <img loading="lazy" src={`${fileURI}${p.id}/${p.mainImage}`} alt={getShortName(p.name, 10)} className="product-image" />
+                                <h5 className="my-2 text-primary text-start">{getShortName(p.name)}</h5>
+                                {getPrices(p.discountPrice, p.price, p.realPrice, formatPrice)}
+                            </Col>
+                        ))
+                    }
+                </Row>
+            </>
+        );
+    } else {
+        return <h4 className="text-center"> No products </h4>
+    }
 }

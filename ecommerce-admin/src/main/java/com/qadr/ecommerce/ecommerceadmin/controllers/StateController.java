@@ -20,6 +20,11 @@ public class StateController {
         return stateRepo.findByCountryOrderByNameAsc(country);
     }
 
+    @GetMapping("/get")
+    public List<State> listAll(@RequestParam("id") Integer country){
+        return stateRepo.findByCountryOrderByNameAsc(new Country(country));
+    }
+
     @DeleteMapping("/delete/{id}")
     public void deleteCountry(@PathVariable("id") Integer id){
 

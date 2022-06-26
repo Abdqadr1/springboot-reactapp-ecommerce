@@ -39,3 +39,12 @@
 .rm-detail:hover{
     filter: opacity(90%);
 }
+.product_search_modal{
+    max-width: 90%;
+    margin: 0 auto;
+    width: 90%;
+    min-width: 700px;
+}
+.product_search_modal a{
+    text-decoration: none;
+}

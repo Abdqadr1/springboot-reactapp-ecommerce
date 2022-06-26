@@ -45,4 +45,7 @@ public interface ProductRepo extends SearchRepository<Product, Integer> {
     )
     Page<Product> searchKeyword(String keyword, Pageable pageable);
 
+    @Query("SELECT p FROM Product p WHERE p.name LIKE %?1%")
+    Page<Product> search(String keyword, Pageable pageable);
+
 }

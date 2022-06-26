@@ -9,6 +9,8 @@ import org.hibernate.Hibernate;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Entity
@@ -28,9 +30,15 @@ public class Order extends AddressBasedEntity {
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private Set<OrderDetail> orderDetails = new LinkedHashSet<>();
+    private Set<OrderDetail> orderDetails = new HashSet<>();
+
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("updatedTime ASC")
+    @ToString.Exclude
+    private List<OrderTrack> orderTracks = new ArrayList<>();
 
     private Date orderTime;
     private Date deliveryDate;
@@ -46,10 +54,13 @@ public class Order extends AddressBasedEntity {
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 
-
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
+    public String getDeliveryDateOnForm(){
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        return dateFormatter.format(deliveryDate);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -76,5 +87,10 @@ public class Order extends AddressBasedEntity {
         setCountry(address.getCountry().getName());
     }
 
+    public boolean hasStatus(OrderStatus status){
+        return orderTracks
+                .stream()
+                .anyMatch(orderTrack -> orderTrack.getStatus().equals(status));
+    }
 
 }

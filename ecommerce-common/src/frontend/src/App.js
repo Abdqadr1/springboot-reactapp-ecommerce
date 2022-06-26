@@ -20,6 +20,7 @@ import { AuthContext, getAuthFromLocalStorage, setAuthToLocalStorage } from "./c
 import { useState } from "react";
 import Addresses from "./components/addresses";
 import Checkout from "./components/checkout";
+import Orders from "./components/orders/orders";
 
 function App() {
   
@@ -59,6 +60,7 @@ function App() {
                 <Route path="/shopping_cart" element={<ShoppingCart />} />
                 <Route path="/addresses" element={<Addresses />} />
                 <Route path="/checkout" element={<Checkout />} />
+                <Route path="/orders" element={<Orders />} />
                 <Route path="*" element={<div className="my-4">Not found</div>} />
             </Routes>
             </div>

@@ -5,12 +5,11 @@ const Paypal = ({ info:object, setToast, successHandler }) => {
     // console.log(info)
     const [{ isPending, isRejected }] = usePayPalScriptReducer();
 
-    if (isRejected) {
-        setToast(s => ({ ...s, show: true, message: "PayPal script could not loaded" }));
-    }
-
     return (  
         <>
+            {
+                isRejected && console.warn("PayPal script could not load")
+            }
             {isPending &&
                 <Spinner animation="border" role="status">
                     <span className="visually-hidden">Loading...</span>

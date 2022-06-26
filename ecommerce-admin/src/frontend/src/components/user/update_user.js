@@ -43,7 +43,7 @@ const UpdateUser = ({ updateUser, setUpdateUser, updatingUser }) => {
         let roles = form.roles;
         const roleID = Number(event.target.value);
         if (event.target.checked) {
-            if ((roles.findIndex(id => id === roleID)) === -1) roles.push(roleID);
+            if (!roles.some(id => id === roleID)) roles.push(roleID);
         } else {
              roles = roles.filter((id) =>  id !== roleID )
         }

@@ -1,10 +1,7 @@
 package com.qadr.ecommerce.ecommerceadmin.repo;
 
 import com.qadr.ecommerce.sharedLibrary.entities.*;
-import com.qadr.ecommerce.sharedLibrary.entities.order.Order;
-import com.qadr.ecommerce.sharedLibrary.entities.order.OrderDetail;
-import com.qadr.ecommerce.sharedLibrary.entities.order.OrderStatus;
-import com.qadr.ecommerce.sharedLibrary.entities.order.PaymentMethod;
+import com.qadr.ecommerce.sharedLibrary.entities.order.*;
 import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
 import com.qadr.ecommerce.sharedLibrary.repo.OrderRepo;
 import org.junit.jupiter.api.Test;
@@ -118,6 +115,28 @@ public class OrderTest {
         orderRepo.deleteById(id);
         Optional<Order> order = orderRepo.findById(id);
         assertThat(order).isNotPresent();
+    }
+
+    @Test
+    void testUpdateOrderTrack(){
+        List<Order> all = orderRepo.findAll();
+        all.forEach(order -> {
+            OrderTrack track1 = new OrderTrack();
+            track1.setStatus(OrderStatus.NEW);
+            track1.setNote(OrderStatus.NEW.getDescription());
+            track1.setUpdatedTime(new Date());
+            track1.setOrder(order);
+
+            OrderTrack track2 = new OrderTrack();
+            track2.setStatus(OrderStatus.PROCESSING);
+            track2.setNote(OrderStatus.PROCESSING.getDescription());
+            track2.setUpdatedTime(new Date());
+            track2.setOrder(order);
+
+            order.getOrderTracks().addAll(List.of(track1, track2));
+        });
+        List<Order> saveAll = orderRepo.saveAll(all);
+        assertThat(saveAll.size()).isEqualTo(all.size());
     }
 
 

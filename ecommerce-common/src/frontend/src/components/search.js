@@ -1,6 +1,6 @@
-import { Row, Col,Form, Button, Navbar, Nav, Container, Modal, Alert } from "react-bootstrap";
+import { Row, Col,Form, Button } from "react-bootstrap";
 import { useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 const Search = () => {
   const keywordRef =  useRef();
   const navigate = useNavigate();

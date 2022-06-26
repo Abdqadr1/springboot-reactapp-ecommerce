@@ -1,18 +1,14 @@
 import axios from "axios";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState,useContext } from "react";
 import { Col, Form, Row, Table, Button } from "react-bootstrap";
-import DeleteModal from "../delete_modal";
-import MyPagination from "../paging";
+import MyPagination from "./paging";
 import { Navigate, useNavigate } from 'react-router-dom';
-import { alterArrayDelete, alterArrayUpdate, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, formatPrice, hasAnyAuthority, hasOnlyAuthority } from "../utilities";
+import { isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, formatPrice } from "../utilities";
 import Order from "./order";
-import "../../css/products.css"
-import useAuth from "../custom_hooks/use-auth";
+import { AuthContext } from "../custom_hooks/use-auth";
 import ViewOrder from "./view_order";
 import useThrottle from "../custom_hooks/use-throttle";
-import ViewCustomer from "../customers/view_customer";
-import useSettings from "../custom_hooks/use-settings";
-import EditOrder from "./edit_order";
+import useSettings from "../use-settings";
 import UpdateStatusModal from "./update_status_modal";
 import CustomToast from "../custom_toast";
 
@@ -20,35 +16,20 @@ const Orders = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "orders/";
     const [width, setWidth] = useState(window.innerWidth);
     const navigate = useNavigate();
-    const [auth] = useAuth();
+    const { auth, setAuth } = useContext(AuthContext);
+
     const accessToken = auth.accessToken;
     const searchRef = useRef();
     const searchBtnRef = useRef();
     const [orders, setOrders] = useState([]);
-    const [notes, setNotes] = useState([]);
-    const [paymentMethods, setPaymentMethods] = useState([]);
     const [viewOrder, setViewOrder] = useState({show:false, id: -1, order: null});
-    const [updateOrder, setUpdateOrder] = useState({show:false, id: -1, order: null});
-    const [deleteOrder, setDeleteOrder] = useState({ show: false, id: -1 });
-    const [orderStatus, setOrderStatus] = useState({ show: false, id: -1, type: "picked" });
-    const [showCustomer, setShowCustomer] = useState({ show: false, id: -1, type: "View", customer: {} });
+    const [orderStatus, setOrderStatus] = useState({ show: false, id: -1});
     const [toast, setToast] = useState({show: false, message: "", variant: "dark"});
 
     const showView = (id) => {
         const order = orders.filter(u => u.id === id)[0];
         setViewOrder({ show: true, id, order})
     };
-
-    const showEdit = (id) => {
-        const order = orders.filter(u => u.id === id)[0];
-        setUpdateOrder({ show: true, id, order})
-    };
-
-    const viewCustomer = id => {
-        const order = orders.filter(u => u.id === id)[0];
-        const customer = order.customer;
-        setShowCustomer(s=> ({...s, show: true, customer}))
-    }
 
     const [pageInfo, setPageInfo] = useState({
         number: 1, totalPages: 1, startCount: 1,
@@ -83,12 +64,12 @@ const Orders = () => {
                     }
                 ))
                 setOrders(data.orders);
-                setPaymentMethods(data.paymentMethods ?? null);
-                setNotes(data.notes ?? null);
             })
             .catch(error => {
                 const response = error?.response
-                if(response && isTokenExpired(response)) navigate("/login/2")
+                if (response && isTokenExpired(response)) {
+                    setAuth(null); navigate("/login");
+                } 
             })
             .finally(() => {
                 if (button) {
@@ -96,7 +77,7 @@ const Orders = () => {
                 button.innerHTML = SEARCH_ICON;
             }
             })
-    }, [sort, serverUrl, accessToken, navigate])
+    }, [serverUrl, sort.field, sort.dir, accessToken, setAuth, navigate])
     
     const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500)
 
@@ -121,28 +102,6 @@ const Orders = () => {
             window.removeEventListener("resize", handleWindowWidthChange)
         }
     })
-    
-    function deletingOrder() {
-        const id = deleteOrder.id
-        const url = serverUrl + "delete/" + id;
-        axios.get(url, {
-             headers: {
-                 "Authorization": `Bearer ${accessToken}`
-             }
-        })
-            .then(() => {
-                alterArrayDelete(orders, id, setOrders)
-                setDeleteOrder({...deleteOrder, show:false})
-                alert("Order deleted!")
-            })
-            .catch(error => {
-            console.log(error.response)
-        })
-    }
-
-    function updatingOrder(order) {
-        alterArrayUpdate(order, setOrders)
-    }
 
     function handleFilter(event) {
         event.preventDefault();
@@ -158,31 +117,32 @@ const Orders = () => {
         }
     }
     
-    function updateStatus() {
+    function updateStatus(formData, callback) {
         const id = orderStatus.id
-        const status = orderStatus.type;
-        const url = serverUrl + "update_status/";
-        axios.post(`${url}${id}/${status}`, null, {
+        const url = serverUrl + "request_return/";
+        let message = null, success=false;
+        axios.post(`${url}${id}`, formData, {
              headers: {
                  "Authorization": `Bearer ${accessToken}`
              }
         })
         .then((res) => {
-            const id = res.data.id, status = res.data.status;
             const order = orders.find(o => o.id === id);
-            const data = { status, note: notes[status] }
-            order.orderTracks.push(data);
-            setToast(s=>({...s, show:true, message: "Order status updated"}))
+            order.orderStatus = "RETURN_REQUESTED";
+            order.orderTracks.push(res.data);
             setOrders([...orders]);
+            success = true;
+            message = "Return request submitted";
         })
         .catch(error => {
             console.log(error)
-            // console.log(error.response);
-            setToast(s => ({ ...s, show: true, message: "An error occurred", variant: "danger" }))
+            const response = error?.response
+            if (response && isTokenExpired(response)) {
+                setAuth(null); navigate("/login");
+            }
+            if (response) message = response.data.message;
         })
-        .finally(() => {
-            setOrderStatus(s => ({ ...s, show: false }))
-        })
+        .finally(()=> callback(message, success))
     }
 
     function isSort(name) {
@@ -202,8 +162,8 @@ const Orders = () => {
 
     function listOrders(orders, type) {
         return (orders.length > 0)
-            ? orders.map(order => <Order key={order.id} type={type} order={order} setDeleted={setDeleteOrder}
-                    showView={showView} showEdit={showEdit} showCustomer={viewCustomer} priceFunction={priceFormatter()}
+            ? orders.map(order => <Order key={order.id} type={type} order={order}
+                    showView={showView} priceFunction={priceFormatter()}
                     setOrderStatus={setOrderStatus}
                  />)
             : ((type === 'detailed')
@@ -215,7 +175,8 @@ const Orders = () => {
     return ( 
         <>
             <CustomToast show={toast.show} setToast={setToast} message={toast.message} variant={toast.variant} />
-            <Row className="justify-content-start align-items-center p-3 mx-0">
+            <h3 className="fw-bold mt-3">My Orders</h3>
+            <Row className="justify-content-start align-items-center p-1 mx-0">
                 <Col xs={12} md={7} className="my-2">
                     <Form className="row justify-content-between" onSubmit={handleFilter}>
                         <Form.Group as={Row} className="mb-3" controlId="keyword">
@@ -240,64 +201,36 @@ const Orders = () => {
                 </Col>
             </Row>
             {
-                (hasAnyAuthority(auth, ["Admin", "Salesperson"]))
-                    ? 
-                    <>
-                        {
-                            (width >= 769) ?
-                            <Table bordered responsive hover className="more-details">
-                                <thead className="bg-dark text-light">
-                                    <tr>
-                                        <th onClick={handleSort} id="id" className="cursor-pointer">ID {isSort("id")}</th>
-                                        <th onClick={handleSort} id="customer"  className="cursor-pointer">Customer  {isSort("customer")}</th>
-                                        <th onClick={handleSort} id="total" className="cursor-pointer">Total {isSort("total")}</th>
-                                        <th onClick={handleSort} id="orderTime" className="cursor-pointer">
-                                            Order Time {isSort("orderTime")}
-                                        </th>
-                                        <th className="hideable-col">Destination</th>
-                                        <th onClick={handleSort} id="paymentMethod" className="hideable-col cursor-pointer">
-                                            Payment Method {isSort("paymentMethod")}
-                                        </th>
-                                        <th onClick={handleSort} id="orderStatus"  className="hideable-col cursor-pointer">
-                                            Status {isSort("orderStatus")}
-                                        </th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {listOrders(orders,"detailed")}
-                                </tbody>
-                            </Table> : ""
-                        }
-                        {
-                            (width <= 768)
-                                ? <div className="less-details p-2">
-                                    {listOrders(orders, "less")}
-                                </div> : ""
-                        }  
-                    </>
-                    :
-                    <Row className="justify-content-around mx-0">
-                        {listOrders(orders)}
-                    </Row>                         
+                (width >= 1000) ?
+                <Table bordered responsive hover className="more-details">
+                    <thead className="bg-dark text-light">
+                        <tr>
+                            <th onClick={handleSort} id="id" className="cursor-pointer">ID {isSort("id")}</th>
+                            <th onClick={handleSort} id="orderTime" className="cursor-pointer">
+                                Order Time {isSort("orderTime")}
+                            </th>
+                            <th className="cursor-pointer">products</th>
+                            <th onClick={handleSort} id="total" className="cursor-pointer">Total {isSort("total")}</th>
+                            <th onClick={handleSort} id="orderStatus" className="cursor-pointer">
+                                Status {isSort("orderStatus")}
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {listOrders(orders,"detailed")}
+                    </tbody>
+                </Table> : ""
             }
-            
+            {
+                (width <= 999)
+                    ? <Row className="justify-content-center mx-0">
+                        {listOrders(orders, "less")}
+                    </Row> : ""
+            }  
             {(orders.length > 0) ? <MyPagination pageInfo={pageInfo} setPageInfo={setPageInfo} /> : ""}
             <ViewOrder viewOrder={viewOrder} setViewOrder={setViewOrder} priceFunction={priceFormatter()} />
-            {
-                (hasAnyAuthority(auth, ["Admin", "Salesperson"])) &&
-                <>
-                    <DeleteModal deleteObject={deleteOrder} setDeleteObject={setDeleteOrder} deletingFunc={deletingOrder} type="Order" />
-
-                    <EditOrder updateOrder={updateOrder} setUpdateOrder={setUpdateOrder} updatingOrder={updatingOrder}
-                        priceFunction={priceFormatter()} paymentMethods={paymentMethods} notes={notes} />
-                    <ViewCustomer data={showCustomer} setData={setShowCustomer} />
-                </>
-            }
-            {
-                (hasOnlyAuthority(auth, "Shipper")) && 
-                <UpdateStatusModal object={orderStatus} setObject={setOrderStatus} updatingFunc={updateStatus} />
-            }
+            <UpdateStatusModal object={orderStatus} setObject={setOrderStatus} updatingFunc={updateStatus} />
         </>
      );
 }

@@ -36,9 +36,9 @@ const ShippingRates = () => {
     })
     const [sort, setSort] = useState({ field: "id", dir: "asc" })
     
-     const changePage = useCallback(function (number, keyword, button) {
+     const changePage = useCallback(function (number, button) {
         number = number ?? 1;
-         keyword = keyword ?? ""
+        const keyword = encodeURIComponent(searchRef.current.value);
          if (button) {
             button.disabled = true
             button.innerHTML = SPINNERS_BORDER_HTML
@@ -70,7 +70,7 @@ const ShippingRates = () => {
                     button.innerHTML = SEARCH_ICON;
                 }
              })
-     }, [sort, serverUrl, accessToken, navigate])
+     }, [serverUrl, sort.field, sort.dir, accessToken, setShippingRates, navigate])
     
     const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500)
     
@@ -145,17 +145,15 @@ const ShippingRates = () => {
         setShippingRates(s=>[...s, rate])
     }
 
-    function handleFilter(event) {
+  function handleFilter(event) {
         event.preventDefault();
-        const value = searchRef.current.value
-        if (value) {
-            changePage(null, value, searchBtnRef.current)
-        }
-        
+        pageInfo.number = 1;
+        changePage(null, searchBtnRef.current)
     }
     function clearFilter() {
-        if (searchRef.current?.value) {
+       if (searchRef.current?.value) {
             searchRef.current.value = "";
+            pageInfo.number = 1;
             changePage(null)
         }
     }
@@ -203,7 +201,7 @@ const ShippingRates = () => {
                                 <label className="d-block text-start text-md-end fs-5" htmlFor="keyword">Filter:</label>
                             </Col>
                             <Col sm="9" md="6">
-                                <Form.Control ref={searchRef}  type="text" placeholder="keyword" />
+                                <Form.Control ref={searchRef}  type="text" placeholder="keyword" required />
                             </Col>
                             <Col sm="12" md="4">
                             <div className="mt-md-0 mt-2">

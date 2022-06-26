@@ -4,9 +4,11 @@ import com.qadr.ecommerce.sharedLibrary.entities.Country;
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
 import com.qadr.ecommerce.sharedLibrary.entities.ShippingRate;
 import com.qadr.ecommerce.sharedLibrary.entities.State;
+import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import com.qadr.ecommerce.sharedLibrary.repo.CountryRepo;
+import com.qadr.ecommerce.sharedLibrary.repo.ProductRepo;
 import com.qadr.ecommerce.sharedLibrary.repo.ShippingRateRepo;
 import com.qadr.ecommerce.sharedLibrary.repo.StateRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +26,9 @@ import java.util.Optional;
 @Transactional
 public class ShippingRateService {
     public static final int RATES_PER_PAGE = 10;
+    public static final int DIM_DIVISOR = 139;
     @Autowired private ShippingRateRepo repo;
-
+    @Autowired private ProductRepo productRepo;
     @Autowired private CountryRepo countryRepo;
     @Autowired private StateRepo stateRepo;
 
@@ -40,6 +43,19 @@ public class ShippingRateService {
     public Map<String, Object> getPage(int pageNumber, PagingAndSortingHelper helper){
         return helper.getPageInfo(pageNumber, RATES_PER_PAGE, repo);
     }
+
+    public float getShippingRate(Integer productId, Integer countryId, String state){
+        ShippingRate shippingRate = repo.findByCountryAndState(countryId, state)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST,
+                        "Could not find shipping rate for the destination, You have to enter it manually"));
+        Product product = productRepo.findById(productId)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Could not find product"));
+
+        float dimWeight = product.getHeight() * product.getWidth() * product.getLength() / DIM_DIVISOR;
+        float finalWeight = Math.max(dimWeight, product.getWeight());
+        return  finalWeight * shippingRate.getRate();
+    }
+
 
 
     public List<ShippingRate> getAll() {
