@@ -5,7 +5,10 @@ import '../../css/users.css';
 import DeleteModal from "../delete_modal";
 import MyPagination from "../paging";
 import { Navigate, useNavigate } from 'react-router-dom';
-import { alterArrayAdd, alterArrayDelete, alterArrayEnable, alterArrayUpdate, getCategoriesWithHierarchy, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML } from "../utilities";
+import {
+    alterArrayAdd, alterArrayDelete, alterArrayEnable, SPINNERS_BORDER, alterArrayUpdate,
+    getCategoriesWithHierarchy, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML
+} from "../utilities";
 import Category from "./category";
 import AddCategory from './add-category'
 import UpdateCategory from "./update-category";
@@ -21,6 +24,7 @@ const Categories = () => {
     const searchRef = useRef();
     const searchBtnRef = useRef();
     const [categories, setCategories] = useState([]);
+    const [isLoading, setLoading] = useState(true);
     const [showAddCategory, setShowAddCategory] = useState(false);
     const [updateCategory, setUpdateCategory] = useState({show:false, id: -1, category: {}});
     const [deleteCategory, setDeleteCategory] = useState({show:false, id: -1});
@@ -37,7 +41,9 @@ const Categories = () => {
     
      const changePage = useCallback(function (number, button) {
         number = number ?? 1;
-        const keyword = encodeURIComponent(searchRef.current.value);
+         const keyword = (searchRef.current) ? encodeURIComponent(searchRef.current?.value) : "";
+         setLoading(true);
+
          if (button) {
             button.disabled = true
             button.innerHTML = SPINNERS_BORDER_HTML
@@ -66,6 +72,8 @@ const Categories = () => {
                 if(isTokenExpired(response)) navigate("/login/2")
              })
              .finally(() => {
+                 setLoading(false);
+
                  if (button) {
                     button.disabled = false
                     button.innerHTML = SEARCH_ICON;
@@ -154,10 +162,10 @@ const Categories = () => {
     }
 
     function handleSort(event) {
-        const id = event.target.id;
-        const dir = sort.dir === "asc" ? "desc": "asc"
-        if (id === sort.field) setSort({ ...sort, dir })
-        else setSort({ field: id, dir: "asc" })
+       const id = event.target.id;
+        const field = (id === sort.field) ? sort.field : id;
+        const dir = (sort.dir === "asc" && field === sort.field) ? "desc" : "asc";
+        setSort({ field, dir })
     }
 
     function listCategories(categories, type) {
@@ -171,7 +179,11 @@ const Categories = () => {
 
     if(!accessToken) return <Navigate to="/login/2" />
     return ( 
-        <>
+          <>
+            {
+                (isLoading)
+                    ? <div className="mx-auto" style={{ height: "40vh", display: "grid" }}>{SPINNERS_BORDER}</div>
+                    :<>
             <Row className="justify-content-between align-items-center p-3 mx-0">
                 <Col xs={12} md={5} className="my-2">
                     <h3 className="">Manage Categories</h3>
@@ -236,6 +248,9 @@ const Categories = () => {
             <UpdateCategory hierarchies={hierarchies} updateCategory={updateCategory} setUpdateCategory={setUpdateCategory} updatingCategory={updatingCategory} />
             <DeleteModal deleteObject={deleteCategory} setDeleteObject={setDeleteCategory}   deletingFunc={deletingCategory} type="Category" />
         </>
+            }
+        </>
+        
      );
 }
  

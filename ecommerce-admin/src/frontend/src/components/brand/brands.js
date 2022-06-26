@@ -4,7 +4,10 @@ import { Col, Form, Row, Table, Button } from "react-bootstrap";
 import DeleteModal from "../delete_modal";
 import MyPagination from "../paging";
 import { Navigate, useNavigate } from 'react-router-dom';
-import { alterArrayAdd, alterArrayDelete, alterArrayUpdate, getCategoriesWithHierarchy, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML } from "../utilities";
+import {
+    alterArrayAdd, alterArrayDelete, alterArrayUpdate, getCategoriesWithHierarchy,
+    isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, SPINNERS_BORDER
+} from "../utilities";
 import Brand from "./brand";
 import AddBrand from './add-brand'
 import UpdateBrand from "./update-brand";
@@ -20,6 +23,7 @@ const Brands = () => {
     const searchRef = useRef();
     const searchBtnRef = useRef();
     const [brands, setBrands] = useState([]);
+    const [isLoading, setLoading] = useState(true);
     const [showAddBrand, setShowAddBrand] = useState(false);
     const [updateBrand, setUpdateBrand] = useState({show:false, id: -1, brand: {}});
     const [deleteBrand, setDeleteBrand] = useState({show:false, id: -1});
@@ -36,7 +40,9 @@ const Brands = () => {
     
      const changePage = useCallback(function (number, button) {
         number = number ?? 1;
-        const keyword = encodeURIComponent(searchRef.current.value);
+         const keyword = (searchRef.current) ? encodeURIComponent(searchRef.current?.value) : "";
+        setLoading(true);
+
          if (button) {
             button.disabled = true
             button.innerHTML = SPINNERS_BORDER_HTML
@@ -65,6 +71,7 @@ const Brands = () => {
                 if(isTokenExpired(response)) navigate("/login/2")
              })
              .finally(() => {
+                    setLoading(false);
                  if (button) {
                     button.disabled = false
                     button.innerHTML = SEARCH_ICON;
@@ -138,9 +145,9 @@ const Brands = () => {
 
     function handleSort(event) {
         const id = event.target.id;
-        const dir = sort.dir === "asc" ? "desc": "asc"
-        if (id === sort.field) setSort({ ...sort, dir })
-        else setSort({ field: id, dir: "asc" })
+        const field = (id === sort.field) ? sort.field : id;
+        const dir = (sort.dir === "asc" && field === sort.field) ? "desc" : "asc";
+        setSort({ field, dir })
     }
 
     function listBrands(brands, type) {
@@ -153,7 +160,11 @@ const Brands = () => {
 
     if(!accessToken) return <Navigate to="/login/2" />
     return ( 
-        <>
+          <>
+            {
+                (isLoading)
+                ? <div className="mx-auto" style={{height: "40vh",display:"grid"}}>{SPINNERS_BORDER}</div>
+                :<>
             <Row className="justify-content-between align-items-center p-3 mx-0">
                 <Col xs={12} md={5} className="my-2">
                     <h3 className="">Manage Brands</h3>
@@ -217,6 +228,9 @@ const Brands = () => {
             <UpdateBrand categories={categories} updateBrand={updateBrand} setUpdateBrand={setUpdateBrand} updatingBrand={updatingBrand} />
             <DeleteModal deleteObject={deleteBrand} setDeleteObject={setDeleteBrand}   deletingFunc={deletingBrand} type="Brand" />
         </>
+            }
+        </>
+        
      );
 }
  

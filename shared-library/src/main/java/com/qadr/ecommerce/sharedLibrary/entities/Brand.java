@@ -44,6 +44,10 @@ public class Brand extends IdBasedEntity{
         this.photo = "default.png";
     }
 
+    public String getImagePath(){
+        return Constants.S3_BASE_URI + "brand-photos/" + id +"/"+ photo;
+    }
+
     public void addCategory(Category category) {
         this.categories.add(category);
     }

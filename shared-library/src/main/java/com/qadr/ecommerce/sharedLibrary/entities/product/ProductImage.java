@@ -1,10 +1,12 @@
 package com.qadr.ecommerce.sharedLibrary.entities.product;
 
+import com.qadr.ecommerce.sharedLibrary.entities.Constants;
 import com.qadr.ecommerce.sharedLibrary.entities.IdBasedEntity;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+
 
 @Entity
 @Table(name = "product_images")
@@ -44,5 +46,9 @@ public class ProductImage extends IdBasedEntity {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getImagePath(){
+        return Constants.S3_BASE_URI + "product-images/" + product.getId() +"/extras/"+ path;
     }
 }

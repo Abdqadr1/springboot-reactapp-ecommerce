@@ -12,7 +12,6 @@ const UpdateProduct = ({ updateProduct, setUpdateProduct, updatingProduct, brand
     const navigate = useNavigate()
     const submitBtnRef = useRef();
     const url = process.env.REACT_APP_SERVER_URL + "product/edit";
-    const fileURL = `${process.env.REACT_APP_SERVER_URL}product-images/${product?.id ?? ''}/`;
 
     const initialForm = {product_images: [], savedImages:[], details: product?.details ?? [], main_image: ""}
     const [form, setForm] = useState(initialForm);
@@ -214,7 +213,7 @@ const UpdateProduct = ({ updateProduct, setUpdateProduct, updatingProduct, brand
                         <span>{`Extra image #${i+1}`}</span>
                         <i title={`Remove image`} className="bi bi-x-circle-fill text-danger" onClick={()=>handleClearImage("s",i)}></i>
                     </h5>
-                    <img src={`${fileURL}extras/${img.path}`}  alt="product" className="product-image" />
+                    <img src={img.imagePath}  alt="product" className="product-image" />
                 </Col>
             ))
         }
@@ -245,7 +244,7 @@ const UpdateProduct = ({ updateProduct, setUpdateProduct, updatingProduct, brand
             return (
                 <Col md={4} className="border py-2">
                     <h5 className="px-1 text-center">Main image</h5>
-                    <img src={`${fileURL}${product?.mainImage}`}  alt="product" className="product-image" />
+                    <img src={product?.mainImagePath}  alt="product" className="product-image" />
                 </Col>)
         }
     }

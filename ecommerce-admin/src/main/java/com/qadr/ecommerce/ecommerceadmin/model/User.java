@@ -1,5 +1,6 @@
 package com.qadr.ecommerce.ecommerceadmin.model;
 
+import com.qadr.ecommerce.sharedLibrary.entities.Constants;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -60,6 +61,10 @@ public class User {
 
     public void addRole(Role role){
         this.roles.add(role);
+    }
+
+    public String getImagePath(){
+        return Constants.S3_BASE_URI + "user-photos/" + id +"/"+ photo;
     }
 
 }

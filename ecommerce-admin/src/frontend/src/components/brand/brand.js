@@ -1,7 +1,6 @@
 import { Badge, Col, Row } from "react-bootstrap";
 
 const Brand = ({ brand, showUpdate, setDeleted, type }) => {
-    const fileURI = process.env.REACT_APP_SERVER_URL+"brand-photos/";
 
     const brandCategories = brand.categories.map(cat => <Badge pill key={cat.id} bg="secondary" className="ms-1">{cat.name}</Badge>)
 
@@ -11,7 +10,7 @@ const Brand = ({ brand, showUpdate, setDeleted, type }) => {
         })
     }
     const photo = brand.photo && brand.photo !== "null" && brand.photo !== "default.png"
-        ? <img loading="lazy" src={`${fileURI}${brand.id}/${brand.photo}`} alt="category-dp" className="table-dp" />
+        ? <img loading="lazy" src={brand.imagePath} alt="category-dp" className="table-dp" />
         :<span htmlFor="photo" className="avatar cursor-pointer bg-secondary">
             <i className="bi bi-image-fill"></i>
         </span>

@@ -1,7 +1,13 @@
 package com.qadr.ecommerce.sharedLibrary.util;
 
 import com.qadr.ecommerce.sharedLibrary.entities.setting.CurrencySettingBag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.util.UriUtils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -10,6 +16,19 @@ import java.util.Date;
 import java.util.Objects;
 
 public class CommonUtil {
+    public static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(CommonUtil.class);
+
+    public static String encodeValue(String value) throws UnsupportedEncodingException {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
+    }
+    public static String encodePath(String path) {
+        String encoded = UriUtils.encodePath(path, "UTF-8");
+//        System.out.println(path + " === " + encoded);
+        return encoded;
+    }
+    public static String decodePath(String path){
+        return UriUtils.decode(path, "UTF-8");
+    }
 
     public static String toSnakeCase(String camelCase){
         char[] arr = camelCase.toCharArray();

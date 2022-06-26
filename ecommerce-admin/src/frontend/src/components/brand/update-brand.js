@@ -86,9 +86,8 @@ const UpdateBrand = ({ updateBrand, setUpdateBrand, updatingBrand, categories })
                 setChosenCat(() => {
                     return currentBrand.categories.map(cat => cat.name);
                 })
-                const fileURI = process.env.REACT_APP_SERVER_URL + "brand-photos/";
                 const img = currentBrand.photo && currentBrand.photo !== "null" && currentBrand.photo !== "default.png"
-                    ? <img src={`${fileURI}${currentBrand.id}/${currentBrand.photo}`} alt="thumbnail" className="thumbnail" />
+                    ? <img src={currentBrand.imagePath} alt="thumbnail" className="thumbnail" />
                     : <label htmlFor="photo" className="ms-0 w-50 person-span mt-3 cursor-pointer bg-secondary">
                         <i className="bi bi-image-fill"></i>
                     </label>

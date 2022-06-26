@@ -9,7 +9,7 @@ import UpdateUser from "./update_user";
 import User from "./user";
 import { Navigate, useNavigate } from 'react-router-dom';
 import useAuth from "../custom_hooks/use-auth";
-import { alterArrayAdd, alterArrayDelete, alterArrayEnable, alterArrayUpdate, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML } from "../utilities";
+import { alterArrayAdd, alterArrayDelete, alterArrayEnable, alterArrayUpdate, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER, SPINNERS_BORDER_HTML } from "../utilities";
 import useThrottle from "../custom_hooks/use-throttle";
 
 const Users = () => {
@@ -21,6 +21,7 @@ const Users = () => {
     const searchRef = useRef();
     const searchBtnRef = useRef();
     const [users, setUsers] = useState([]);
+    const [isLoading, setLoading] = useState(true);
     const [showAddUser, setShowAddUser] = useState(false);
     const [updateUser, setUpdateUser] = useState({show:false, id: -1, user: {}});
     const [deleteUser, setDeleteUser] = useState({show:false, id: -1});
@@ -35,8 +36,9 @@ const Users = () => {
     const [sort, setSort] = useState({ field: "firstName", dir: "asc" })
     
      const changePage = useCallback(function (number, button) {
-        number = number ?? 1;
-        const keyword = encodeURIComponent(searchRef.current.value);
+         number = number ?? 1;
+        const keyword = (searchRef.current) ? encodeURIComponent(searchRef.current?.value) : "";
+        setLoading(true);
          if (button) {
             button.disabled = true
             button.innerHTML = SPINNERS_BORDER_HTML
@@ -63,6 +65,7 @@ const Users = () => {
                 if(isTokenExpired(response)) navigate("/login/2")
              })
              .finally(() => {
+                setLoading(false);
                  if (button) {
                     button.disabled = false
                     button.innerHTML = SEARCH_ICON;
@@ -149,9 +152,9 @@ const Users = () => {
 
     function handleSort(event) {
         const id = event.target.id;
-        const dir = sort.dir === "asc" ? "desc": "asc"
-        if (id === sort.field) setSort({ ...sort, dir })
-        else setSort({ field: id, dir: "asc" })
+        const field = (id === sort.field) ? sort.field : id;
+        const dir = (sort.dir === "asc" && field === sort.field) ? "desc" : "asc";
+        setSort({ field, dir })
     }
 
     function listUsers(users, type) {
@@ -165,7 +168,12 @@ const Users = () => {
 
     if(!accessToken) return <Navigate to="/login/2" />
     return ( 
-        <>
+          <>
+        {
+            (isLoading)
+            ? <div className="mx-auto" style={{height: "40vh",display:"grid"}}>{SPINNERS_BORDER}</div>
+            : 
+            <>
             <Row className="justify-content-between align-items-center p-3 mx-0">
                 <Col xs={12} md={5} className="my-2">
                     <h3 className="">Manage Users</h3>
@@ -237,7 +245,10 @@ const Users = () => {
             <AddUser showAddUser={showAddUser} setShowAddUser={setShowAddUser} addingUser={addingUser}/>
             <UpdateUser updateUser={updateUser} setUpdateUser={setUpdateUser} updatingUser={updatingUser} />
             <DeleteModal deleteObject={deleteUser} setDeleteObject={setDeleteUser}   deletingFunc={deletingUser} type="User" />
+            </>
+        }
         </>
+       
      );
 }
  

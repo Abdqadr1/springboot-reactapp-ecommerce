@@ -4,7 +4,7 @@ import { Col, Form, Row, Table, Button } from "react-bootstrap";
 import DeleteModal from "../delete_modal";
 import MyPagination from "../paging";
 import { Navigate, useNavigate } from 'react-router-dom';
-import { alterArrayAdd, alterArrayDelete,alterArrayEnable, alterArrayUpdate, getCategoriesWithHierarchy, hasAnyAuthority, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML } from "../utilities";
+import { alterArrayAdd, alterArrayDelete,alterArrayEnable, alterArrayUpdate, getCategoriesWithHierarchy, hasAnyAuthority, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER, SPINNERS_BORDER_HTML } from "../utilities";
 import Product from "./product";
 import AddProduct from './add-product'
 import "../../css/products.css"
@@ -22,6 +22,7 @@ const Products = () => {
     const searchRef = useRef();
     const searchBtnRef = useRef();
     const [products, setProducts] = useState([]);
+    const [isLoading, setLoading] = useState(true);
     const [showAddProduct, setShowAddProduct] = useState(false);
     const [updateProduct, setUpdateProduct] = useState({show:false, id: -1, product: null});
     const [viewProduct, setViewProduct] = useState({show:false, id: -1, product: null});
@@ -42,13 +43,14 @@ const Products = () => {
     })
     const [sort, setSort] = useState({ field: "name", dir: "asc", category:0 })
     
-    const changePage = useCallback(function (number, keyword, button) {
+    const changePage = useCallback(function (number, button) {
         number = number ?? 1;
-        keyword = keyword ?? "";
-        const url = `${serverUrl}page/${number}?sortField=${sort.field}&dir=${sort.dir}&keyword=${keyword}&category=${sort.category}`
+        const keyword = (searchRef.current) ? encodeURIComponent(searchRef.current.value) : "";
+        const url = `${serverUrl}page/${number}?sortField=${sort.field}&dir=${sort.dir}&keyword=${keyword}&category=${sort.category}`;
+        setLoading(true);
         if (button) {
-        button.disabled = true
-        button.innerHTML = SPINNERS_BORDER_HTML
+            button.disabled = true
+            button.innerHTML = SPINNERS_BORDER_HTML
         }
         axios.get(url, {
             headers: {
@@ -75,6 +77,7 @@ const Products = () => {
             if(response && isTokenExpired(response)) navigate("/login/2")
             })
             .finally(() => {
+                setLoading(false);
                 if (button) {
                 button.disabled = false
                 button.innerHTML = SEARCH_ICON;
@@ -85,7 +88,7 @@ const Products = () => {
     const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500)
     
     useEffect(() => {
-        changePage(pageInfo.number, "")
+        changePage(pageInfo.number)
     }, [changePage, pageInfo?.number])
     
     useEffect(() => {
@@ -133,15 +136,15 @@ const Products = () => {
 
     function handleFilter(event) {
         event.preventDefault();
-        const value = searchRef.current.value
-        changePage(null, value, searchBtnRef.current)
+        pageInfo.number = 1;
+        changePage(null, searchBtnRef.current)
     }
     function clearFilter() {
-        if (searchRef.current?.value) {
+       if (searchRef.current?.value) {
             searchRef.current.value = "";
+            pageInfo.number = 1;
+            changePage(null)
         }
-        setSort(state => ({...state, category: 0}))
-        changePage(null)
     }
     
     function isSort(name) {
@@ -154,9 +157,9 @@ const Products = () => {
 
     function handleSort(event) {
         const id = event.target.id;
-        const dir = sort.dir === "asc" ? "desc": "asc"
-        if (id === sort.field) setSort(state => ({ ...state, dir }))
-        else setSort(state => ({...state, field: id, dir: "asc" }))
+        const field = (id === sort.field) ? sort.field : id;
+        const dir = (sort.dir === "asc" && field === sort.field) ? "desc" : "asc";
+        setSort({ field, dir })
     }
     function toggleEnable(id, status) {
       const url = serverUrl + `${id}/enable/${status}`;
@@ -188,6 +191,11 @@ const Products = () => {
     if(!accessToken) return <Navigate to="/login/2" />
     return ( 
         <>
+        {
+            (isLoading)
+            ? <div className="mx-auto" style={{height: "40vh",display:"grid"}}>{SPINNERS_BORDER}</div>
+            :
+              <>
             <Row className="justify-content-between align-items-center p-3 mx-0">
                 <Col xs={12} md={4} className="my-2">
                     <h3 className="">Manage Products</h3>
@@ -268,6 +276,8 @@ const Products = () => {
             <ViewProduct viewProduct={viewProduct} setViewProduct={setViewProduct} />
             <DeleteModal deleteObject={deleteProduct} setDeleteObject={setDeleteProduct}   deletingFunc={deletingProduct} type="Product" />
         </>
+        }
+      </>
      );
 }
  

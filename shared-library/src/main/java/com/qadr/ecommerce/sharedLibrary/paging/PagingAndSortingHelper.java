@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import static com.qadr.ecommerce.sharedLibrary.util.CommonUtil.decodePath;
+
 @Getter @Setter
 public class PagingAndSortingHelper {
     private String sortField;
@@ -28,7 +30,8 @@ public class PagingAndSortingHelper {
     public PagingAndSortingHelper(String name, String sortField, String dir, String keyword, String catId) {
         this.name = name;
         this.dir= dir;
-        this.keyword = keyword;
+        this.keyword = decodePath(keyword);
+//        System.out.println(this.keyword);
         this.sortField = sortField;
         if(catId != null) this.catId = Integer.valueOf(catId);
 

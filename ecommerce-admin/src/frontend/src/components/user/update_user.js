@@ -97,9 +97,8 @@ const UpdateUser = ({ updateUser, setUpdateUser, updatingUser }) => {
             if (!form.id || currentUser.id) {
                 const roles = currentUser.roles.map(role => role.id);
                 setForm({ ...currentUser, roles });
-                const fileURI = process.env.REACT_APP_SERVER_URL + "user-photos/"
                 const img = currentUser.photo && currentUser.photo !== "null"
-                    ? <img src={`${fileURI}${currentUser.id}/${currentUser.photo}`} alt="thumbnail" className="thumbnail" />
+                    ? <img src={currentUser.imagePath} alt="thumbnail" className="thumbnail" />
                     : <label htmlFor="photo" className="ms-0 person-span mt-3 cursor-pointer bg-secondary">
                         <i className="bi bi-person-fill"></i>
                     </label>

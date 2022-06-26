@@ -63,4 +63,8 @@ public class Category extends IdBasedEntity{
     public String toString() {
         return name;
     }
+
+    public String getImagePath(){
+        return Constants.S3_BASE_URI + "category-photos/" + id +"/"+ photo;
+    }
 }

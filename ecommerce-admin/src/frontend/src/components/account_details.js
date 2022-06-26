@@ -10,7 +10,6 @@ const AccountDetails = ({show, setShow}) => {
     const [auth] = useAuth();
     const [initPassword, setInitPassword] = useState("")
     const url = process.env.REACT_APP_SERVER_URL + "account/edit/" + auth.id;
-    const fileURI = process.env.REACT_APP_SERVER_URL + "user-photos/";
     const initialForm = {
         id: '', email: '', firstName: '', lastName: '', password: '',
         enabled: false, photo: null, roles: [], 'confirm-password': "", "new-password": ""
@@ -95,7 +94,7 @@ const AccountDetails = ({show, setShow}) => {
                 setInitPassword(data.password)
                 setForm({ ...form, ...data })
                 setImage(
-                    <img src={`${fileURI}${data.id}/${data.photo}`} alt="thumbnail" className="thumbnail" />
+                    <img src={data.imagePath} alt="thumbnail" className="thumbnail" />
                 )
             })
             .catch(error => {
@@ -104,7 +103,7 @@ const AccountDetails = ({show, setShow}) => {
             })
             .finally()
         }
-    },[auth, form, fileURI, navigate])
+    },[auth, form, navigate])
 
     useEffect(() => {
         if (!isAuthValid(auth)) {

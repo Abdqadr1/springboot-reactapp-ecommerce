@@ -7,7 +7,7 @@ import MyPagination from "../paging";
 import ShippingRate from "./shipping-rate";
 import { Navigate, useNavigate } from 'react-router-dom';
 import useAuth from "../custom_hooks/use-auth";
-import { isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML } from "../utilities";
+import { isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, SPINNERS_BORDER } from "../utilities";
 import useThrottle from "../custom_hooks/use-throttle";
 import useArray from "../custom_hooks/use-array";
 import AddShippingRate from "./add_shipping_rate";
@@ -22,6 +22,7 @@ const ShippingRates = () => {
     const searchRef = useRef();
     const searchBtnRef = useRef();
     const [countries, setCountries] = useState([]);
+    const [isLoading, setLoading] = useState(true);
     const {array:rates, setArray:setShippingRates,updateItemProp, filterWithId:removeShippingRate} = useArray();
     const [updateRate, setUpdateRate] = useState({show:false, id: -1, rate: {}});
     const [deleteRate, setDeleteRate] = useState({show:false, id: -1});
@@ -38,7 +39,9 @@ const ShippingRates = () => {
     
      const changePage = useCallback(function (number, button) {
         number = number ?? 1;
-        const keyword = encodeURIComponent(searchRef.current.value);
+         const keyword = (searchRef.current) ? encodeURIComponent(searchRef.current?.value) : "";
+                setLoading(true);
+
          if (button) {
             button.disabled = true
             button.innerHTML = SPINNERS_BORDER_HTML
@@ -65,6 +68,7 @@ const ShippingRates = () => {
                 if(isTokenExpired(response)) navigate("/login/2")
              })
              .finally(() => {
+                setLoading(false);
                  if (button) {
                     button.disabled = false
                     button.innerHTML = SEARCH_ICON;
@@ -167,10 +171,10 @@ const ShippingRates = () => {
     }
 
     function handleSort(event) {
-        const id = event.target.id;
-        const dir = sort.dir === "asc" ? "desc": "asc"
-        if (id === sort.field) setSort({ ...sort, dir })
-        else setSort({ field: id, dir: "asc" })
+        const id = event.target.title;
+        const field = (id === sort.field) ? sort.field : id;
+        const dir = (sort.dir === "asc" && field === sort.field) ? "desc" : "asc";
+        setSort({ field, dir })
     }
 
     function listShippingRates(rates, type) {
@@ -185,6 +189,10 @@ const ShippingRates = () => {
     if(!accessToken) return <Navigate to="/login/2" />
     return ( 
         <>
+            {
+                (isLoading)
+                    ? <div className="mx-auto" style={{ height: "40vh", display: "grid" }}>{SPINNERS_BORDER}</div>
+                    : <>
             <Row className="justify-content-between align-items-center p-3 mx-0">
                 <Col xs={12} md={5} className="my-2">
                     <h3 className="">Manage ShippingRates</h3>
@@ -222,11 +230,11 @@ const ShippingRates = () => {
                     <Table bordered responsive hover className="more-details">
                     <thead className="bg-dark text-light">
                         <tr>
-                            <th onClick={handleSort} id="id" className="cursor-pointer">ID {isSort("id")}</th>
-                            <th onClick={handleSort} id="country" className="cursor-pointer">Country {isSort("country")}</th>
-                            <th onClick={handleSort} id="state" className="cursor-pointer">State {isSort("state")}</th>
-                            <th onClick={handleSort} id="rate" className="cursor-pointer  hideable-col">Rate {isSort("rate")}</th>
-                            <th onClick={handleSort} id="days" className="cursor-pointer">Days {isSort("days")}</th>
+                            <th onClick={handleSort} title="id" className="cursor-pointer">ID {isSort("id")}</th>
+                            <th onClick={handleSort} title="country" className="cursor-pointer">Country {isSort("country")}</th>
+                            <th onClick={handleSort} title="state" className="cursor-pointer">State {isSort("state")}</th>
+                            <th onClick={handleSort} title="rate" className="cursor-pointer  hideable-col">Rate {isSort("rate")}</th>
+                            <th onClick={handleSort} title="days" className="cursor-pointer">Days {isSort("days")}</th>
                             <th>COD Supported</th>
                             <th>Actions</th>
                         </tr>
@@ -247,6 +255,9 @@ const ShippingRates = () => {
             <UpdateShippingRate updateRate={updateRate} setUpdateRate={setUpdateRate} updatingRate={updatingRate} countries={countries} />
             <DeleteModal deleteObject={deleteRate} setDeleteObject={setDeleteRate} deletingFunc={deletingShippingRate} type="Shipping Rate" />
         </>
+            }
+        </>
+       
      );
 }
  

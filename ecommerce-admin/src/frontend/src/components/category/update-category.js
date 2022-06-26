@@ -2,7 +2,7 @@ import axios from "axios";
 import {useEffect, useRef, useState } from "react";
 import { Alert, Button, Form, Modal, Row } from "react-bootstrap";
 import { Navigate, useNavigate } from "react-router-dom";
-import { isFileValid, isTokenExpired, listFormData, showThumbnail, SPINNERS_BORDER_HTML } from "../utilities";
+import { isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "../utilities";
 import useAuth from "../custom_hooks/use-auth";
 
 const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, hierarchies }) => {
@@ -92,9 +92,8 @@ const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, h
                     if (!currentCategory.parent) newState.parent = ""
                     return newState;
                 });
-                const fileURI = process.env.REACT_APP_SERVER_URL + "category-photos/";
                 const img = currentCategory.photo && currentCategory.photo !== "null"
-                    ? <img src={`${fileURI}${currentCategory.id}/${currentCategory.photo}`} alt="thumbnail" className="thumbnail" />
+                    ? <img src={currentCategory.imagePath} alt="thumbnail" className="thumbnail" />
                     : <label htmlFor="photo" className="ms-0 person-span mt-3 cursor-pointer bg-secondary">
                                 <i className="bi bi-image-fill"></i>
                             </label>

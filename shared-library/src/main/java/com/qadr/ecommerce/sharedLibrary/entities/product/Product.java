@@ -2,6 +2,7 @@ package com.qadr.ecommerce.sharedLibrary.entities.product;
 
 import com.qadr.ecommerce.sharedLibrary.entities.Brand;
 import com.qadr.ecommerce.sharedLibrary.entities.Category;
+import com.qadr.ecommerce.sharedLibrary.entities.Constants;
 import com.qadr.ecommerce.sharedLibrary.entities.IdBasedEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 
 @Entity @Table(name = "products")
 @NoArgsConstructor @Getter @Setter
@@ -85,6 +87,10 @@ public class Product extends IdBasedEntity {
         return "Product{" +
                 "name='" + name + '\'' +
                 '}';
+    }
+
+    public String getMainImagePath(){
+        return Constants.S3_BASE_URI + "product-images/" + id +"/"+ mainImage;
     }
 
     public float getRealPrice(){

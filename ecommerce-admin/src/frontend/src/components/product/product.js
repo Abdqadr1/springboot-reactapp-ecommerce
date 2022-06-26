@@ -3,7 +3,6 @@ import useAuth from "../custom_hooks/use-auth";
 import { hasAnyAuthority } from "../utilities";
 
 const Product = ({ product, showUpdate, setDeleted, toggleEnable, type, showView }) => {
-    const fileURI = process.env.REACT_APP_SERVER_URL+"product-images/";
 
     function deleteProduct() {
         setDeleted({
@@ -17,7 +16,7 @@ const Product = ({ product, showUpdate, setDeleted, toggleEnable, type, showView
         ? <i className="bi bi-toggle-on text-success fs-3" onClick={() => toggleEnable(product.id, false)}></i>
         : <i className="bi bi-toggle-off text-secondary fs-3" onClick={() => toggleEnable(product.id, true)}></i>
     const photo = product.mainImage && product.mainImage !== "null"
-        ? <img loading="lazy" src={`${fileURI}${product.id}/${product.mainImage}`} alt="product-dp" className="table-dp" />
+        ? <img loading="lazy" src={product.mainImagePath} alt="product-dp" className="table-dp" />
         :<span className="avatar cursor-pointer bg-secondary">
             <i className="bi bi-image-fill"></i>
         </span>
