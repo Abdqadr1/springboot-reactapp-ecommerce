@@ -44,7 +44,7 @@ build/
 .vscode/
 
 #photos
-../category-photos/**
-../user-photos/**
-../brand-photos/**
-../product-images/**
+/category-photos/**
+/user-photos/**
+/brand-photos/**
+/product-images/**
