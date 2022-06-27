@@ -2,10 +2,12 @@ package com.qadr.ecommerce.ecommerceadmin.controllers;
 
 import com.qadr.ecommerce.ecommerceadmin.repo.CurrencyRepo;
 import com.qadr.ecommerce.ecommerceadmin.service.SettingsService;
+import com.qadr.ecommerce.sharedLibrary.entities.Constants;
 import com.qadr.ecommerce.sharedLibrary.entities.setting.GeneralSettingBag;
 import com.qadr.ecommerce.sharedLibrary.entities.Currency;
 import com.qadr.ecommerce.sharedLibrary.entities.setting.Setting;
 import com.qadr.ecommerce.sharedLibrary.entities.setting.SettingsBag;
+import com.qadr.ecommerce.sharedLibrary.util.AmazonS3Util;
 import com.qadr.ecommerce.sharedLibrary.util.FileUploadUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/set")
@@ -76,13 +79,14 @@ public class SettingsController {
 
     void saveSiteLogo(MultipartFile file, GeneralSettingBag settingBag) throws IOException {
         if(!file.isEmpty()){
-            String filename = StringUtils.cleanPath(file.getOriginalFilename());
+            String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
             String[] strings = filename.split("\\.");
             filename = "site-logo." + strings[strings.length -1];
             String dir = "site-logo";
-            FileUploadUtil.cleanDir(dir);
-            FileUploadUtil.saveFile(file, dir, filename);
-            settingBag.updateValue("SITE_LOGO", filename);
+            AmazonS3Util.removeFolder(dir);
+            AmazonS3Util.uploadFile(dir, filename, file.getInputStream());
+            String fullPath = Constants.S3_BASE_URI + dir + "/" + filename;
+            settingBag.updateValue("SITE_LOGO", fullPath);
         }
     }
 

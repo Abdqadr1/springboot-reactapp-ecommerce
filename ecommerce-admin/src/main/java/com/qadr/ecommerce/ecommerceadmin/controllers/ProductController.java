@@ -7,6 +7,7 @@ import com.qadr.ecommerce.ecommerceadmin.service.BrandService;
 import com.qadr.ecommerce.ecommerceadmin.service.ProductService;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingParam;
+import com.qadr.ecommerce.sharedLibrary.util.AmazonS3Util;
 import com.qadr.ecommerce.sharedLibrary.util.FileUploadUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,11 +18,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.qadr.ecommerce.sharedLibrary.entities.Constants.PRODUCT_IMAGE_FOLDER_NAME;
+import static com.qadr.ecommerce.sharedLibrary.entities.Constants.USER_IMAGE_FOLDER_NAME;
 
 
 @RestController
@@ -88,8 +95,8 @@ public class ProductController {
 
     @GetMapping("/delete/{id}")
     public Product deleteProduct(@PathVariable("id") Integer id){
-        String folder = "product-images/"+id;
-        FileUploadUtil.removeDir(folder);
+        String folder = PRODUCT_IMAGE_FOLDER_NAME+"/"+id;
+        AmazonS3Util.removeFolder(folder);
         return productService.deleteProduct(id);
     }
 
@@ -133,17 +140,27 @@ public class ProductController {
                         product.getExtraImages().add(new ProductImage(i, path, product));
                         return path;
                     }).collect(Collectors.toList());
-            FileUploadUtil.removeFiles(paths, "product-images/"+id+"/extras");
+            removeFiles(paths, PRODUCT_IMAGE_FOLDER_NAME+"/"+id+"/extras");
         }
     }
-    void saveImageFiles(@Nullable MultipartFile mainImage, @Nullable MultipartFile[] files, Product product) throws IOException {
+    private static void removeFiles(List<String> filenames, String dir){
+        List<String> keys = AmazonS3Util.listFolderKey(dir);
+        filenames.forEach(System.out::println);
+        keys.stream()
+                .filter(key -> !filenames.contains(key.substring(key.lastIndexOf("/")+1)))
+                .forEach(AmazonS3Util::deleteFile);
+    }
+    void saveImageFiles(@Nullable MultipartFile mainImage, @Nullable MultipartFile[] files, Product product)
+            throws IOException {
+
         if(mainImage != null){
             String filename = StringUtils.cleanPath(mainImage.getOriginalFilename());
             filename = filename.length() > 255 ? filename.substring(0, 254) : filename;
             product.setMainImage(filename);
-            String uploadFolder = "product-images/"+product.getId()+"/main-image";
-            FileUploadUtil.cleanDir(uploadFolder);
-            FileUploadUtil.saveFile(mainImage, uploadFolder, filename);
+            String uploadFolder = PRODUCT_IMAGE_FOLDER_NAME+"/"+product.getId();
+            AmazonS3Util.listFolderKey(uploadFolder)
+                    .stream().filter(s -> !s.contains("/extras/")).forEach(AmazonS3Util::deleteFile);
+            AmazonS3Util.uploadFile(uploadFolder, filename, mainImage.getInputStream());
         }
 
         if(files != null){
@@ -155,7 +172,7 @@ public class ProductController {
                         try {
                             String imageName = StringUtils.cleanPath(file.getOriginalFilename());
                             imageName = imageName.length() > 255 ? imageName.substring(0, 254) : imageName;
-                            FileUploadUtil.saveFile(file, folder, imageName);
+                            AmazonS3Util.uploadFile(folder, imageName, file.getInputStream());
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

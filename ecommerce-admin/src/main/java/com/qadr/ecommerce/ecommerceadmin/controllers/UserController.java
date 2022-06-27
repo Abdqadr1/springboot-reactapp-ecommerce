@@ -9,6 +9,7 @@ import com.qadr.ecommerce.ecommerceadmin.model.User;
 import com.qadr.ecommerce.ecommerceadmin.service.UserService;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingParam;
+import com.qadr.ecommerce.sharedLibrary.util.AmazonS3Util;
 import com.qadr.ecommerce.sharedLibrary.util.FileUploadUtil;
 import com.qadr.ecommerce.sharedLibrary.util.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.qadr.ecommerce.sharedLibrary.entities.Constants.USER_IMAGE_FOLDER_NAME;
+
 @RestController
 public class UserController {
 
@@ -43,15 +46,16 @@ public class UserController {
             filename = filename.length() > 255 ? filename.substring(0, 254) : filename;
             user.setPhoto(filename);
             User savedUser = userService.addUser(user);
-            String uploadFolder = "user-photos/"+savedUser.getId();
-            FileUploadUtil.saveFile(file, uploadFolder, filename);
+            String uploadFolder = USER_IMAGE_FOLDER_NAME+"/"+savedUser.getId();
+            AmazonS3Util.removeFolder(uploadFolder);
+            AmazonS3Util.uploadFile(uploadFolder, filename, file.getInputStream());
             return savedUser;
         }
         return userService.addUser(user);
     }
 
     @PostMapping("/user/edit/{id}")
-    public User addNewUser (User user,@PathVariable("id") Long id,
+    public User editUser (User user,@PathVariable("id") Long id,
                             @RequestParam(value = "image", required = false) MultipartFile file) throws IOException {
 
         if(Optional.ofNullable(file).isPresent()){
@@ -59,9 +63,9 @@ public class UserController {
             filename = filename.length() > 255 ? filename.substring(0, 254):filename;
             user.setPhoto(filename);
             User editedUser = userService.editUser(id, user);
-            String uploadFolder = "user-photos/"+editedUser.getId();
-            FileUploadUtil.cleanDir(uploadFolder);
-            FileUploadUtil.saveFile(file, uploadFolder, filename);
+            String uploadFolder = USER_IMAGE_FOLDER_NAME+"/"+editedUser.getId();
+            AmazonS3Util.removeFolder(uploadFolder);
+            AmazonS3Util.uploadFile(uploadFolder, filename, file.getInputStream());
             return editedUser;
         }
         return userService.editUser(id, user);

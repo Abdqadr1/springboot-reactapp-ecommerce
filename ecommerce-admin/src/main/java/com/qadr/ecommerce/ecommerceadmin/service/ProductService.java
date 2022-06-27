@@ -88,7 +88,8 @@ public class ProductService {
         if (byAlias.isPresent() && !Objects.equals(byAlias.get().getId(), id))
             throw new CustomException(HttpStatus.BAD_REQUEST, "There is another product with the alias " + product.getAlias());
 
-        if(product.getMainImage() == null || product.getMainImage().isBlank()) product.setMainImage(oldProduct.getMainImage());
+        if(product.getMainImage() == null || product.getMainImage().isBlank())
+            product.setMainImage(oldProduct.getMainImage());
 
         product.setCreatedTime(oldProduct.getCreatedTime());
         product.setUpdatedTime(new Date());

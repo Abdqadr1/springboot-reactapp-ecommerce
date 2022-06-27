@@ -111,13 +111,12 @@ const Category = () => {
     }
     function listChildren(){
         if(cat && cat.children.length > 0){
-            const fileURI = process.env.REACT_APP_SERVER_URL + "category-photos/";
             return  (
             <Row className="justify-content-start p-4 mx-0">
                 {
                     cat.children.map((p) => (
                         <Col key={p.name} sm={6} md={4} lg={2} xlg={2} as={Link} to={"/c/"+p.alias} className="product-in-listing">
-                            <img loading="lazy" src={`${fileURI}${p.id}/${p.photo}`} alt={p.name} className="cat-dp" />
+                            <img loading="lazy" src={p.imagePath} alt={p.name} className="cat-dp" />
                             <h5 className="my-2 text-primary">{p.name}</h5>
                         </Col>
                         ))

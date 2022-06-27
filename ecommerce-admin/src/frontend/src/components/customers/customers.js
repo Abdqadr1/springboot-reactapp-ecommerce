@@ -18,7 +18,8 @@ const Customers = () => {
     const navigate = useNavigate();
     const [{accessToken}] = useAuth();
     
-    const searchRef = useRef();
+    
+    const [keyword, setKeyword] = useState("");
     const searchBtnRef = useRef();
     const [isLoading, setLoading] = useState(true);
     const {array:customers, setArray:setCustomers, filterWithId:removeCustomer, updateItemProp} = useArray();
@@ -34,9 +35,9 @@ const Customers = () => {
     })
     const [sort, setSort] = useState({ field: "firstName", dir: "asc" })
     
-     const changePage = useCallback(function (number, button) {
+     const changePage = useCallback(function (number, search, button) {
         number = number ?? 1;
-         const keyword = (searchRef.current) ? encodeURIComponent(searchRef.current.value) : "";
+         const keyword = (search) ? encodeURIComponent(search) : "";
         setLoading(true);
          if (button) {
             button.disabled = true
@@ -76,7 +77,8 @@ const Customers = () => {
     
 
     useEffect(() => {
-        changePage(pageInfo.number, null)
+        changePage(pageInfo.number, keyword)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [changePage, pageInfo?.number])
     
     useEffect(() => {
@@ -122,19 +124,19 @@ const Customers = () => {
 
     function updatingCustomer(customer) {
         setCustomers([customer])
-        searchRef.current.value = customer.email.split("@")[0]
+        setKeyword(customer.email.split("@")[0]);
     }
 
     function handleFilter(event) {
         event.preventDefault();
         pageInfo.number = 1;
-        changePage(null, searchBtnRef.current)
+        changePage(null, keyword, searchBtnRef.current)
     }
     function clearFilter() {
-       if (searchRef.current?.value) {
-            searchRef.current.value = "";
+       if (keyword.length > 1) {
+            setKeyword("")
             pageInfo.number = 1;
-            changePage(null)
+            changePage(null, "")
         }
     }
     
@@ -185,7 +187,7 @@ const Customers = () => {
                                     <label className="d-block text-start text-md-end fs-5" htmlFor="keyword">Filter:</label>
                                 </Col>
                                 <Col sm="9" md="6">
-                                    <Form.Control ref={searchRef}  type="text" placeholder="keyword" required />
+                                    <Form.Control value={keyword} onChange={e=>setKeyword(e.target.value)} type="text" placeholder="keyword" required />
                                 </Col>
                                 <Col sm="12" md="4">
                                 <div className="mt-md-0 mt-2">

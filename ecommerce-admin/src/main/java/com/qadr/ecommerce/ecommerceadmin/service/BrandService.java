@@ -6,16 +6,21 @@ import com.qadr.ecommerce.ecommerceadmin.model.CategoryDTO;
 import com.qadr.ecommerce.ecommerceadmin.repo.BrandRepo;
 import com.qadr.ecommerce.ecommerceadmin.repo.CategoryRepo;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
+import com.qadr.ecommerce.sharedLibrary.util.AmazonS3Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.qadr.ecommerce.sharedLibrary.entities.Constants.BRAND_IMAGE_FOLDER_NAME;
+
 @Service
+@Transactional
 public class BrandService {
 
     public static final int BRANDS_PER_PAGE = 5;
@@ -68,6 +73,7 @@ public class BrandService {
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Brand does not exist"));
 
         brandRepo.deleteById(id);
+        AmazonS3Util.removeFolder(BRAND_IMAGE_FOLDER_NAME+"/" + id);
         return byId;
     }
 

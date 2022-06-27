@@ -3,12 +3,14 @@ import {useCallback, useEffect, useRef, useState } from "react";
 import { Alert, Button, Form, Modal, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import useAuth from "./custom_hooks/use-auth";
-import { getAccessToken, getFormData, isAuthValid, isFileValid, isTokenExpired, showThumbnail, SPINNERS_BORDER_HTML } from "./utilities";
+import {
+    getAccessToken, listFormData, isAuthValid, isFileValid, isTokenExpired,
+    showThumbnail, SPINNERS_BORDER_HTML
+} from "./utilities";
 
 const AccountDetails = ({show, setShow}) => {
     const navigate = useNavigate()
     const [auth] = useAuth();
-    const [initPassword, setInitPassword] = useState("")
     const url = process.env.REACT_APP_SERVER_URL + "account/edit/" + auth.id;
     const initialForm = {
         id: '', email: '', firstName: '', lastName: '', password: '',
@@ -33,21 +35,19 @@ const AccountDetails = ({show, setShow}) => {
         }
     }
     const handleSubmit = (event) => {
-        toggleAlert();
         event.preventDefault();
-        if (form["new-password"] !== form['confirm-password']) {
-            console.log(form["new-password"], " ", form['confirm-password'])
-            setAlert({show:true, message:"confirm your password", variant: "warning"})
+        if (form["new-password"] !== form["confirm-password"]) {
+            setAlert({ show: true, message: "confirm your password", variant: "warning" });
             return;
         }
-        if (form["new-password"] === "") form.password = initPassword
-        else form.password = form["new-password"]
 
         console.log(form)
-        const data = getFormData(form)
+        const data = new FormData(event.target);
+        listFormData(data);
         
         const button = submitBtnRef.current
-        button.disabled=true
+        button.disabled = true
+        const text = button.textContent;
         button.innerHTML = SPINNERS_BORDER_HTML
         axios.post(url, data, {
             headers: {
@@ -63,7 +63,7 @@ const AccountDetails = ({show, setShow}) => {
             else setAlert({show:true, message: response.data.message, variant: "danger"})
         }).finally(() => {  
             button.disabled=false
-            button.innerHTML = "Update user"
+            button.innerHTML = text;
         })
     }
 
@@ -91,7 +91,6 @@ const AccountDetails = ({show, setShow}) => {
             })
             .then(response => {
                 const data = response.data;
-                setInitPassword(data.password)
                 setForm({ ...form, ...data })
                 setImage(
                     <img src={data.imagePath} alt="thumbnail" className="thumbnail" />
@@ -124,21 +123,22 @@ const AccountDetails = ({show, setShow}) => {
                     {alert.message}
                 </Alert>
                 <Form className="add-user-form" onSubmit={handleSubmit} encType="multipart/form-data">
+                    <input name="id" type="hidden" value={form?.id} />
                     <Form.Group className="mb-3 row justify-content-center" controlId="username">
                         <Form.Label className="form-label">Email address:</Form.Label>
-                        <Form.Control value={form?.email} className="form-input" type="email" placeholder="Enter email" disabled/>
+                        <Form.Control name="email" value={form?.email} className="form-input" type="email" placeholder="Enter email" readOnly/>
                     </Form.Group>
                     <Form.Group className="mb-3 row justify-content-center" controlId="firstName">
                         <Form.Label className="form-label">First Name:</Form.Label>
-                        <Form.Control value={form?.firstName} onInput={handleInput} required className="form-input" type="text" placeholder="Enter first name" />
+                        <Form.Control name="firstName" value={form?.firstName} onInput={handleInput} required className="form-input" type="text" placeholder="Enter first name" />
                     </Form.Group>
                     <Form.Group className="mb-3 row justify-content-center" controlId="lastName">
                         <Form.Label className="form-label">Last Name:</Form.Label>
-                        <Form.Control value={form?.lastName} onInput={handleInput} required className="form-input" type="text" placeholder="Enter last name" />
+                        <Form.Control name="lastName" value={form?.lastName} onInput={handleInput} required className="form-input" type="text" placeholder="Enter last name" />
                     </Form.Group>
                     <Form.Group className="mb-3 row justify-content-center" controlId="new-password">
                         <Form.Label className="form-label">New Password:</Form.Label>
-                        <Form.Control defaultValue={""} onInput={handleInput} className="form-input" type="password" minLength={8} maxLength={50}/>
+                        <Form.Control name="password" defaultValue={""} onInput={handleInput} className="form-input" type="password" minLength={8} maxLength={50}/>
                     </Form.Group>
                     <Form.Group className="mb-3 row justify-content-center" controlId="confirm-password">
                         <Form.Label className="form-label">Confirm Password:</Form.Label>
@@ -157,7 +157,7 @@ const AccountDetails = ({show, setShow}) => {
                     <Form.Group className="mb-3 row justify-content-center" controlId="photo">
                         <Form.Label className="form-label"  style={{alignSelf: "start"}}>Photo:</Form.Label>
                         <div className="form-input row">
-                            <Form.Control onChange={handleSelectImage} className="col-10" type="file" accept="image/jpg, image/png, image/jpeg" />
+                            <Form.Control onChange={handleSelectImage} className="col-10" type="file" accept="image/jpg, image/png, image/jpeg" name="image" />
                             <label htmlFor="photo" className="ms-0 w-50 person-span mt-3 cursor-pointer bg-light">
                                 {image}
                             </label>

@@ -8,6 +8,7 @@
 		<version>2.6.7</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
+
 	<groupId>com.qadr.ecommerce</groupId>
 	<artifactId>ecommerce-common</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
@@ -16,7 +17,23 @@
 	<properties>
 		<java.version>17</java.version>
 	</properties>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>software.amazon.awssdk</groupId>
+				<artifactId>bom</artifactId>
+				<version>2.17.219</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>s3</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>com.qadr.ecommerce</groupId>
 			<artifactId>ecommerce-website</artifactId>
@@ -69,7 +86,7 @@
 		<dependency>
 			<groupId>com.qadr.sharedLib</groupId>
 			<artifactId>shared-library</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -90,6 +107,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>software.amazon.awssdk</groupId>
+			<artifactId>s3</artifactId>
+			<version>2.17.219</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 

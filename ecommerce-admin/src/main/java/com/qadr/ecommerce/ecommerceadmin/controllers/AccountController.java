@@ -4,6 +4,7 @@ import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
 import com.qadr.ecommerce.ecommerceadmin.model.User;
 import com.qadr.ecommerce.ecommerceadmin.repo.UserRepo;
 import com.qadr.ecommerce.ecommerceadmin.service.UserService;
+import com.qadr.ecommerce.sharedLibrary.util.AmazonS3Util;
 import com.qadr.ecommerce.sharedLibrary.util.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,14 +34,14 @@ public class AccountController {
     public User editAccount(User user,
                             @PathVariable("id") Long id,
                             @RequestParam(value = "image", required = false) MultipartFile file) throws IOException {
-        if(Optional.ofNullable(file).isPresent()){
+        if(Optional.ofNullable(file).isPresent() && !file.isEmpty()){
             String filename = StringUtils.cleanPath(file.getOriginalFilename());
             filename = filename.length() > 255 ? filename.substring(0, 254):filename;
             user.setPhoto(filename);
             User editedUser = userService.editAccountInfo(id, user);
             String uploadFolder = "user-photos/"+editedUser.getId();
-            FileUploadUtil.cleanDir(uploadFolder);
-            FileUploadUtil.saveFile(file, uploadFolder, filename);
+            AmazonS3Util.removeFolder(uploadFolder);
+            AmazonS3Util.uploadFile(uploadFolder, filename, file.getInputStream());
             return editedUser;
         }
         return userService.editAccountInfo(id, user);

@@ -20,7 +20,7 @@ const Brands = () => {
     const navigate = useNavigate();
     const [{accessToken}] = useAuth();
     
-    const searchRef = useRef();
+    const [keyword, setKeyword] = useState("");
     const searchBtnRef = useRef();
     const [brands, setBrands] = useState([]);
     const [isLoading, setLoading] = useState(true);
@@ -38,9 +38,9 @@ const Brands = () => {
     const [sort, setSort] = useState({ field: "name", dir: "asc" })
     const [categories, setCategories] = useState([])
     
-     const changePage = useCallback(function (number, button) {
-        number = number ?? 1;
-         const keyword = (searchRef.current) ? encodeURIComponent(searchRef.current?.value) : "";
+     const changePage = useCallback(function (number, search, button) {
+         number = number ?? 1;
+         const keyword = (search) ? encodeURIComponent(search) : "";
         setLoading(true);
 
          if (button) {
@@ -77,12 +77,13 @@ const Brands = () => {
                     button.innerHTML = SEARCH_ICON;
                 }
              })
-     }, [sort, serverUrl, accessToken, navigate])
+     }, [serverUrl, sort.field, sort.dir, accessToken, navigate])
     
     const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500)
     
     useEffect(() => {
-        changePage(pageInfo.number)
+        changePage(pageInfo.number, keyword)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [changePage, pageInfo?.number])
     
     useEffect(() => {
@@ -119,19 +120,19 @@ const Brands = () => {
 
     function updatingBrand(brand) {
         alterArrayUpdate(brand, setBrands)
-        searchRef.current.value = brand.name
+        setKeyword(brand.name);
     }
 
     function handleFilter(event) {
         event.preventDefault();
         pageInfo.number = 1;
-        changePage(null, searchBtnRef.current)
+        changePage(null, keyword, searchBtnRef.current)
     }
     function clearFilter() {
-       if (searchRef.current?.value) {
-            searchRef.current.value = "";
+       if (keyword.length > 1) {
+            setKeyword("")
             pageInfo.number = 1;
-            changePage(null)
+            changePage(null, "")
         }
     }
     
@@ -184,7 +185,7 @@ const Brands = () => {
                                 <label className="d-block text-start text-md-end fs-5" htmlFor="keyword">Filter:</label>
                             </Col>
                             <Col sm="9" md="6">
-                                <Form.Control ref={searchRef}  type="text" placeholder="keyword" required/>
+                                <Form.Control value={keyword} onChange={e=>setKeyword(e.target.value)} type="text" placeholder="keyword" required/>
                             </Col>
                             <Col sm="12" md="4">
                             <div className="mt-md-0 mt-2">

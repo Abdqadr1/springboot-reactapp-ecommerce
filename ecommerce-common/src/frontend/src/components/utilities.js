@@ -43,7 +43,6 @@ export const formatPrice = (price, s, m, t, pos) => {
 
 export function listProducts(results, keyword, type="category", formatPrice){
     if(results.length > 0){
-        const fileURI = process.env.REACT_APP_SERVER_URL + "product-images/";
         return (
             <>
                 {
@@ -56,7 +55,7 @@ export function listProducts(results, keyword, type="category", formatPrice){
                         results.map((p) => (
                             <Col key={p.name} xs={6} sm={4} md={3} lg={2} xlg={2} className="product-in-listing my-2"
                                 as={Link} to={"/p/" + encodeURIComponent(p.alias)}>
-                                <img loading="lazy" src={`${fileURI}${p.id}/${p.mainImage}`} alt={getShortName(p.name, 10)} className="cat-dp" />
+                                <img loading="lazy" src={p.mainImagePath} alt={getShortName(p.name, 10)} className="cat-dp" />
                                 <h5 className="my-2 text-primary text-start">{getShortName(p.name)}</h5>
                                 {getPrices(p.discountPrice, p.price, p.realPrice, formatPrice)}
                             </Col>

@@ -4,14 +4,19 @@ import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
 import com.qadr.ecommerce.ecommerceadmin.repo.CategoryRepo;
 import com.qadr.ecommerce.sharedLibrary.entities.Category;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
+import com.qadr.ecommerce.sharedLibrary.util.AmazonS3Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static com.qadr.ecommerce.sharedLibrary.entities.Constants.CATEGORY_IMAGE_FOLDER_NAME;
+
 @Service
+@Transactional
 public class CategoryService {
     @Autowired
     private CategoryRepo categoryRepo;
@@ -63,10 +68,11 @@ public class CategoryService {
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Category not found"));
 
         if(!category.getChildren().isEmpty()){
-            throw new CustomException(HttpStatus.BAD_REQUEST, "Category has childre");
+            throw new CustomException(HttpStatus.BAD_REQUEST, "Invalid action, Category has children");
         }
 
         categoryRepo.deleteById(id);
+        AmazonS3Util.removeFolder(CATEGORY_IMAGE_FOLDER_NAME + "/" + id);
         return category;
     }
 

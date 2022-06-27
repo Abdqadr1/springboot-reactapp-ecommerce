@@ -23,7 +23,7 @@ const OAuth2Redirect = () => {
         } else if (error) {
             navigate("/login?error=" + error)
         }
-    }, [])
+    }, [accessToken, cart, error, firstName, lastName, navigate, refreshToken, setAuth])
 
    
 

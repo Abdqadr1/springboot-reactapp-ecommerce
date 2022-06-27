@@ -17,7 +17,6 @@ const ShoppingCart = () => {
     const url = process.env.REACT_APP_SERVER_URL + "cart";
     const viewURL = `${url}/view`;
     const deleteURL = `${url}/remove`
-    const fileUrl = process.env.REACT_APP_SERVER_URL + "product-images/";
     const {auth, setAuth} = useContext(AuthContext);
     const { array, setArray, filterArray } = useArray();
     const [variables, setVariables] = useState({usePrimaryAddress: false, addressSupported: false})
@@ -65,6 +64,7 @@ const ShoppingCart = () => {
         return () => {
             abortController.abort();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [auth])
 
 
@@ -118,7 +118,7 @@ const ShoppingCart = () => {
                                         <span className="d-block">{i+1}</span>
                                         <i className="bi bi-trash3-fill text-danger d-block"></i>
                                     </div>
-                                    <img src={`${fileUrl}${c.product.id}/${c.product.mainImage}`} 
+                                    <img src={c.product.mainImagePath} 
                                     alt="product" className="main-image" style={{maxHeight: "200px"}} />
                                 </Col>
                                 <Col className="text-start">

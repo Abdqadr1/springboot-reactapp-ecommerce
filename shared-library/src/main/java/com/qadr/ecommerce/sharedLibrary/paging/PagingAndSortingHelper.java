@@ -30,8 +30,7 @@ public class PagingAndSortingHelper {
     public PagingAndSortingHelper(String name, String sortField, String dir, String keyword, String catId) {
         this.name = name;
         this.dir= dir;
-        this.keyword = decodePath(keyword);
-//        System.out.println(this.keyword);
+        this.keyword = keyword;
         this.sortField = sortField;
         if(catId != null) this.catId = Integer.valueOf(catId);
 

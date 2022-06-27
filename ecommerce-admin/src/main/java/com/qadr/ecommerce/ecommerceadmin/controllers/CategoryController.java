@@ -5,6 +5,7 @@ import com.qadr.ecommerce.ecommerceadmin.service.CategoryService;
 import com.qadr.ecommerce.sharedLibrary.entities.Category;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingParam;
+import com.qadr.ecommerce.sharedLibrary.util.AmazonS3Util;
 import com.qadr.ecommerce.sharedLibrary.util.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static com.qadr.ecommerce.sharedLibrary.entities.Constants.CATEGORY_IMAGE_FOLDER_NAME;
 
 @RestController
 @RequestMapping("/category")
@@ -50,8 +53,9 @@ public class CategoryController {
             filename = filename.length() > 255 ? filename.substring(0, 254) : filename;
             category.setPhoto(filename);
             Category savedCategory = categoryService.addCategory(category);
-            String uploadFolder = "category-photos/"+savedCategory.getId();
-            FileUploadUtil.saveFile(file, uploadFolder, filename);
+            String uploadFolder = CATEGORY_IMAGE_FOLDER_NAME +"/"+savedCategory.getId();
+            AmazonS3Util.removeFolder(uploadFolder);
+            AmazonS3Util.uploadFile(uploadFolder, filename, file.getInputStream());
             return savedCategory;
         }
         return categoryService.addCategory(category);
@@ -66,8 +70,9 @@ public class CategoryController {
             filename = filename.length() > 255 ? filename.substring(0, 254) : filename;
             category.setPhoto(filename);
             Category savedCategory = categoryService.editCategory(id, category);
-            String uploadFolder = "category-photos/"+savedCategory.getId();
-            FileUploadUtil.saveFile(file, uploadFolder, filename);
+            String uploadFolder = CATEGORY_IMAGE_FOLDER_NAME+"/"+savedCategory.getId();
+            AmazonS3Util.removeFolder(uploadFolder);
+            AmazonS3Util.uploadFile(uploadFolder, filename, file.getInputStream());
             return savedCategory;
         }
         return categoryService.editCategory(id, category);

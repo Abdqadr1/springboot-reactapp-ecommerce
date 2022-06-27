@@ -21,6 +21,7 @@ const Login = () => {
     useEffect(() => {
         if (!alert.show) return;
         alertRef.current && alertRef.current.focus()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [alert])
 
     const handleSubmit = e => {

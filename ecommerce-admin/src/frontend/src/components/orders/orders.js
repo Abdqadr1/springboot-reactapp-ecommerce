@@ -4,7 +4,10 @@ import { Col, Form, Row, Table, Button } from "react-bootstrap";
 import DeleteModal from "../delete_modal";
 import MyPagination from "../paging";
 import { Navigate, useNavigate } from 'react-router-dom';
-import { alterArrayDelete, alterArrayUpdate, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, formatPrice, hasAnyAuthority, hasOnlyAuthority } from "../utilities";
+import {
+    alterArrayDelete, alterArrayUpdate, isTokenExpired, SEARCH_ICON,
+    SPINNERS_BORDER, SPINNERS_BORDER_HTML, formatPrice, hasAnyAuthority, hasOnlyAuthority
+} from "../utilities";
 import Order from "./order";
 import "../../css/products.css"
 import useAuth from "../custom_hooks/use-auth";
@@ -22,9 +25,11 @@ const Orders = () => {
     const navigate = useNavigate();
     const [auth] = useAuth();
     const accessToken = auth.accessToken;
-    const searchRef = useRef();
+    
+    const [keyword, setKeyword] = useState("");
     const searchBtnRef = useRef();
     const [orders, setOrders] = useState([]);
+    const [isLoading, setLoading] = useState(true);
     const [notes, setNotes] = useState([]);
     const [paymentMethods, setPaymentMethods] = useState([]);
     const [viewOrder, setViewOrder] = useState({show:false, id: -1, order: null});
@@ -56,9 +61,10 @@ const Orders = () => {
     })
     const [sort, setSort] = useState({ field: "orderTime", dir: "desc" })
     
-    const changePage = useCallback(function (number, button) {
+    const changePage = useCallback(function (number, search, button) {
         number = number ?? 1;
-        const keyword = encodeURIComponent(searchRef.current.value);
+         const keyword = (search) ? encodeURIComponent(search) : "";
+        setLoading(true);
         const url = `${serverUrl}page/${number}?sortField=${sort.field}&dir=${sort.dir}&keyword=${keyword}`
         if (button) {
         button.disabled = true
@@ -91,6 +97,7 @@ const Orders = () => {
                 if(response && isTokenExpired(response)) navigate("/login/2")
             })
             .finally(() => {
+                setLoading(false);
                 if (button) {
                 button.disabled = false
                 button.innerHTML = SEARCH_ICON;
@@ -112,7 +119,8 @@ const Orders = () => {
     }
     
     useEffect(() => {
-        changePage(pageInfo.number, "")
+        changePage(pageInfo.number, keyword)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [changePage, pageInfo?.number])
     
     useEffect(() => {
@@ -147,14 +155,13 @@ const Orders = () => {
     function handleFilter(event) {
         event.preventDefault();
         pageInfo.number = 1;
-        changePage(null, searchBtnRef.current)
+        changePage(null, keyword, searchBtnRef.current)
     }
-
     function clearFilter() {
-        if (searchRef.current?.value) {
-            searchRef.current.value = "";
+       if (keyword.length > 1) {
+            setKeyword("")
             pageInfo.number = 1;
-            changePage(null)
+            changePage(null, "")
         }
     }
     
@@ -213,7 +220,11 @@ const Orders = () => {
 
     if(!accessToken) return <Navigate to="/login/2" />
     return ( 
-        <>
+         <>
+            {
+                (isLoading)
+                    ? <div className="mx-auto" style={{ height: "40vh", display: "grid" }}>{SPINNERS_BORDER}</div>
+                    :      <>
             <CustomToast show={toast.show} setToast={setToast} message={toast.message} variant={toast.variant} />
             <Row className="justify-content-start align-items-center p-3 mx-0">
                 <Col xs={12} md={7} className="my-2">
@@ -223,7 +234,7 @@ const Orders = () => {
                                 <label className="d-block text-start text-md-end fs-5" htmlFor="keyword">Filter:</label>
                             </Col>
                             <Col sm="9" md="6">
-                                <Form.Control ref={searchRef}  type="text" placeholder="keyword" required />
+                                <Form.Control value={keyword} onChange={e=>setKeyword(e.target.value)}  type="text" placeholder="keyword" required />
                             </Col>
                             <Col sm="12" md="4">
                             <div className="mt-md-0 mt-2">
@@ -299,6 +310,8 @@ const Orders = () => {
                 <UpdateStatusModal object={orderStatus} setObject={setOrderStatus} updatingFunc={updateStatus} />
             }
         </>
+            }
+       </>
      );
 }
  

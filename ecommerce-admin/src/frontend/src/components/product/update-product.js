@@ -67,7 +67,8 @@ const UpdateProduct = ({ updateProduct, setUpdateProduct, updatingProduct, brand
 
         setAlert((state) => ({ ...state, show: false }));
         const button = submitBtnRef.current
-        button.disabled=true
+        button.disabled = true
+        const text = button.textContent;
         button.innerHTML = SPINNERS_BORDER_HTML
         axios.post(`${url}/${product.id}`, data, {
             headers: {
@@ -84,7 +85,7 @@ const UpdateProduct = ({ updateProduct, setUpdateProduct, updatingProduct, brand
                 else setAlert({show:true, message: response.data.message, variant: "danger"})
             }).finally(() => {
                 button.disabled=false
-                button.innerHTML = "Save"
+                button.innerHTML = text;
             })
     }
 

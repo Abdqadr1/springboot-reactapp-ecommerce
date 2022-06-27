@@ -11,12 +11,10 @@ import TextEditor from "./text_editor";
 const SettingsPage = () => {
     const [{accessToken}] = useAuth()
     const navigate = useNavigate()
-    const submitBtnRef = useRef();
     const { which } = useParams();
     const url = process.env.REACT_APP_SERVER_URL + "set";
     const countriesUrl = process.env.REACT_APP_SERVER_URL + "countries";
     const statesUrl = process.env.REACT_APP_SERVER_URL + "states";
-    const logoUrl = `${process.env.REACT_APP_SERVER_URL}site-logo/`;
 
     const [alert, setAlert] = useState({ show: false, message: "okay", variant: "success" });
     const [currencies, setCurrencies] = useState([]);
@@ -47,7 +45,7 @@ const SettingsPage = () => {
                  data.settings.forEach(el => {
                      settings[el.key] = el.value;
                  });
-                 setLogo(<img src={`${logoUrl}${settings.SITE_LOGO ?? ''}`} alt="site-logo" className="site-logo" />)
+                 setLogo(<img src={settings.SITE_LOGO ?? ''} alt="site-logo" className="site-logo" />)
              })
             .catch(error => {
                  const response = error.response
@@ -92,8 +90,9 @@ const SettingsPage = () => {
         listFormData(data);
 
         setAlert((state) => ({ ...state, show: false }));
-        const button = submitBtnRef.current
-        button.disabled=true
+        const button = form.querySelector("button");
+        button.disabled = true
+        const text = button.textContent;
         button.innerHTML = SPINNERS_BORDER_HTML
         axios.post(`${url}/${action}`, data, {
             headers: {
@@ -110,7 +109,7 @@ const SettingsPage = () => {
                 else setAlert({show:true, message: response.data.message, variant: "danger"})
             }).finally(() => {
                 button.disabled=false
-                button.innerHTML = "Save"
+                button.innerHTML = text;
             })
     }
 
@@ -346,7 +345,7 @@ const SettingsPage = () => {
                             <Row className="justify-content-center">
                                 <div className="w-25"></div>
                                 <div className="form-input ps-0 my-3">
-                                    <Button ref={submitBtnRef} className="fit-content mx-1" variant="primary" type="submit">
+                                    <Button className="fit-content mx-1" variant="primary" type="submit">
                                         Save
                                     </Button>
                                 </div>
@@ -457,7 +456,7 @@ const SettingsPage = () => {
                             <Row className="justify-content-center">
                                 <div className="w-25"></div>
                                 <div className="form-input ps-0 my-3">
-                                    <Button ref={submitBtnRef} className="fit-content mx-1" variant="primary" type="submit">
+                                    <Button className="fit-content mx-1" variant="primary" type="submit">
                                         Save Mail Settings
                                     </Button>
                                 </div>
@@ -480,7 +479,7 @@ const SettingsPage = () => {
                                     <Row className="justify-content-center">
                                         <div className="w-25"></div>
                                         <div className="form-input ps-0 my-3">
-                                            <Button ref={submitBtnRef} className="fit-content mx-1" variant="primary" type="submit">
+                                            <Button className="fit-content mx-1" variant="primary" type="submit">
                                                 Save
                                             </Button>
                                         </div>
@@ -501,7 +500,7 @@ const SettingsPage = () => {
                                     <Row className="justify-content-center">
                                         <div className="w-25"></div>
                                         <div className="form-input ps-0 my-3">
-                                            <Button ref={submitBtnRef} className="fit-content mx-1" variant="primary" type="submit">
+                                            <Button className="fit-content mx-1" variant="primary" type="submit">
                                                 Save
                                             </Button>
                                         </div>
@@ -527,7 +526,7 @@ const SettingsPage = () => {
                             <Row className="justify-content-center">
                                 <div className="w-25"></div>
                                 <div className="form-input ps-0 my-3">
-                                    <Button ref={submitBtnRef} className="fit-content mx-1" variant="primary" type="submit">
+                                    <Button className="fit-content mx-1" variant="primary" type="submit">
                                         Save
                                     </Button>
                                 </div>

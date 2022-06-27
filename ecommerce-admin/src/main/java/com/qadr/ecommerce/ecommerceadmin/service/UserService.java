@@ -5,6 +5,7 @@ import com.qadr.ecommerce.ecommerceadmin.model.AdminUserDetails;
 import com.qadr.ecommerce.ecommerceadmin.model.User;
 import com.qadr.ecommerce.ecommerceadmin.repo.UserRepo;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
+import com.qadr.ecommerce.sharedLibrary.util.AmazonS3Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -13,13 +14,17 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.qadr.ecommerce.sharedLibrary.entities.Constants.USER_IMAGE_FOLDER_NAME;
+
 @Service
+@Transactional
 public class UserService implements UserDetailsService {
 
     public static final int USERS_PER_PAGE = 5;
@@ -63,6 +68,8 @@ public class UserService implements UserDetailsService {
         User user = userRepo.findById(id)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "user not found!"));
         userRepo.delete(user);
+        String uploadFolder = USER_IMAGE_FOLDER_NAME+"/"+id;
+        AmazonS3Util.removeFolder(uploadFolder);
         return user;
     }
 
@@ -91,12 +98,15 @@ public class UserService implements UserDetailsService {
     public User editAccountInfo(Long id, User user) {
         User oldUser = userRepo.findById(id)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "User id " + id + " not found"));
+
         if(!user.getPassword().isBlank() && !user.getPassword().equals(oldUser.getPassword())
                 && !passwordEncoder.matches(user.getPassword(), oldUser.getPassword())){
-            oldUser.setPassword(passwordEncoder.encode(user.getPassword()));
-        }
-        oldUser.setFirstName(user.getFirstName());
-        oldUser.setLastName(user.getLastName());
-        return userRepo.save(oldUser);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }else user.setPassword(oldUser.getPassword());
+        if(user.getPhoto() == null || user.getPhoto().isBlank())
+            user.setPhoto(oldUser.getPhoto());
+        user.getRoles().addAll(oldUser.getRoles());
+        user.setEnabled(oldUser.isEnabled());
+        return userRepo.save(user);
     }
 }

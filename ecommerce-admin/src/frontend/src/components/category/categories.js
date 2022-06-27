@@ -21,7 +21,8 @@ const Categories = () => {
     const navigate = useNavigate();
     const [{accessToken}] = useAuth();
     
-    const searchRef = useRef();
+    
+    const [keyword, setKeyword] = useState("");
     const searchBtnRef = useRef();
     const [categories, setCategories] = useState([]);
     const [isLoading, setLoading] = useState(true);
@@ -39,9 +40,9 @@ const Categories = () => {
     const [sort, setSort] = useState({ field: "name", dir: "asc" })
     const [hierarchies, setHierarchies] = useState([])
     
-     const changePage = useCallback(function (number, button) {
+     const changePage = useCallback(function (number, search, button) {
         number = number ?? 1;
-         const keyword = (searchRef.current) ? encodeURIComponent(searchRef.current?.value) : "";
+         const keyword = (search) ? encodeURIComponent(search) : "";
          setLoading(true);
 
          if (button) {
@@ -84,7 +85,8 @@ const Categories = () => {
     const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500)
     
     useEffect(() => {
-        changePage(pageInfo.number)
+        changePage(pageInfo.number, keyword)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [changePage, pageInfo?.number])
     
     useEffect(() => {
@@ -137,19 +139,19 @@ const Categories = () => {
 
     function updatingCategory(category) {
         alterArrayUpdate(category, setCategories)
-        searchRef.current.value = category.name
+        setKeyword(category.name)
     }
 
-  function handleFilter(event) {
+ function handleFilter(event) {
         event.preventDefault();
         pageInfo.number = 1;
-        changePage(null, searchBtnRef.current)
+        changePage(null, keyword, searchBtnRef.current)
     }
     function clearFilter() {
-       if (searchRef.current?.value) {
-            searchRef.current.value = "";
+       if (keyword.length > 1) {
+            setKeyword("")
             pageInfo.number = 1;
-            changePage(null)
+            changePage(null, "")
         }
     }
     
@@ -203,7 +205,7 @@ const Categories = () => {
                                 <label className="d-block text-start text-md-end fs-5" htmlFor="keyword">Filter:</label>
                             </Col>
                             <Col sm="9" md="6">
-                                <Form.Control ref={searchRef}  type="text" placeholder="keyword" required/>
+                                <Form.Control value={keyword} onChange={e=>setKeyword(e.target.value)}  type="text" placeholder="keyword" required/>
                             </Col>
                             <Col sm="12" md="4">
                             <div className="mt-md-0 mt-2">

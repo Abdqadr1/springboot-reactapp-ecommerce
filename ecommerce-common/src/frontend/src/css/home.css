@@ -22,11 +22,6 @@ a:hover{
 .secondary{
     background-color: rgb(226, 230, 234)
 }
-.product-in-listing:hover{
-    filter:brightness(-200%);
-    border-radius: 3px;
-    box-shadow: 3px 3px 3px 3px #d8dadc;
-}
 .main-image{
     width: 92%;
     max-height: 300px;
@@ -51,4 +46,27 @@ a:hover{
 }
 .form-input {
     width: 75%;
+}
+.category-listing, .product-in-listing{
+    word-break: break-all;
+    box-sizing: border-box;
+    transition: box-shadow 250ms;
+    transition: border-radius 500ms;
+}
+.category-listing:where(:hover, :focus),
+.product-in-listing:where(:hover, :focus){
+    box-shadow: 3px 2px 3px 3px #d8dadc;
+    border-radius: 5px;
+    animation-name: converge;
+    animation-duration: 1000ms;
+    animation-delay: 0ms;
+    animation-fill-mode:both;
+}
+@keyframes converge {
+    from{
+        opacity: .1
+    }
+    to{
+        opacity: 1
+    }
 }

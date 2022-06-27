@@ -30,7 +30,7 @@ const MyNavbar = () => {
             <Container>
                 <Navbar.Brand href="/account">
                     <img
-                        src={`${logoUrl}${SITE_LOGO}`}
+                        src={SITE_LOGO}
                         width="30"
                         height="30"
                         className="d-inline-block align-top"

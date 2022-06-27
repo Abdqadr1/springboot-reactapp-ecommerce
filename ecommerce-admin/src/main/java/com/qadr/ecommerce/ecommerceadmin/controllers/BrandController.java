@@ -5,6 +5,7 @@ import com.qadr.ecommerce.sharedLibrary.entities.Brand;
 import com.qadr.ecommerce.ecommerceadmin.service.BrandService;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingParam;
+import com.qadr.ecommerce.sharedLibrary.util.AmazonS3Util;
 import com.qadr.ecommerce.sharedLibrary.util.FileUploadUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.qadr.ecommerce.ecommerceadmin.service.BrandService.BRANDS_PER_PAGE;
+import static com.qadr.ecommerce.sharedLibrary.entities.Constants.BRAND_IMAGE_FOLDER_NAME;
 
 @RestController
 @RequestMapping("/brand")
@@ -49,8 +51,9 @@ public class BrandController {
             filename = filename.length() > 255 ? filename.substring(0, 254) : filename;
             brand.setPhoto(filename);
             Brand addBrand = brandService.addBrand(brand);
-            String uploadFolder = "brand-photos/"+addBrand.getId();
-            FileUploadUtil.saveFile(file, uploadFolder, filename);
+            String uploadFolder = BRAND_IMAGE_FOLDER_NAME+"/"+addBrand.getId();
+            AmazonS3Util.removeFolder(uploadFolder);
+            AmazonS3Util.uploadFile(uploadFolder, filename, file.getInputStream());
             return addBrand;
         }
         return brandService.addBrand(brand);
@@ -65,8 +68,9 @@ public class BrandController {
             filename = filename.length() > 255 ? filename.substring(0, 254) : filename;
             brand.setPhoto(filename);
             Brand savedBrand = brandService.editBrand(id, brand);
-            String uploadFolder = "brand-photos/"+savedBrand.getId();
-            FileUploadUtil.saveFile(file, uploadFolder, filename);
+            String uploadFolder = BRAND_IMAGE_FOLDER_NAME+"/"+savedBrand.getId();
+            AmazonS3Util.removeFolder(uploadFolder);
+            AmazonS3Util.uploadFile(uploadFolder, filename, file.getInputStream());
             return savedBrand;
         }
         return brandService.editBrand(id, brand);

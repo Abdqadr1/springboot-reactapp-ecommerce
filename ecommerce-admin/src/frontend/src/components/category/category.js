@@ -28,9 +28,9 @@ const Category = ({ category, showUpdate, setDeleted, toggleEnable, type }) => {
                 <td className="d-flex justify-content-center">
                     <i className="bi bi-pencil-fill edit" title="edit category" onClick={()=> showUpdate(category.id)}></i>
                     {
-                        (category.parent)
-                         ? <i className="bi bi-archive-fill delete" title="delete category" onClick={deleteCategory}></i>
-                         : ""
+                        (category.children.length > 0)
+                         ? ""
+                         : <i className="bi bi-archive-fill delete" title="delete category" onClick={deleteCategory}></i>
                     }
                     
                 </td>
@@ -53,18 +53,11 @@ const Category = ({ category, showUpdate, setDeleted, toggleEnable, type }) => {
                     title="edit category"
                     onClick={() => showUpdate(category.id)}
                   ></i>
-                
-                {category.parent ? (
-                  
-                    <i
-                      className="bi bi-archive-fill delete fs-6 mx-3"
-                      title="delete category"
-                      onClick={deleteCategory}
-                    ></i>
-                  
-                ) : (
-                  ""
-                )}
+                {
+                        (category.children.length > 0)
+                         ? ""
+                         : <i className="bi bi-archive-fill delete fs-6 mx-3" title="delete category" onClick={deleteCategory}></i>
+                    }
               </div>
             </Col>
           </Row>

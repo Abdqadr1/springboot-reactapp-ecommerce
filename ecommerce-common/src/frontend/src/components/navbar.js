@@ -8,7 +8,6 @@ import {isTokenExpired, SPINNERS_BORDER_HTML} from './utilities'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 const NavBar = () => {
-  const logoUrl = `${process.env.REACT_APP_SERVER_URL}site-logo/`;
   const { SITE_LOGO } = useSettings();
   const navigate = useNavigate();
   
@@ -35,6 +34,7 @@ const NavBar = () => {
   useEffect(() => {
       if (!alert.show) return;
       alertRef.current && alertRef.current.focus()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [alert])
 
   useEffect(() => {
@@ -49,6 +49,7 @@ const NavBar = () => {
           })
         }
       
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [country])
 
 
@@ -85,6 +86,7 @@ const NavBar = () => {
           }
         })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth?.accessToken])
 
   
@@ -155,7 +157,7 @@ const NavBar = () => {
                     <Container>
                       <Navbar.Brand href="/">
                         <img
-                          src={`${logoUrl}${SITE_LOGO}`}
+                          src={SITE_LOGO}
                           width="30"
                           height="30"
                           className="d-inline-block align-top"

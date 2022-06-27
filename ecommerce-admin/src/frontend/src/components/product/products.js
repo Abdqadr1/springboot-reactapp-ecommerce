@@ -19,7 +19,8 @@ const Products = () => {
     const navigate = useNavigate();
     const [auth] = useAuth();
     const accessToken = auth.accessToken;
-    const searchRef = useRef();
+    
+    const [keyword, setKeyword] = useState("");
     const searchBtnRef = useRef();
     const [products, setProducts] = useState([]);
     const [isLoading, setLoading] = useState(true);
@@ -43,9 +44,9 @@ const Products = () => {
     })
     const [sort, setSort] = useState({ field: "name", dir: "asc", category:0 })
     
-    const changePage = useCallback(function (number, button) {
+    const changePage = useCallback(function (number, search, button) {
         number = number ?? 1;
-        const keyword = (searchRef.current) ? encodeURIComponent(searchRef.current.value) : "";
+         const keyword = (search) ? encodeURIComponent(search) : "";
         const url = `${serverUrl}page/${number}?sortField=${sort.field}&dir=${sort.dir}&keyword=${keyword}&category=${sort.category}`;
         setLoading(true);
         if (button) {
@@ -88,7 +89,8 @@ const Products = () => {
     const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500)
     
     useEffect(() => {
-        changePage(pageInfo.number)
+        changePage(pageInfo.number, keyword)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [changePage, pageInfo?.number])
     
     useEffect(() => {
@@ -123,27 +125,27 @@ const Products = () => {
         alterArrayAdd(products, Product, setProducts)
     }
 
-    function updatingProduct(Product) {
-        alterArrayUpdate(Product, setProducts)
-        searchRef.current.value = Product.name
+    function updatingProduct(product) {
+        alterArrayUpdate(product, setProducts)
+        setKeyword(product.name);
     }
 
     function handleSelectCategory(event){
         const category = Number(event.target.value)
+        pageInfo.number = 1;
         setSort(state => ({ ...state, category }))
-        setPageInfo(s=>({...s, number:1}))
     }
 
-    function handleFilter(event) {
+   function handleFilter(event) {
         event.preventDefault();
         pageInfo.number = 1;
-        changePage(null, searchBtnRef.current)
+        changePage(null, keyword, searchBtnRef.current)
     }
     function clearFilter() {
-       if (searchRef.current?.value) {
-            searchRef.current.value = "";
+       if (keyword.length > 1) {
+            setKeyword("")
             pageInfo.number = 1;
-            changePage(null)
+            changePage(null, "")
         }
     }
     
@@ -159,7 +161,7 @@ const Products = () => {
         const id = event.target.id;
         const field = (id === sort.field) ? sort.field : id;
         const dir = (sort.dir === "asc" && field === sort.field) ? "desc" : "asc";
-        setSort({ field, dir })
+        setSort(s=>({...s, field, dir }))
     }
     function toggleEnable(id, status) {
       const url = serverUrl + `${id}/enable/${status}`;
@@ -224,7 +226,7 @@ const Products = () => {
                                 </Form.Select>
                             </Col>
                             <Col sm="9" md="4" className="mt-md-0 mt-2">
-                                <Form.Control ref={searchRef}  type="text" placeholder="keyword" />
+                                <Form.Control value={keyword} onChange={e=>setKeyword(e.target.value)}  type="text" placeholder="keyword" />
                             </Col>
                             <Col sm="12" md="3" className="mt-md-0 mt-2">
                                 <div>

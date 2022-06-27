@@ -18,7 +18,7 @@ const Users = () => {
     const navigate = useNavigate();
     const [{accessToken}] = useAuth();
     
-    const searchRef = useRef();
+    const [keyword, setKeyword] = useState("");
     const searchBtnRef = useRef();
     const [users, setUsers] = useState([]);
     const [isLoading, setLoading] = useState(true);
@@ -35,10 +35,10 @@ const Users = () => {
     })
     const [sort, setSort] = useState({ field: "firstName", dir: "asc" })
     
-     const changePage = useCallback(function (number, button) {
+     const changePage = useCallback(function (number, search, button) {
          number = number ?? 1;
-        const keyword = (searchRef.current) ? encodeURIComponent(searchRef.current?.value) : "";
-        setLoading(true);
+         const keyword = (search) ? encodeURIComponent(search) : "";
+         setLoading(true);
          if (button) {
             button.disabled = true
             button.innerHTML = SPINNERS_BORDER_HTML
@@ -77,7 +77,8 @@ const Users = () => {
     
 
     useEffect(() => {
-        changePage(pageInfo.number)
+        changePage(pageInfo.number,keyword)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [changePage, pageInfo?.number])
     
     useEffect(() => {
@@ -126,19 +127,19 @@ const Users = () => {
 
     function updatingUser(user) {
         alterArrayUpdate(user, setUsers)
-        searchRef.current.value = user.email.split("@")[0]
+        setKeyword(user.email.split("@")[0]);
     }
 
-   function handleFilter(event) {
+    function handleFilter(event) {
         event.preventDefault();
         pageInfo.number = 1;
-        changePage(null, searchBtnRef.current)
+        changePage(null, keyword, searchBtnRef.current)
     }
     function clearFilter() {
-       if (searchRef.current?.value) {
-            searchRef.current.value = "";
+       if (keyword.length > 1) {
+            setKeyword("")
             pageInfo.number = 1;
-            changePage(null)
+            changePage(null, "")
         }
     }
     
@@ -199,7 +200,7 @@ const Users = () => {
                                 <label className="d-block text-start text-md-end fs-5" htmlFor="keyword">Filter:</label>
                             </Col>
                             <Col sm="9" md="6">
-                                <Form.Control ref={searchRef}  type="text" placeholder="keyword"  required/>
+                                <Form.Control value={keyword} onChange={e=>setKeyword(e.target.value)}type="text" placeholder="keyword"  required/>
                             </Col>
                             <Col sm="12" md="4">
                             <div className="mt-md-0 mt-2">

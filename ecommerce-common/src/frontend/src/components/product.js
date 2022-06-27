@@ -118,9 +118,8 @@ const Product = () => {
         return (
             <div className="d-flex justify-content-center my-2">
                 {images.map((img,i) => {
-                    const url = (i===0) ? `${fileUrl}${product.id}` : `${fileUrl}${product.id}/extras`;
                     return (<div key={i} className="mx-2 border border-secondary rounded p-1" onClick={()=>showImage(i)}>
-                        <img src={`${url}/${img}`} alt="product" className="small-img" />
+                        <img src={img} alt="product" className="small-img" />
                     </div>)
                     }
                 )}
@@ -130,13 +129,13 @@ const Product = () => {
 
     function listProduct(){
         if(product){
-            const images = [product.mainImage, ...product.extraImages.map(m => m.path)]
+            const images = [product.mainImagePath, ...product.extraImages.map(m => m.imagePath)]
             const discountPrice = priceFormatter()(product.realPrice);
             return (
                 <>
                     <Row className="justify-content-center p-4 mx-0">
                         <Col sm={9} md={5}>
-                            <img ref={bigImageRef} src={`${fileUrl}${product.id}/${product.mainImage}`} 
+                            <img ref={bigImageRef} src={product.mainImagePath} 
                             alt="product" className="main-image" onClick={showBigImage} data-index={imageIndex} />
                             {listImages(images)}
                         </Col>
