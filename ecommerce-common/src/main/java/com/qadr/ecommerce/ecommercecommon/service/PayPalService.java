@@ -39,7 +39,6 @@ public class PayPalService {
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<PayPalOrderResponse> response =
                 restTemplate.exchange(url, HttpMethod.GET, request, PayPalOrderResponse.class);
-
         HttpStatus statusCode = response.getStatusCode();
         checkStatusCode(statusCode);
 

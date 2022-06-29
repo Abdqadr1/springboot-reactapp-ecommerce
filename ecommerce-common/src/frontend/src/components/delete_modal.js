@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Modal } from "react-bootstrap";
-import { SPINNERS_BORDER } from "./utilities";
+import { Button, Modal, Spinner } from "react-bootstrap";
 
 const DeleteModal = ({ deleteObject, setDeleteObject, deletingFunc, type }) => {
         
@@ -12,7 +11,7 @@ const DeleteModal = ({ deleteObject, setDeleteObject, deletingFunc, type }) => {
         })
     }
     function del() {
-        setConfirm(SPINNERS_BORDER);
+        setConfirm(<Spinner animation="border" size="sm" />);
         deletingFunc()
     }
 

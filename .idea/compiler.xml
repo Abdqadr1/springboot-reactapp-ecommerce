@@ -8,7 +8,6 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="ecommerce-admin" />
-        <module name="shared-library" />
         <module name="ecommerce-common" />
       </profile>
     </annotationProcessing>

@@ -1,5 +1,6 @@
 package com.qadr.ecommerce.ecommercecommon.controllers;
 
+import com.qadr.ecommerce.ecommercecommon.model.PayPalOrderResponse;
 import com.qadr.ecommerce.sharedLibrary.entities.Address;
 import com.qadr.ecommerce.ecommercecommon.model.CartItem;
 import com.qadr.ecommerce.ecommercecommon.model.CheckoutInfo;
@@ -38,6 +39,7 @@ public class CheckoutController {
     @Autowired private ShippingRateService shippingRateService;
     @Autowired private OrderService orderService;
     @Autowired private SettingsService settingsService;
+    @Autowired private PayPalService payPalService;
 
     @GetMapping
     public Map<String, Object> checkout(){
@@ -93,6 +95,10 @@ public class CheckoutController {
     public String processPayPalOrder(HttpServletRequest request){
         String orderId = request.getParameter("orderId");
         if(orderId == null) throw new CustomException(HttpStatus.BAD_REQUEST, "Invalid parameters");
+        PayPalOrderResponse payPalResponse = payPalService.getOrderDetails(orderId);
+        if(!payPalResponse.validate(orderId))
+            throw new CustomException(HttpStatus.BAD_REQUEST, "Payment could not be confirmed");
+
         PaymentMethod paymentMethod = PaymentMethod.PAYPAL;
 
         Customer customer = getCustomerDetails();

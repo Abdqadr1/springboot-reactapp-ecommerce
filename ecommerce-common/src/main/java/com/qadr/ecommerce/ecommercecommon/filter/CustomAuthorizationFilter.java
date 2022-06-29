@@ -1,5 +1,6 @@
 package com.qadr.ecommerce.ecommercecommon.filter;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qadr.ecommerce.ecommercecommon.service.CustomerService;
@@ -44,16 +45,39 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 filterChain.doFilter(request, response);
 
             }catch (Exception e){
-                LOGGER.error(e.getMessage());
-                response.setStatus(HttpStatus.BAD_REQUEST.value());
-                Map<String, Object> ret = new HashMap<>();
-                ret.put("message", e.getMessage());
-                ret.put("timestamp", LocalDateTime.now().toString());
-                new ObjectMapper().writeValue(response.getOutputStream(), ret);
+                if(e instanceof TokenExpiredException &&
+                        request.getServletPath().equals("/checkout/paypal_order")){
+                    String token = request.getHeader("refreshToken");
+                    if(token != null && !token.isBlank()){
+                        DecodedJWT decodedJWT = JWTUtil.verifyToken(token);
+                        String email = decodedJWT.getSubject();
+                        UsernamePasswordAuthenticationToken authenticationToken =
+                                new UsernamePasswordAuthenticationToken(email, null, null);
+                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                        try {
+                            filterChain.doFilter(request, response);
+                        } catch (IOException | ServletException ex) {
+                            LOGGER.error("PayPal Order Page", ex);
+                            doReturn(response, ex);
+                        }
+                    }else {
+                        doReturn(response, e);
+                    }
+                }else{
+                    doReturn(response, e);
+                }
             }
         }else {
             filterChain.doFilter(request, response);
         }
 
+    }
+    public void doReturn(HttpServletResponse response, Exception e) throws IOException {
+        LOGGER.error(e.getMessage());
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+        Map<String, Object> ret = new HashMap<>();
+        ret.put("message", e.getMessage());
+        ret.put("timestamp", LocalDateTime.now().toString());
+        new ObjectMapper().writeValue(response.getOutputStream(), ret);
     }
 }

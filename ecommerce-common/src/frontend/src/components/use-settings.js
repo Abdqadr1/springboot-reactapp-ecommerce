@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 const useSettings = () => {
     const url = process.env.REACT_APP_SERVER_URL + "set/get";
     function getFromStorage() {
-            return JSON.parse(localStorage.getItem("settings")) ;
+            return JSON.parse(sessionStorage.getItem("settings")) ;
     }
 
     function fetchSettings() {
@@ -15,7 +15,7 @@ const useSettings = () => {
                 settings[el.key] = el.value;
             });
             setSettings({...settings})
-            localStorage.setItem("settings", JSON.stringify(settings))
+            sessionStorage.setItem("settings", JSON.stringify(settings))
         })
         .catch(error => {
             const response = error.response;

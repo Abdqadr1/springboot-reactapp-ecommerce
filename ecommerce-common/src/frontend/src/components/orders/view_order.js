@@ -6,8 +6,6 @@ import { Link } from "react-router-dom";
 
 const ViewOrder = ({ viewOrder, setViewOrder, priceFunction }) => {
     const order = viewOrder?.order;
-
-    const fileURL = `${process.env.REACT_APP_SERVER_URL}product-images/`;
     const [width, setWidth] = useState(window.innerWidth);
 
     const hideModal = () => setViewOrder(state => ({ ...state, show: false }));
@@ -104,7 +102,7 @@ const ViewOrder = ({ viewOrder, setViewOrder, priceFunction }) => {
                         <Row className="justify-content-center justify-content-md-center">
                             <Col xs={11} md={5}>
                                 <div>{i+1}</div>
-                                    <img src={`${fileURL}${detail.product.id}/${detail.product.mainImage}`} 
+                                    <img src={detail.product.mainImagePath} 
                                     alt="product" className="main-image"/>
                             </Col>
                             <Col xs={11} md={6}>

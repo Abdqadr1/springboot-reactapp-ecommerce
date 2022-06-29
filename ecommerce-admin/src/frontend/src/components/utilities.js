@@ -120,6 +120,13 @@ export const hasOnlyAuthority =(auth, role) => {
     if (auth.roles.length > 1) return false;
     return auth.roles[0].name === role;
 }
+export const hasThisNotThese = (auth, role, not) => {
+    if (auth.roles.some(r => r.name === role)) {
+        if (hasAnyAuthority(auth, not)) return false;
+        return true;
+    }
+    return false;
+}
 
 export const isInArray = (needle, haystack) => {
     for (let i = 0; i < haystack.length; i++){

@@ -184,7 +184,6 @@ public class CustomerService implements UserDetailsService {
     public String sendForgotPasswordEmail(HttpServletRequest request, String email, String token) {
         try {
             EmailSettingBag emailSettings = getEmailSettings();
-            JavaMailSenderImpl javaMailSender = Util.prepareMailSender(emailSettings);
             String redirectUrl = request.getParameter("redirect_uri");
             String url = redirectUrl != null ? redirectUrl : Util.getSiteURL(request);
             url = url + "/reset_password?token="+token;
@@ -194,13 +193,8 @@ public class CustomerService implements UserDetailsService {
                     "<h4><a href=\""+url+"\">Change your password</a></h4><br/>" +
                     "<p>Ignore this email if you do remember your password, or you have not made this request.</p>";
 
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
-            helper.setFrom(emailSettings.getMailFrom(), emailSettings.getMailSenderName());
-            helper.setTo(email);
-            helper.setSubject("Here's the link to reset your password");
-            helper.setText(content, true);
-            javaMailSender.send(mimeMessage);
+            String subject = "Here's the link to reset your password";
+            Util.sendEmail(emailSettings, email, subject, content);
             return  "We have sent a reset password link to your email, Please check";
 
         } catch (Exception e) {
@@ -213,7 +207,6 @@ public class CustomerService implements UserDetailsService {
     public void sendVerificationEmail(HttpServletRequest request, Customer customer) {
         try {
             EmailSettingBag emailSettings = getEmailSettings();
-            JavaMailSenderImpl javaMailSender = Util.prepareMailSender(emailSettings);
             String toAddress = customer.getEmail();
             String fullName = customer.getFullName();
             String code = customer.getVerificationCode();
@@ -222,14 +215,7 @@ public class CustomerService implements UserDetailsService {
             String content  = emailSettings.getVerifyContent();
             content = content.replace("{{NAME}}", fullName);
             content = content.replace("{{URL}}", url);
-
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
-            helper.setFrom(emailSettings.getMailFrom(), emailSettings.getMailSenderName());
-            helper.setTo(toAddress);
-            helper.setSubject(subject);
-            helper.setText(content, true);
-            javaMailSender.send(mimeMessage);
+            Util.sendEmail(emailSettings, toAddress, subject, content);
 
         } catch (Exception e) {
             LOGGER.info(e.getMessage());

@@ -103,7 +103,7 @@ export function listFormData(data){
       }
 }
 
-export const SPINNERS_BORDER = <Spinner animation="border" size="sm" />
+export const SPINNERS_BORDER = <Spinner animation="border" size="sm" className="d-block m-auto" style={{width: "4rem", height: "4rem"}} />
 export const SPINNERS_GROW = <Spinner animation="grow" size="sm" />
 export const SPINNERS_BORDER_HTML = `<div class="spinner-border spinner-border-sm text-dark" role="status">
                                         <span class="visually-hidden">Loading...</span>

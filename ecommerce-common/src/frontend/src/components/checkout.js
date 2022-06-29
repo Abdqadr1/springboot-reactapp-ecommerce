@@ -1,7 +1,7 @@
 import { useEffect, useContext, useState, useRef } from "react";
 import useSettings from "./use-settings";
 import {AuthContext} from "./custom_hooks/use-auth";
-import { formatPrice, isTokenExpired, formatDate, getShortName, SPINNERS_BORDER_HTML, listFormData } from "./utilities";
+import { formatPrice, isTokenExpired, formatDate, getShortName } from "./utilities";
 import { useNavigate } from "react-router";
 import CustomToast from "./custom_toast";
 import axios from "axios";
@@ -58,6 +58,7 @@ const Checkout = () => {
         return () => {
             abortController.abort();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [auth])
 
     const checkoutSuccess = (url) => {
@@ -84,7 +85,8 @@ const Checkout = () => {
         setFullscreenLoader(true)
         axios.post(`${url}/${action}`, data, {
             headers: {
-                "Authorization": `Bearer ${auth?.accessToken}`
+                "Authorization": `Bearer ${auth?.accessToken}`,
+                "refreshToken": auth?.refreshToken,
             }
         })
         .then(res => {

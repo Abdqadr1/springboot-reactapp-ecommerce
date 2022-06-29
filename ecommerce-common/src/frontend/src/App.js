@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import './App.css';
-import {BrowserRouter, Routes, Route} from "react-router-dom";
+import {BrowserRouter, Routes, Route, HashRouter} from "react-router-dom";
 import NavBar from "./components/navbar";
 import Login from "./components/login";
 import Register from "./components/register";
@@ -39,7 +39,7 @@ function App() {
   return (
     <AuthContext.Provider value={{auth, setAuth}}>
         <div className="App">
-            <BrowserRouter>
+            <HashRouter>
             <NavBar />
             <div className="content">
             <Routes>
@@ -64,7 +64,7 @@ function App() {
                 <Route path="*" element={<div className="my-4">Not found</div>} />
             </Routes>
             </div>
-          </BrowserRouter>
+          </HashRouter>
         
           <footer className="bg-dark py-3 text-light fw-bold">{COPYRIGHT ?? ""}</footer>
       </div>

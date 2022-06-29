@@ -7,8 +7,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 const Login = () => {
     const url = `${process.env.REACT_APP_SERVER_URL}customer/login`;
-    const oauthURL = process.env.REACT_APP_OAUTH2_URL;
-    const keys = (process.env.NODE_ENV === "production") ? require('./oauth_config/prod') : require('./oauth_config/prod');
+    const oauthURL = process.env.PUBLIC_URL + "/oauth2/authorize";
+    const keys = (process.env.NODE_ENV === "production") ? require('./oauth_config/prod') : require('./oauth_config/dev');
     const redirectUri = keys.redirectUrl;
     const [searchParams,] = useSearchParams();
     const error = searchParams.get("error");

@@ -25,12 +25,12 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(!isPermitted.test(request.getServletPath())){
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        String token = request.getHeader(AUTHORIZATION);
+        if(token != null  && token.startsWith("Bearer ")){
             try{
-                String authHeader = Optional.ofNullable(request.getHeader(AUTHORIZATION))
-                        .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Authorization header is missing"));
-                String accessToken = authHeader.substring("Bearer ".length());
+                String accessToken = token.substring("Bearer ".length());
                 DecodedJWT decodedJWT = JWTUtil.verifyToken(accessToken);
                 String email = decodedJWT.getSubject();
                 String[] roles = decodedJWT.getClaim("roles").asArray(String.class);

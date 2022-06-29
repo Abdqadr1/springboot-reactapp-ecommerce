@@ -1,5 +1,6 @@
 import { Card, Col } from "react-bootstrap";
 import { formatDate } from "../utilities";
+import { Link } from "react-router-dom";
 
 const Order = ({ order, type, showView, priceFunction, setOrderStatus }) => {
 
@@ -8,7 +9,7 @@ const Order = ({ order, type, showView, priceFunction, setOrderStatus }) => {
   }
 
   function listProducts() {
-    return order.orderDetails.map(d => <li key={d.id}>{d.product.name}</li>)
+    return order.orderDetails.map(d => <li key={d.id}><Link to={"/p/"+d.product.alias}>{d.product.name}</Link></li>)
   }
 
   function showUpdateModal(e) {

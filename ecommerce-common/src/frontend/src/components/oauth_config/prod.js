@@ -1,3 +1,3 @@
 module.exports = {
-    redirectUrl: "http://localhost:3001/oauth2/redirect",
+    redirectUrl: process.env.PUBLIC_URL + "/oauth2/redirect",
 }

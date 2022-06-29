@@ -1,5 +1,5 @@
 import { Card, Col, Row } from "react-bootstrap";
-import { formatDate, hasOnlyAuthority } from "../utilities";
+import { formatDate, hasThisNotThese } from "../utilities";
 import useAuth from "../custom_hooks/use-auth";
 
 const Order = ({ order, setDeleted, type, showView, showEdit, showCustomer, priceFunction, setOrderStatus }) => {
@@ -137,7 +137,7 @@ const Order = ({ order, setDeleted, type, showView, showEdit, showCustomer, pric
     const item = (type === "detailed")
         ? tableItem() : rowItem()
 
-  if (hasOnlyAuthority(auth, "Shipper")) return shipperItem();
+  if (hasThisNotThese(auth, "Shipper", ["Admin", "SalesPerson"])) return shipperItem();
   return item;
 }
  

@@ -57,10 +57,10 @@ public class OrderService {
         if(paymentMethod.equals(PaymentMethod.PAYPAL)){
             order.setOrderStatus(OrderStatus.PAID);
             OrderTrack paidTrack = new OrderTrack();
-            newTrack.setOrder(order);
-            newTrack.setStatus(OrderStatus.PAID);
-            newTrack.setUpdatedTime(new Date());
-            newTrack.setNote(OrderStatus.PAID.getDescription());
+            paidTrack.setOrder(order);
+            paidTrack.setStatus(OrderStatus.PAID);
+            paidTrack.setUpdatedTime(new Date());
+            paidTrack.setNote(OrderStatus.PAID.getDescription());
             order.getOrderTracks().add(paidTrack);
         }else {
             order.setOrderStatus(OrderStatus.NEW);
@@ -121,7 +121,6 @@ public class OrderService {
         try {
             EmailSettingBag emailSettings = settingsService.getEmailSettingsBag();
             CurrencySettingBag currencySettingBag = settingsService.getCurrencySettingBag();
-            JavaMailSenderImpl javaMailSender = Util.prepareMailSender(emailSettings);
             String content = emailSettings.getOrderConfirmationContent();
             String subject = emailSettings.getOrderConfirmationSubject();
             subject = subject.replace("{{orderid}}", String.valueOf(order.getId()));
@@ -133,13 +132,7 @@ public class OrderService {
             content = content.replace("{{paymentMethod}}", order.getPaymentMethod().toString());
             content = content.replace("{{total}}", CommonUtil.formatCurrency(order.getTotal(), currencySettingBag));
 
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
-            helper.setFrom(emailSettings.getMailFrom(), emailSettings.getMailSenderName());
-            helper.setTo(order.getCustomer().getEmail());
-            helper.setSubject(subject);
-            helper.setText(content, true);
-            javaMailSender.send(mimeMessage);
+            Util.sendEmail(emailSettings, order.getCustomer().getEmail(), subject, content);
 
         } catch (Exception e) {
             LOGGER.info(e.getMessage());

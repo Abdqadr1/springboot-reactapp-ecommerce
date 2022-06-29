@@ -1,10 +1,8 @@
 package com.qadr.ecommerce.sharedLibrary.entities.setting;
 
-import com.qadr.ecommerce.sharedLibrary.entities.setting.Setting;
-import com.qadr.ecommerce.sharedLibrary.entities.setting.SettingsBag;
+import lombok.ToString;
 
 import java.util.List;
-
 public class EmailSettingBag extends SettingsBag {
     public EmailSettingBag(List<Setting> settingList) {
         super(settingList);
@@ -47,5 +45,15 @@ public class EmailSettingBag extends SettingsBag {
     }
     public String getOrderConfirmationContent(){
         return super.getValue("ORDER_CONFIRMATION_CONTENT");
+    }
+
+
+    @Override
+    public String toString() {
+        return "\n " + getMailHost() + "\n " +
+                getMailFrom() + "\n " +
+                getMailPassword() + "\n " + getMailUsername() + " \n " +
+                getMailPort() + "\n " + getMailSenderName() + "\n " + getUseAuth() +
+                "\n " + getSMTPSecured();
     }
 }

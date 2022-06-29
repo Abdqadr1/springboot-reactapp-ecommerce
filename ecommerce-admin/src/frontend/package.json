@@ -1,5 +1,5 @@
 {
-  "name": "ecommerce-admin-app",
+  "name": "qshop-admin",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -19,7 +19,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && xcopy \\build\\* ../main/resources/public/ \\s \\y",
+    "build": "react-scripts build && xcopy .\\build\\* ..\\main\\resources\\public\\ /s /y",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
