@@ -9,7 +9,6 @@
         <outputRelativeToContentRoot value="true" />
         <module name="ecommerce-admin" />
         <module name="ecommerce-common" />
-        <module name="shared-library" />
       </profile>
     </annotationProcessing>
   </component>

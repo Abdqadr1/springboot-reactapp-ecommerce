@@ -12,7 +12,7 @@
 
     <groupId>com.qadr.sharedLib</groupId>
     <artifactId>shared-library</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <version>1.0</version>
 
     <properties>
