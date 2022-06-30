@@ -47,4 +47,6 @@ app:
     authorizedRedirectUris:
         - http://localhost:3001/oauth2/redirect
         - http://localhost:8080/oauth2/callback/google
+        - http://localhost:8080/#/oauth2/callback/google
         - https://qshop-frontend.herokuapp.com/oauth2/callback/google
+        - https://qshop-frontend.herokuapp.com/#/oauth2/redirect
