@@ -18,7 +18,6 @@ const EditOrder = ({ updateOrder, setUpdateOrder, updatingOrder, priceFunction, 
     const countryUrl = process.env.REACT_APP_SERVER_URL + "countries/list";
     const stateUrl = process.env.REACT_APP_SERVER_URL + "states/get";
     const shippingRate = process.env.REACT_APP_SERVER_URL + "shipping_rate/get_shipping_rate";
-    const fileURL = `${process.env.REACT_APP_SERVER_URL}product-images/`;
     const [toast, setToast] = useState({show: false, message: ""});
     const { array: countries, setArray: setCountries } = useArray();
     const { array: states, setArray: setStates } = useArray();
@@ -81,6 +80,7 @@ const EditOrder = ({ updateOrder, setUpdateOrder, updatingOrder, priceFunction, 
             .catch(err => {
                 console.error(err)
             })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
@@ -95,6 +95,7 @@ const EditOrder = ({ updateOrder, setUpdateOrder, updatingOrder, priceFunction, 
             })
          }
         
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [country])
 
     useEffect(() => {
@@ -106,6 +107,7 @@ const EditOrder = ({ updateOrder, setUpdateOrder, updatingOrder, priceFunction, 
             const country = countries.find(c => c.name === order.country);
             setCountry({ ...country })
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [order])
 
     useEffect(() => {
@@ -248,7 +250,7 @@ const EditOrder = ({ updateOrder, setUpdateOrder, updatingOrder, priceFunction, 
                     <Col xs={11} md={5}>
                         <div>{i+1}</div>
                         <div><i onClick={e=> removeProduct(i)} className="bi bi-archive-fill fs-5 text-danger py-3"></i></div>
-                            <img src={`${fileURL}${detail.product.id}/${detail.product.mainImage}`} 
+                            <img src={detail.product.mainImagPath} 
                             alt="product" className="main-image"/>
                     </Col>
                     <Col xs={11} md={6}>

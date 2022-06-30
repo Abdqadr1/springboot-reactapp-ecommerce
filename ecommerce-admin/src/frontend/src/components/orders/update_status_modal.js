@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Modal } from "react-bootstrap";
-import { SPINNERS_BORDER } from "../utilities";
+import { Button, Modal, Spinner } from "react-bootstrap";
 const UpdateStatusModal = ({ object, setObject, updatingFunc }) => {
      const [confirm, setConfirm] = useState("Yes");
     function hideModal() {
@@ -10,7 +9,7 @@ const UpdateStatusModal = ({ object, setObject, updatingFunc }) => {
         })
     }
     function del() {
-        setConfirm(SPINNERS_BORDER);
+        setConfirm(<Spinner animation="border" size="sm" />);
         updatingFunc();
     }
 

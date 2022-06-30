@@ -1,13 +1,14 @@
+import { Navigate } from "react-router";
 import useAuth from "./custom_hooks/use-auth";
 
 const AccountHome = () => {
 
-    const [{roles: allRoles, firstName, lastName}] = useAuth()
-    const roles = allRoles.map(role => role.name);
+    const [{ roles, firstName, lastName }] = useAuth();
 
+    if(!roles || !firstName || !lastName) return <Navigate to="/login" />
     return ( 
         <div className="px-3 py-2">
-            <h4>{firstName} {lastName}</h4> <h5>[{roles.toString()}]</h5>
+            <h4>{firstName} {lastName}</h4> <h5>[{roles.map(role => role.name).toString()}]</h5>
         </div>
      );
 }

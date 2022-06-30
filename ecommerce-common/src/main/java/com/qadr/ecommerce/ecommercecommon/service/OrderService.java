@@ -130,7 +130,7 @@ public class OrderService {
             content = content.replace("{{NAME}}", order.getCustomer().getFullName());
             content = content.replace("{{shippingAddress}}", address.toString());
             content = content.replace("{{paymentMethod}}", order.getPaymentMethod().toString());
-            content = content.replace("{{total}}", CommonUtil.formatCurrency(order.getTotal(), currencySettingBag));
+            content = content.replace("{{paymentMethod}}", CommonUtil.formatCurrency(order.getTotal(), currencySettingBag));
 
             Util.sendEmail(emailSettings, order.getCustomer().getEmail(), subject, content);
 

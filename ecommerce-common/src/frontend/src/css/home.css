@@ -39,6 +39,7 @@ a:hover{
 }
 .content{
     min-height: calc(100vh - 110px);
+    padding-block: 10px;
 }
 .form-label{
     width: 25%;

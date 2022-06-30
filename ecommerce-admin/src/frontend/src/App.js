@@ -11,7 +11,7 @@ function App() {
     <div className="App">
         <HashRouter>
           <Routes>
-            <Route path='/' element={<Login />}></Route>
+            <Route path='/' element={<Account />}></Route>
             <Route path='/login' element={<Login />}></Route>
             <Route path='/login/:out' element={<Login />}></Route>
             <Route path='/account/*' element={<Account />}></Route>

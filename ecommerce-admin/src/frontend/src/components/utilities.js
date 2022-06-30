@@ -209,7 +209,6 @@ export const getPrices = (discount, price, realPrice, formatPrice) => {
 
 export function listProducts(results, keyword, formatPrice, handler){
     if(results.length > 0){
-        const fileURI = process.env.REACT_APP_SERVER_URL + "product-images/";
         return (
             <>
                 <h3 className="mt-4 mb-2"> Search Results for "{keyword}"</h3>
@@ -217,7 +216,7 @@ export function listProducts(results, keyword, formatPrice, handler){
                     {
                         results.map((p) => (
                             <Col onClick={e=>handler(p)} key={p.name} xs={6} sm={4} md={3} lg={2} xlg={2} className="cs mx-1 border rounded">
-                                <img loading="lazy" src={`${fileURI}${p.id}/${p.mainImage}`} alt={getShortName(p.name, 10)} className="product-image" />
+                                <img loading="lazy" src={p.mainImagePath} alt={getShortName(p.name, 10)} className="product-image" />
                                 <h5 className="my-2 text-primary text-start">{getShortName(p.name)}</h5>
                                 {getPrices(p.discountPrice, p.price, p.realPrice, formatPrice)}
                             </Col>

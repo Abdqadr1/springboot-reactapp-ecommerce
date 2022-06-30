@@ -70,11 +70,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/orders/page/**")
                 .hasAnyAuthority("Admin", "Salesperson", "Shipper");
 
+        http.authorizeRequests().antMatchers("/orders/update_status/**")
+                .hasAnyAuthority("Shipper");
+
         http.authorizeRequests().antMatchers("/orders/**" )
                 .hasAnyAuthority("Admin", "Salesperson");
 
-        http.authorizeRequests().antMatchers("/orders/update_status/**")
-                .hasAnyAuthority("Shipper");
 
         http.authorizeRequests().antMatchers("/set/**", "/countries/**", "/states/**").hasAuthority("Admin");
 

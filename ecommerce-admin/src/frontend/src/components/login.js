@@ -47,6 +47,8 @@ const Login = () => {
         })
     }
 
+    useEffect(()=>{document.title = `Login`},[])
+
     useEffect(() => {
         const type = Number(out)
         if (type === 1) setParam({ show: '', message: "You logged out" })

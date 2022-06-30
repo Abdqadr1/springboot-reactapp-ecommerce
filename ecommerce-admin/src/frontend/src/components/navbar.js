@@ -4,7 +4,7 @@ import Nav from "react-bootstrap/Nav"
 import NavDropdown from "react-bootstrap/NavDropdown"
 import { Dropdown, NavLink } from "react-bootstrap"
 import { hasAnyAuthority } from "./utilities"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import AccountDetails from "./account_details"
 import { Link, Navigate } from "react-router-dom"
 import useAuth from "./custom_hooks/use-auth"
@@ -12,7 +12,6 @@ import useSettings from "./custom_hooks/use-settings"
 const MyNavbar = () => {
     
     const [auth, setAuth] = useAuth();
-    const logoUrl = `${process.env.REACT_APP_SERVER_URL}site-logo/`;
     const { SITE_LOGO } = useSettings();
     const [showEditInfo, SetShowEditInfo] = useState(false)
     const handleLogout = (event) => {
@@ -28,7 +27,7 @@ const MyNavbar = () => {
         <>
             <Navbar sticky="top" bg="dark" className="navbar-dark" expand="lg">
             <Container>
-                <Navbar.Brand href="/account">
+                <Navbar.Brand as={Link} to="/account">
                     <img
                         src={SITE_LOGO}
                         width="30"

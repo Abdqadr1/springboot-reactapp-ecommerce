@@ -7,6 +7,7 @@ import { isFileValid, isTokenExpired, showThumbnail,listFormData, SPINNERS_BORDE
 import useAuth from "./custom_hooks/use-auth";
 import useArray from "./custom_hooks/use-array";
 import TextEditor from "./text_editor";
+import useSettings from "./custom_hooks/use-settings";
 
 const SettingsPage = () => {
     const [{accessToken}] = useAuth()
@@ -52,12 +53,18 @@ const SettingsPage = () => {
                 if(isTokenExpired(response)) navigate("/login/2")
              })
         
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    
+    const {SITE_NAME } = useSettings();
+
+    useEffect(()=>{document.title = `${which ?? 'Settings'} - ${SITE_NAME}`},[SITE_NAME, which])
 
     useEffect(() => {
         if (!alert.show) return;
         alertRef.current && alertRef.current.focus()
-    }, [alert])
+    }, [alert, alertRef])
 
     useEffect(() => {
         if (stateC != null) {
@@ -79,6 +86,7 @@ const SettingsPage = () => {
             }) 
         }
         
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [stateC, accessToken])
 
     const handleSubmit = (event) => {
