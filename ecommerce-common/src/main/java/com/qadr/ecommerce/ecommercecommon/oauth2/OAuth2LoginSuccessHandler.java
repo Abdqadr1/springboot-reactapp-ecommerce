@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
@@ -57,33 +57,29 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
     }
 
     protected String determineUrl(HttpServletRequest request, String targetUrl, Customer customer) {
-
+        Map<String, String> map = new HashMap<>();
         CustomerDetails customerDetails = new CustomerDetails(customer);
-        String accessToken = JWTUtil.createAccessToken(customerDetails, request.getServletPath());
-        String refreshToken = JWTUtil.createRefreshToken(customerDetails);
-        String firstName =  customer.getFirstName();
-        String lastName = customer.getLastName();
+        map.put("accessToken", JWTUtil.createAccessToken(customerDetails, request.getServletPath()));
+        map.put("refreshToken", JWTUtil.createRefreshToken(customerDetails));
+        map.put("firstName", customer.getFirstName());
+        map.put("lastName", customer.getLastName());
 
 
-        return UriComponentsBuilder.fromUriString(targetUrl)
-                .queryParam("accessToken", accessToken)
-                .queryParam("refreshToken", refreshToken)
-                .queryParam("firstName", firstName)
-                .queryParam("lastName", lastName)
-                .queryParam("cart", cartService.getItemsByCustomer(customer).size())
-                .build().toUriString();
+        String uriString = buildUriString(targetUrl, map);
+        System.out.println(uriString);
+        return uriString;
     }
 
     protected String determineUrlNoEmail(String url, String clientName){
-        return UriComponentsBuilder.fromUriString(url)
-                .queryParam("error", "No email return by "+clientName)
-                .build().toUriString();
+        Map<String, String> map = new HashMap<>();
+        map.put("error", "No email return by "+clientName);
+        return buildUriString(url, map);
     }
 
     protected String getTargetUrl(HttpServletRequest request){
         Optional<String> redirectUri = CookieUtils.getCookie(request, OAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME)
                 .map(Cookie::getValue);
-
+        System.out.println(redirectUri.get());
         if(redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {
             throw new CustomException(
                     HttpStatus.BAD_REQUEST,
@@ -112,5 +108,19 @@ public class OAuth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
                     return false;
                 });
     }
+
+    private String buildUriString(String url, Map<String, String> variables){
+        url = url + "?";
+        StringBuilder urlBuilder = new StringBuilder(url);
+        List<String> keySet =  new ArrayList<>(variables.keySet());
+        for (int i = 0; i < keySet.size(); i++) {
+            String var = (i == 0) ? "" : "&";
+            String key = keySet.get(i);
+            var +=  key+"="+variables.get(key);
+            urlBuilder.append(var);
+        } ;
+        return urlBuilder.toString();
+    }
+
 
 }

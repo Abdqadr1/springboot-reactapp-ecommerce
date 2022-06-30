@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import './App.css';
-import {BrowserRouter, Routes, Route, HashRouter} from "react-router-dom";
+import { Routes, Route, HashRouter} from "react-router-dom";
 import NavBar from "./components/navbar";
 import Login from "./components/login";
 import Register from "./components/register";
@@ -54,7 +54,7 @@ function App() {
                 <Route path="/p" element={<Category />} />
                 <Route path="/p/:alias" element={<Product />} />
                 <Route path="/p/search/:keyword" element={<ProductSearch />} />
-                <Route path="/oauth2/redirect" element={<OAuth2Redirect />} />
+                <Route path="/o2" element={<OAuth2Redirect />} />
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/reset_password" element={<ResetPassword />} />
                 <Route path="/shopping_cart" element={<ShoppingCart />} />
