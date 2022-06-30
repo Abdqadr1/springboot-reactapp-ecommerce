@@ -2,15 +2,16 @@ import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import { Alert, Button, Col, Form, Row } from 'react-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
-import "../css/login.css"
-import logo from '../logo.svg'
+import "../css/login.css";
 import useAuth from './custom_hooks/use-auth';
 import { getFormData, SPINNERS_BORDER_HTML } from './utilities';
+import useSettings from './custom_hooks/use-settings';
 
 const Login = () => {
     const loginUrl = process.env.REACT_APP_SERVER_URL+"login";
+    const { SITE_LOGO } = useSettings();
     const alertRef = useRef();
-    const buttonRef = useRef()
+    const buttonRef = useRef();
     const navigate = useNavigate();
     const [param, setParam] = useState({show: "d-none", message: ""})
     const { out } = useParams();
@@ -58,7 +59,7 @@ const Login = () => {
     return ( 
         <Row className="login-body p-3 justify-content-center">
             <Col xs={12} md={8} lg={6} className="border p-4 rounded h-fit-content my-auto">
-                <img className='login-logo' alt="logo" src={logo} />
+                <img className='login-logo' alt="logo" src={SITE_LOGO} />
                 <Form className="" onSubmit={handleSubmit} encType="multipart/form-data">
                     <h4 className={`text-center py-3` + param.show}>{param.message}</h4>
                     <Alert ref={alertRef} className="text-center" tabIndex={-1} variant="danger" show={alert.show} dismissible onClose={toggleAlert}>

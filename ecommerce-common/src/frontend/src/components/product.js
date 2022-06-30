@@ -25,7 +25,6 @@ const Product = () => {
     const [imageIndex, setImageIndex] = useState(0);
 
     const bigImageRef = useRef();
-    const fileUrl = process.env.REACT_APP_SERVER_URL + "product-images/";
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -108,9 +107,8 @@ const Product = () => {
 
     function showImage(i){
         const img = bigImageRef.current;
-        const images = [product.mainImage, ...product.extraImages.map(m => m.path)]
-        const url = (i===0) ? `${fileUrl}${product.id}` : `${fileUrl}${product.id}/extras`;
-        img.src = `${url}/${images[i]}`;
+        const images = [product.mainImagePath, ...product.extraImages.map(m => m.imagePath)];
+        img.src = images[i];
         setImageIndex(i)
     }
 

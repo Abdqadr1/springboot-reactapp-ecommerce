@@ -138,7 +138,7 @@ const Addresses = () => {
                     array.map((c,i) => 
                         <Col xs={11} md={6} key={c.id} className="my-2">
                             <Card bg={c.defaultAddress ? "warning" : ""} className="text-start">
-                                <Card.Header className="p-3 d-flex justify-content-between">
+                                <Card.Header className="py-3 px-2 d-flex justify-content-between">
                                     <span>
                                         <span className="fw-bold">{(c.id) ? `Address #${i + 1}` : "Your Primary Address"}</span>
                                         &nbsp;
@@ -146,14 +146,14 @@ const Addresses = () => {
                                             <span className="text-danger">[{defaultSelect}]</span>
                                             : <span onClick={e=>setDefaultAddress(c.id)} className="text-success action">[{select}]</span>}
                                     </span>
-                                    <span className="fs-5 fw-bold">
+                                    <span className="fs-6 fw-bold">
                                         {(c.id > 0) && <>
                                                 <i onClick={e=>setShowEdit(s=>({...s, show:true, address:c}))} 
-                                                    className="bi bi-pencil-square mx-1 px-2 action text-primary" title="edit"
+                                                    className="bi bi-pencil-square px-2 action text-primary" title="edit"
                                                 ></i>
                                                 <i
                                             onClick={e => setShowDelete(s => ({...s, show:true, id:c.id})) } 
-                                            className="bi bi-archive-fill mx-1 px-2 text-danger action" title="delete">
+                                            className="bi bi-archive-fill px-2 text-danger action" title="delete">
                                             </i>
                                         </>}
                                     </span>

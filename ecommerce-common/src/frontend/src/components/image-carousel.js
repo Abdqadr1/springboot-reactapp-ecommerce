@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { Carousel, Modal } from "react-bootstrap";
 
-const MyCarousel = ({showCarousel: show, setShowCarousel: setShow, items, id, imageIndex}) => {
-    const fileUrl = process.env.REACT_APP_SERVER_URL + "product-images/"+id+"/";
+const MyCarousel = ({showCarousel: show, setShowCarousel: setShow, items, imageIndex}) => {
 
     const [index, setIndex] = useState(0);
     const handleSelect = (selectedIndex, e) => {
@@ -14,10 +13,9 @@ const MyCarousel = ({showCarousel: show, setShowCarousel: setShow, items, id, im
     },[imageIndex])
 
     const items_array = items.map((item, i) => {
-        const url = (i===0) ? `${fileUrl}` : `${fileUrl}extras/`;
         return (
           <Carousel.Item key={i}>
-            <img className="carousel-img" src={`${url}${item}`} alt={item} />
+            <img className="carousel-img" src={item} alt={item} />
           </Carousel.Item>
         );
     })

@@ -7,7 +7,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 const Login = () => {
     const url = `${process.env.REACT_APP_SERVER_URL}customer/login`;
-    const oauthURL = process.env.PUBLIC_URL + "/oauth2/authorize";
+    const oauthURL = process.env.REACT_APP_SERVER_URL + "oauth2/authorize";
     const keys = (process.env.NODE_ENV === "production") ? require('./oauth_config/prod') : require('./oauth_config/dev');
     const redirectUri = keys.redirectUrl;
     const [searchParams,] = useSearchParams();
@@ -17,6 +17,10 @@ const Login = () => {
     const [alert, setAlert] = useState({ show: (error) ? true :false, message: error ?? "", variant: 'danger' })
     const { setAuth } = useContext(AuthContext);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        document.title = "Login";
+    }, [])
 
     useEffect(() => {
         if (!alert.show) return;
