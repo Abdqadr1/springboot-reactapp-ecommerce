@@ -60,6 +60,7 @@ const Addresses = () => {
         return () => {
             abortController.abort();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [auth])
 
     useEffect(() => {
@@ -84,6 +85,7 @@ const Addresses = () => {
         return () => {
             abortController.abort();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
 

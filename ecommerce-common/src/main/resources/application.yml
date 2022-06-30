@@ -1,0 +1,50 @@
+#server:
+#    port: 8081
+spring:
+    datasource:
+        password: ''
+        url: jdbc:mysql://localhost:3306/ecommerce
+        username: root
+        hikari:
+          minimum-idle: 1
+          maximum-pool-size: 2
+    jpa:
+        hibernate:
+            ddl-auto: update
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.MySQL8Dialect
+                format_sql: true
+        show-sql: false
+    mvc:
+        pathmatch:
+            matching-strategy: ant-path-matcher
+    servlet:
+        multipart:
+            max-file-size: 5MB
+            max-request-size: 50MB
+    security:
+      oauth2:
+        client:
+          registration:
+            google:
+                redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+                client_id: 58381212996-9sjg72a7r516mhm4ld97ch6tm4q85164.apps.googleusercontent.com
+                client_secret: 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
+                scope:
+                   - email
+                   - profile
+            facebook:
+                redirectUri: "{baseUrl}/oauth2/callback/{registrationId}"
+                client_id: 376225154488301
+                client_secret: 508331136d5649c6a921ad7e099ff36d
+                scope:
+                    - email
+                    - public_profile
+app:
+    tokenSecret: 926D96C90030DD58429D2751AC1BDBBC
+    tokenExpirationMsec: 864000000
+    authorizedRedirectUris:
+        - http://localhost:3001/oauth2/redirect
+        - http://localhost:8080/oauth2/callback/google
+        - https://qshop-frontend.herokuapp.com/oauth2/callback/google
