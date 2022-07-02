@@ -64,8 +64,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/category/**","/brand/**")
                 .hasAnyAuthority("Admin", "Editor");
 
-        http.authorizeRequests().antMatchers("/customer/**", "/shipping_rate")
-                .hasAnyAuthority("Admin", "Salesperson");
 
         http.authorizeRequests().antMatchers("/orders/page/**")
                 .hasAnyAuthority("Admin", "Salesperson", "Shipper");
@@ -73,7 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/orders/update_status/**")
                 .hasAnyAuthority("Shipper");
 
-        http.authorizeRequests().antMatchers("/orders/**" )
+        http.authorizeRequests().antMatchers("/customer/**", "/shipping_rate", "/orders/**", "/sales_report/**")
                 .hasAnyAuthority("Admin", "Salesperson");
 
 

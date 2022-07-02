@@ -4,13 +4,14 @@ import axios from "axios";
 import { AuthContext } from "./custom_hooks/use-auth";
 import useArray from "./custom_hooks/use-array";
 import CustomToast from "./custom_toast";
-import { isTokenExpired } from "./utilities";
+import { isTokenExpired, SPINNERS_BORDER } from "./utilities";
 import Search from "./search";
 import DeleteModal from "./delete_modal";
 import { Row, Col, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import AddAddressModal from "./add_address";
 import EditAddressModal from "./edit_address";
+import useSettings from "./use-settings";
 const Addresses = () => {
     const navigate = useNavigate();
     const [searchParams,] = useSearchParams();
@@ -28,15 +29,21 @@ const Addresses = () => {
     const { auth, setAuth } = useContext(AuthContext)
     const { array, setArray, filterWithId, updateArray } = useArray();
     const [countries, setCountries] = useState([]);
+    const [isLoading, setLoading] = useState(true);
     const [toast, setToast] = useState({ show: false, message: "" })
     const [showDelete, setShowDelete] = useState({show:false, id:-1})
     const [showEdit, setShowEdit] = useState({show:false, address:{}})
     const [showAdd, setShowAdd] = useState(false)
     // const abortController = new AbortController();
 
+    
+    const {SITE_NAME} = useSettings();
+    useEffect(()=>{document.title = `Addresses - ${SITE_NAME}`},[SITE_NAME])
+
     useEffect(() => {
         const abortController = new AbortController();
         if (auth) {
+            setLoading(true);
             axios.get(url, {
                 headers: {
                     "Authorization": `Bearer ${auth?.accessToken}`,
@@ -53,7 +60,7 @@ const Addresses = () => {
                 }
                 const message = res.response.data?.message ?? "An error ocurred, Try again";
                 setToast(s=>({...s, show:true, message }))
-            })
+            }).finally(()=> setLoading(false))
         } else {
            navigate("/login") 
         }
@@ -110,6 +117,7 @@ const Addresses = () => {
             }).finally(() => setShowDelete(s=>({...s, show:false})))
     }
     function setDefaultAddress(id) {
+        setLoading(true);
          axios.get(`${url}/default/${id}`,{
             headers: {
                 "Authorization": `Bearer ${auth?.accessToken}`
@@ -129,7 +137,7 @@ const Addresses = () => {
                 setAuth(null); navigate("/login");
             }
             setToast(s=>({...s, show:true, message: "Could not set address as default"}))
-        })
+        }).finally(()=>setLoading(false))
     }
 
 
@@ -177,24 +185,31 @@ const Addresses = () => {
 
     
     return ( 
-        <>
-            <Search />
-            <h3 className="my-2">{head}</h3>
-            <div><Link className="fs-4 fw-bold my-2" to="#" onClick={e=>setShowAdd(true)}>Add Address</Link></div>
+         <>
             {
-                (array.length > 0)
-                ? <>
-                    {listAddresses()}
-                        <EditAddressModal showEdit={showEdit} setShowEdit={setShowEdit} updateAddresses={updateArray} countries={countries} redirect={redirectURL} />
-                    <DeleteModal deleteObject={showDelete} setDeleteObject={setShowDelete} deletingFunc={handleDelete} type="Address" />
-                </>
-                :<div className="mt-5">
-                    <h4 className="my-3">You have not added any addresses yet</h4>
-                </div>
+                (isLoading)
+                    ? <div className="mx-auto" style={{ height: "40vh", display: "grid" }}>{SPINNERS_BORDER}</div>
+                    :  <>
+                        <Search />
+                        <h3 className="my-2">{head}</h3>
+                        <div><Link className="fs-4 fw-bold my-2" to="#" onClick={e=>setShowAdd(true)}>Add Address</Link></div>
+                        {
+                            (array.length > 0)
+                            ? <>
+                                {listAddresses()}
+                                    <EditAddressModal showEdit={showEdit} setShowEdit={setShowEdit} updateAddresses={updateArray} countries={countries} redirect={redirectURL} />
+                                <DeleteModal deleteObject={showDelete} setDeleteObject={setShowDelete} deletingFunc={handleDelete} type="Address" />
+                            </>
+                            :<div className="mt-5">
+                                <h4 className="my-3">You have not added any addresses yet</h4>
+                            </div>
+                        }
+                        <CustomToast {...toast} setToast={setToast} position="bottom-end" />
+                        <AddAddressModal show={showAdd} setShow={setShowAdd} countries={countries} setAdd={setArray} />
+                    </>
             }
-            <CustomToast {...toast} setToast={setToast} position="bottom-end" />
-            <AddAddressModal show={showAdd} setShow={setShowAdd} countries={countries} setAdd={setArray} />
-        </>
+            </>
+       
     );
 }
  

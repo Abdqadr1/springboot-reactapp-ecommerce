@@ -11,6 +11,7 @@ import { isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, SPINNERS_BORDER } fr
 import useThrottle from "../custom_hooks/use-throttle";
 import useArray from "../custom_hooks/use-array";
 import ViewCustomer from "./view_customer";
+import useSettings from "../custom_hooks/use-settings";
 
 const Customers = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "customer/";
@@ -74,6 +75,9 @@ const Customers = () => {
      }, [serverUrl, sort.field, sort.dir, accessToken, setCustomers, navigate])
     
     const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500)
+    const {SITE_NAME } = useSettings();
+    
+    useEffect(()=>{document.title = `Customers - ${SITE_NAME}`},[SITE_NAME])
     
 
     useEffect(() => {

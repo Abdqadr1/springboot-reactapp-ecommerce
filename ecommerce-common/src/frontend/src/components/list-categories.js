@@ -44,7 +44,7 @@ const ListCategories = () => {
     return (
         <>
             <Search />
-            <Row className="mt-5 px-2 mx-0 justify-content-center">
+            <Row className="mt-5 px-2 mx-0 justify-content-start">
                 {listCategories()}
             </Row> 
         </>

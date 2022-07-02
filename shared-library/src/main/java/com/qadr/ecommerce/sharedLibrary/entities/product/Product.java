@@ -62,6 +62,15 @@ public class Product extends IdBasedEntity {
     @JoinColumn(name = "brand_id")
     private Brand brand;
 
+    public Product(String productName) {
+        this.name = productName;
+    }
+
+    public String getShortName(){
+        if(name.length() <= 40 ) return name;
+        return name.substring(0, 40);
+    }
+
     public Brand getBrand() {
         return brand;
     }

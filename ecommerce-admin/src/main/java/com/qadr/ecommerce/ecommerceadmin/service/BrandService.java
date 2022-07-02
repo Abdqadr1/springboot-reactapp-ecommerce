@@ -23,7 +23,7 @@ import static com.qadr.ecommerce.sharedLibrary.entities.Constants.BRAND_IMAGE_FO
 @Transactional
 public class BrandService {
 
-    public static final int BRANDS_PER_PAGE = 5;
+    public static final int BRANDS_PER_PAGE = 10;
 
     @Autowired
     private BrandRepo brandRepo;
@@ -49,7 +49,7 @@ public class BrandService {
     public Brand addBrand(Brand brand){
         Optional<Brand> byName = brandRepo.findByName(brand.getName());
         if(byName.isPresent()){
-            throw new CustomException(HttpStatus.BAD_REQUEST, "There is another with the name " +brand.getName());
+            throw new CustomException(HttpStatus.BAD_REQUEST, "A brand with the name " +brand.getName() + " exists");
         }
         return brandRepo.save(brand);
     }
@@ -59,7 +59,7 @@ public class BrandService {
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Brand does not exist"));
         Optional<Brand> byName = brandRepo.findByName(brand.getName());
         if(byName.isPresent() && !byName.get().getId().equals(byId.getId())){
-            throw new CustomException(HttpStatus.BAD_REQUEST, "There is another with the name " +brand.getName());
+            throw new CustomException(HttpStatus.BAD_REQUEST, "A brand with the name " +brand.getName() + " exists");
         }
         byId.setName(brand.getName());
         byId.setPhoto(brand.getPhoto());

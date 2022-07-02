@@ -27,7 +27,7 @@ import static com.qadr.ecommerce.sharedLibrary.entities.Constants.USER_IMAGE_FOL
 @Transactional
 public class UserService implements UserDetailsService {
 
-    public static final int USERS_PER_PAGE = 5;
+    public static final int USERS_PER_PAGE = 10;
 
     @Autowired
     private UserRepo userRepo;

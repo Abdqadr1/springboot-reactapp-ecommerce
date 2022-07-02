@@ -12,6 +12,7 @@ import useThrottle from "../custom_hooks/use-throttle";
 import useArray from "../custom_hooks/use-array";
 import AddShippingRate from "./add_shipping_rate";
 import UpdateShippingRate from "./update_shipping_rate";
+import useSettings from "../custom_hooks/use-settings";
 
 const ShippingRates = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "shipping_rate/";
@@ -78,6 +79,9 @@ const ShippingRates = () => {
      }, [serverUrl, sort.field, sort.dir, accessToken, setShippingRates, navigate])
     
     const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500)
+    const { SITE_NAME } = useSettings();
+
+    useEffect(()=>{document.title = `Shipping rates - ${SITE_NAME}`},[SITE_NAME])
     
 
     useEffect(() => {

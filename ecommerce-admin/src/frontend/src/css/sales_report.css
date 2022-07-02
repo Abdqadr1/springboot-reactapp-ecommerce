@@ -1,0 +1,15 @@
+.filter{
+    cursor: pointer;
+    /* padding: .3em;
+    vertical-align: middle;
+    color: #f8f9fa;
+    border-radius: .3em; */
+    transition: background-color 250ms;
+}
+.gap {
+    gap: 1rem;
+}
+.sales-table {
+    max-width: min(65%, 700px);
+    margin: 0 auto;
+}

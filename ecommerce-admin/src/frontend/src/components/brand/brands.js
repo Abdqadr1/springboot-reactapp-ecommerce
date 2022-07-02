@@ -13,6 +13,7 @@ import AddBrand from './add-brand'
 import UpdateBrand from "./update-brand";
 import useAuth from "../custom_hooks/use-auth";
 import useThrottle from "../custom_hooks/use-throttle";
+import useSettings from "../custom_hooks/use-settings";
 
 const Brands = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "brand/";
@@ -79,7 +80,9 @@ const Brands = () => {
              })
      }, [serverUrl, sort.field, sort.dir, accessToken, navigate])
     
-    const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500)
+    const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500);
+    const {SITE_NAME } = useSettings();
+    useEffect(()=>{document.title = `Brands - ${SITE_NAME}`},[SITE_NAME])
     
     useEffect(() => {
         changePage(pageInfo.number, keyword)

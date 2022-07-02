@@ -43,7 +43,6 @@ const UpdateCategory = ({ updateCategory, setUpdateCategory, updatingCategory, h
         })
     }
 
-
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.target);

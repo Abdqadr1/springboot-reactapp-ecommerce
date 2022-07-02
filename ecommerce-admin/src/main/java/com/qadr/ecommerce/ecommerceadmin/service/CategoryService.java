@@ -21,7 +21,7 @@ public class CategoryService {
     @Autowired
     private CategoryRepo categoryRepo;
 
-    public static final int CATEGORY_PER_PAGE = 4;
+    public static final int CATEGORY_PER_PAGE = 10;
 
 
     public List<Category> getAll(){

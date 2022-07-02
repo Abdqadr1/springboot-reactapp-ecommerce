@@ -11,6 +11,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.Rollback;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -39,5 +44,17 @@ class OrderRepoTest {
         Optional<Order> byCustomers = repo.findByCustomerAndId(new Customer(customerId), id);
         assertThat(byCustomers).isPresent();
         System.out.println(byCustomers.get());
+    }
+    @Test
+    void testFindOrdersByOrderTime() throws ParseException {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date startDate = dateFormat.parse("2021-09-01");
+        Date endDate = dateFormat.parse("2021-09-30");
+        List<Order> byOrderTimeBetween = repo.findByOrderTimeBetween(startDate, endDate);
+        assertThat(byOrderTimeBetween.size()).isGreaterThan(0);
+        byOrderTimeBetween.forEach(o -> {
+            System.out.printf("%d |%s |%.2f |%.2f |%.2f | \n",
+                    o.getId(), o.getOrderTime(), o.getProductCost(), o.getSubtotal(), o.getTotal());
+        });
     }
 }

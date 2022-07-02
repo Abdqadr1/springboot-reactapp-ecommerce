@@ -11,6 +11,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import useAuth from "../custom_hooks/use-auth";
 import { alterArrayAdd, alterArrayDelete, alterArrayEnable, alterArrayUpdate, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER, SPINNERS_BORDER_HTML } from "../utilities";
 import useThrottle from "../custom_hooks/use-throttle";
+import useSettings from "../custom_hooks/use-settings";
 
 const Users = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "user/";
@@ -74,6 +75,9 @@ const Users = () => {
      }, [sort, serverUrl, accessToken, navigate])
     
     const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500)
+    const {SITE_NAME } = useSettings();
+
+    useEffect(()=>{document.title = `Users - ${SITE_NAME}`},[SITE_NAME])
     
 
     useEffect(() => {

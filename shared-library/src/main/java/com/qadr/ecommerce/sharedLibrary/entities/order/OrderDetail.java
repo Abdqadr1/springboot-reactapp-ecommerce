@@ -1,6 +1,7 @@
 package com.qadr.ecommerce.sharedLibrary.entities.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.qadr.ecommerce.sharedLibrary.entities.Category;
 import com.qadr.ecommerce.sharedLibrary.entities.IdBasedEntity;
 import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
 import lombok.*;
@@ -23,9 +24,27 @@ public class OrderDetail extends IdBasedEntity {
     private float subtotal;
     private float unitPrice;
 
+    public OrderDetail(String categoryName, int quantity, float shippingCost, float productCost, float subtotal) {
+        this.product = new Product();
+        this.product.setCategory(new Category(categoryName));
+        this.quantity = quantity;
+        this.shippingCost = shippingCost;
+        this.productCost = productCost;
+        this.subtotal = subtotal;
+    }
+
+    public OrderDetail(int quantity,String productName, float shippingCost, float productCost, float subtotal) {
+        this.product = new Product(productName);
+        this.quantity = quantity;
+        this.shippingCost = shippingCost;
+        this.productCost = productCost;
+        this.subtotal = subtotal;
+    }
+
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
 
     @JsonIgnore
     @ManyToOne

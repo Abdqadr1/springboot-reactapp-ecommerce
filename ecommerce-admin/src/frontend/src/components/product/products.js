@@ -12,6 +12,7 @@ import UpdateProduct from "./update-product";
 import useAuth from "../custom_hooks/use-auth";
 import ViewProduct from "./view-product";
 import useThrottle from "../custom_hooks/use-throttle";
+import useSettings from "../custom_hooks/use-settings";
 
 const Products = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "product/";
@@ -87,6 +88,8 @@ const Products = () => {
     }, [sort, serverUrl, accessToken, navigate])
     
     const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500)
+    const { SITE_NAME } = useSettings();
+    useEffect(()=>{document.title = `Products - ${SITE_NAME}`},[SITE_NAME])
     
     useEffect(() => {
         changePage(pageInfo.number, keyword)

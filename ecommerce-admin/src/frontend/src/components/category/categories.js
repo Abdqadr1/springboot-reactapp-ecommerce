@@ -14,6 +14,7 @@ import AddCategory from './add-category'
 import UpdateCategory from "./update-category";
 import useAuth from "../custom_hooks/use-auth";
 import useThrottle from "../custom_hooks/use-throttle";
+import useSettings from "../custom_hooks/use-settings";
 
 const Categories = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "category/";
@@ -83,6 +84,8 @@ const Categories = () => {
      }, [sort, serverUrl, accessToken, navigate])
     
     const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500)
+    const { SITE_NAME } = useSettings();
+    useEffect(()=>{document.title = `Categories - ${SITE_NAME}`},[SITE_NAME])
     
     useEffect(() => {
         changePage(pageInfo.number, keyword)

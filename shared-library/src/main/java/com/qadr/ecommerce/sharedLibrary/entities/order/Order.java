@@ -51,6 +51,14 @@ public class Order extends AddressBasedEntity {
     private float tax;
     private float total;
 
+    public Order(Integer id, Date orderTime, float productCost, float subtotal, float total) {
+        this.id = id;
+        this.orderTime = orderTime;
+        this.productCost = productCost;
+        this.subtotal = subtotal;
+        this.total = total;
+    }
+
     @Enumerated(EnumType.STRING)
     private PaymentMethod paymentMethod;
 

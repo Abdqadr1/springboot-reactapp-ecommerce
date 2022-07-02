@@ -57,7 +57,7 @@ const Login = () => {
     }, [out])
 
     return ( 
-        <Row className="login-body p-3 justify-content-center">
+        <Row className="login-body p-3 justify-content-center mx-0">
             <Col xs={12} md={8} lg={6} className="border p-4 rounded h-fit-content my-auto">
                 <img className='login-logo' alt="logo" src={SITE_LOGO} />
                 <Form className="" onSubmit={handleSubmit} encType="multipart/form-data">

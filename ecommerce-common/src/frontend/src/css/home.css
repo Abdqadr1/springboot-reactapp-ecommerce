@@ -39,7 +39,7 @@ a:hover{
 }
 .content{
     min-height: calc(100vh - 110px);
-    padding-block: 10px;
+    padding-bottom: 10px;
 }
 .form-label{
     width: 25%;
@@ -49,6 +49,7 @@ a:hover{
     width: 75%;
 }
 .category-listing, .product-in-listing{
+    box-sizing: border-box;
     word-break: break-all;
     box-sizing: border-box;
     transition: box-shadow 250ms;

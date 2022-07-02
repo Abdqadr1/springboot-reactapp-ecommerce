@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -36,4 +38,8 @@ public interface OrderRepo extends SearchRepository<Order, Integer> {
     Page<Order> searchAllByCustomer(Integer customer, String keyword, Pageable pageable);
 
     Optional<Order> findByCustomerAndId(Customer customer, Integer id);
+
+    @Query("SELECT NEW com.qadr.ecommerce.sharedLibrary.entities.order.Order(o.id, o.orderTime, o.productCost, o.subtotal, o.total)  " +
+            "FROM Order o WHERE o.orderTime BETWEEN ?1 AND ?2 ORDER BY o.orderTime ASC")
+    List<Order> findByOrderTimeBetween(Date startDate, Date endDate);
 }
