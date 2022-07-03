@@ -98,6 +98,7 @@ const UpdateShippingRate = ({ updateRate, setUpdateRate, updatingRate, countries
             })
          }
         
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [country])
 
     

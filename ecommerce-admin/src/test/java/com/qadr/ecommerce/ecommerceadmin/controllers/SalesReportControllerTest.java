@@ -54,4 +54,18 @@ class SalesReportControllerTest {
         mockMvc.perform(get(url)).andExpect(status().isOk()).andDo(print());
     }
 
+    @Test
+    @WithMockUser(username = "admin", authorities ={"Salesperson"})
+    void testGetLast7DaysForCat() throws Exception {
+        String url = "/sales_report/by_group/category/last_7_days";
+        mockMvc.perform(get(url)).andExpect(status().isOk()).andDo(print());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", authorities ={"Salesperson"})
+    void testGetLast7DaysForProduct() throws Exception {
+        String url = "/sales_report/by_group/product/last_7_days";
+        mockMvc.perform(get(url)).andExpect(status().isOk()).andDo(print());
+    }
+
 }

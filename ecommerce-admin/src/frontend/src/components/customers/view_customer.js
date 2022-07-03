@@ -72,6 +72,7 @@ const ViewCustomer = ({ data, setData, updatingCustomer }) => {
             .catch(err => {
                 console.error(err)
             })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
@@ -90,6 +91,7 @@ const ViewCustomer = ({ data, setData, updatingCustomer }) => {
             })
          }
         
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [country])
     
     useEffect(() => {

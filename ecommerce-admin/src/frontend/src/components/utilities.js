@@ -162,6 +162,7 @@ export function formatDate(date, dateStyle="short", timeStyle="short") {
     }
     return "";
 }
+ // eslint-disable-next-line no-unused-vars
  const formatDateForInput = (val, separator = "-") => {
         if (!val) return "";
         const parts = Intl.DateTimeFormat("en", { month: "2-digit", day: "2-digit", year: "numeric" }).formatToParts(new Date(val))

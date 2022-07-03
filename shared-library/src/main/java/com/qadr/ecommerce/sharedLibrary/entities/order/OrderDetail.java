@@ -29,7 +29,7 @@ public class OrderDetail extends IdBasedEntity {
         this.product.setCategory(new Category(categoryName));
         this.quantity = quantity;
         this.shippingCost = shippingCost;
-        this.productCost = productCost;
+        this.productCost = productCost * quantity;
         this.subtotal = subtotal;
     }
 
@@ -37,7 +37,7 @@ public class OrderDetail extends IdBasedEntity {
         this.product = new Product(productName);
         this.quantity = quantity;
         this.shippingCost = shippingCost;
-        this.productCost = productCost;
+        this.productCost = productCost * quantity;
         this.subtotal = subtotal;
     }
 

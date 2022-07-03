@@ -53,6 +53,7 @@ const ProductSearchModal = ({ show, setShow, priceFunction, selectHandler }) => 
             btn.textContent = text;
         })
         return () => abortController.abort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[pageInfo.number, keyword])
 
     const handleSubmit = (e) => {

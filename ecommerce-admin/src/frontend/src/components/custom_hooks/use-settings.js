@@ -17,6 +17,7 @@ const useSettings = () => {
          } else {
              fetchSettings();
          }
+     // eslint-disable-next-line react-hooks/exhaustive-deps
      }, [])
 
     function fetchSettings() {
