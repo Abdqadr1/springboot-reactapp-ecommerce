@@ -50,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/category/get-hierarchy/**")
                 .hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper");
 
-        http.authorizeRequests().antMatchers("/product/delete/**", "/product/add/**")
+        http.authorizeRequests().antMatchers("/product/delete/**", "/product/add/**", "/review/**")
                 .hasAnyAuthority("Admin", "Editor");
 
         http.authorizeRequests().antMatchers("/product/{id:[\\d+]}/**", "/product/edit/**")

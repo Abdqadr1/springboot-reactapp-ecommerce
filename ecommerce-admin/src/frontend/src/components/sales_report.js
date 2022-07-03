@@ -7,26 +7,39 @@ import useAuth from "./custom_hooks/use-auth";
 import { useNavigate } from "react-router";
 import useSettings from "./custom_hooks/use-settings";
 import { Chart } from "react-google-charts";
+import CustomToast from "./custom_toast";
 const SalesReport = () => {
     const navigate = useNavigate();
-    const [filter, setFilter] = useState({date: "last_7_days", category: "", product: ""});
+    const [filter, setFilter] = useState({date: "", category: "", product: ""});
     const [divisor, setDivisor] = useState(7);
     const [chartTitles, setChartTitles] = useState({date: "", category: "", product: ""});
     const [isLoading, setLoading] = useState(false);
+    const [toast, setToast] = useState({show:false, message: "", variant: "dark"});
     const firstBtn = useRef();
     const [filterType, setFilterType] = useState("date")
     const [customDates, setCustomDates] = useState({start: "", end: ""})
     const [data, setData] = useState({date: [], category: [], product: []});
-    const headers = ["Total Gross Sales:", "Total Net Sales:", "Avg. Gross Sales:", "Avg. Net Sales:", "Total Orders:"]
+    const headers = ["Total Gross Sales:", "Total Net Sales:", "Avg. Gross Sales:", "Avg. Net Sales:", "Total Products:"]
     const [{ accessToken }] = useAuth();
     const dayInMilliSeconds = 1000 * 60 * 60 * 24;
     const abortController = new AbortController();
-         
-    const { CURRENCY_SYMBOL, CURRENCY_SYMBOL_POSITION, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, SITE_NAME,  DECIMAL_POINT_TYPE } = useSettings();
-    function priceFormatter() {
-        return (price) =>
-            formatPrice(price, CURRENCY_SYMBOL, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, CURRENCY_SYMBOL_POSITION)
-    }
+    const settings = useSettings();
+    const priceFormatter = useCallback((price) => {
+        const { CURRENCY_SYMBOL, CURRENCY_SYMBOL_POSITION, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE } = settings;
+        return formatPrice(price, CURRENCY_SYMBOL, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, CURRENCY_SYMBOL_POSITION);
+    }, [settings]);
+
+    const numberFormatter = useMemo(() => {
+        const { CURRENCY_SYMBOL, CURRENCY_SYMBOL_POSITION, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, DECIMAL_POINT_TYPE } = settings;
+        return {
+                    prefix: CURRENCY_SYMBOL_POSITION === "BEFORE PRICE" ?  CURRENCY_SYMBOL : "",
+                    suffix: CURRENCY_SYMBOL_POSITION === "AFTER PRICE" ?  CURRENCY_SYMBOL : "",
+                    decimalSymbol: DECIMAL_POINT_TYPE === "POINT" ? ".": ",",
+                    groupingSymbol: THOUSANDS_POINT_TYPE === "POINT" ? "." : ",",
+                    fractionDigits: DECIMAL_DIGIT,
+                }
+        
+    }, [settings])
 
     const changePage = useCallback(function (button, filter, divisor, abortController, title, uri) {
         const url = process.env.REACT_APP_SERVER_URL + "sales_report/";
@@ -47,8 +60,13 @@ const SalesReport = () => {
                 setChartTitles(s => ({...s, [filterType] : "Sales in " + title}));
             })
             .catch(error => {
-                const response = error.response
-                if (isTokenExpired(response)) navigate("/login/2")
+                const response = error.response;
+                let message = "An error ocurred";
+                if (response) {
+                    message = response.data.message;
+                    (isTokenExpired(response))  && navigate("/login/2");
+                }
+                setToast(s=> ({...s, show:true, message}))
             })
             .finally(() => {
                 setLoading(false);
@@ -121,13 +139,9 @@ const SalesReport = () => {
         }
 
 
-    useEffect(()=>{document.title = `Orders - ${SITE_NAME}`},[SITE_NAME])
+    useEffect(()=>{document.title = `Orders - ${settings.SITE_NAME}`},[settings.SITE_NAME])
 
     useEffect(() => {
-        setLoading(true);
-        const id = filter[filterType];
-        const title = id.split("_").join(" ");
-        changePage(firstBtn.current, id, divisor, abortController, title, "by_date");
         return () => {
             console.log("cleaning up...")
             abortController.abort()
@@ -216,6 +230,18 @@ const SalesReport = () => {
         )
     }
 
+    const onLoad = e => {
+        // console.log("loading...", e);
+        // e.setOnLoadCallback(
+        //      function () {
+        //         setLoading(true);
+        //         const id = filter[filterType];
+        //         const title = id.split("_").join(" ");
+        //         changePage(firstBtn.current, id, divisor, abortController, title, "by_date");
+        //     }
+        // ) 
+    }
+
 
     return ( 
         
@@ -234,6 +260,7 @@ const SalesReport = () => {
                                     (filterType === "date") && 
                                     <div>
                                         <Chart
+                                            onLoad={onLoad}
                                             chartType="ColumnChart"
                                             data={chartData.date}
                                             options={{
@@ -247,13 +274,7 @@ const SalesReport = () => {
                                                 {
                                                     type: "NumberFormat",
                                                     column: 1,
-                                                    options: {
-                                                        prefix: CURRENCY_SYMBOL_POSITION === "BEFORE PRICE" ?  CURRENCY_SYMBOL : "",
-                                                        suffix: CURRENCY_SYMBOL_POSITION === "AFTER PRICE" ?  CURRENCY_SYMBOL : "",
-                                                        decimalSymbol: DECIMAL_POINT_TYPE === "POINT" ? ".": ",",
-                                                        groupingSymbol: THOUSANDS_POINT_TYPE === "POINT" ? "." : ",",
-                                                        fractionDigits: DECIMAL_DIGIT,
-                                                    }
+                                                    options: numberFormatter
                                                 }
                                             ]}
                                         />
@@ -262,8 +283,8 @@ const SalesReport = () => {
                                 <div className="d-flex justify-content-center align-items-center p-3">
                                     {
                                         headers.map((h, i) => <Card key={h} className="text-start my-2">
-                                                        <Card.Header className="p-2 fw-bold">{h}</Card.Header>
-                                                        <Card.Body className="p-3">{i===4 ? total.date[i] : priceFormatter()(total.date[i])}</Card.Body>
+                                                        <Card.Header className="p-2 fw-bold">{i!==4 ? h : 'Total Orders'}</Card.Header>
+                                                        <Card.Body className="p-3">{i===4 ? total.date[i] : priceFormatter(total.date[i])}</Card.Body>
                                                     </Card>)
                                     }
                                 </div>
@@ -289,13 +310,7 @@ const SalesReport = () => {
                                                 {
                                                     type: "NumberFormat",
                                                     column: 1,
-                                                    options: {
-                                                        prefix: CURRENCY_SYMBOL_POSITION === "BEFORE PRICE" ?  CURRENCY_SYMBOL : "",
-                                                        suffix: CURRENCY_SYMBOL_POSITION === "AFTER PRICE" ?  CURRENCY_SYMBOL : "",
-                                                        decimalSymbol: DECIMAL_POINT_TYPE === "POINT" ? ".": ",",
-                                                        groupingSymbol: THOUSANDS_POINT_TYPE === "POINT" ? "." : ",",
-                                                        fractionDigits: DECIMAL_DIGIT,
-                                                    }
+                                                    options: numberFormatter
                                                     }
                                                 ]}
                                         />
@@ -305,7 +320,7 @@ const SalesReport = () => {
                                     {
                                         headers.map((h, i) => <Card key={h} className="text-start my-2">
                                                         <Card.Header className="p-2 fw-bold">{h}</Card.Header>
-                                                        <Card.Body className="p-3">{i===4 ? total.category[i] : priceFormatter()(total.category[i])}</Card.Body>
+                                                        <Card.Body className="p-3">{i===4 ? total.category[i] : priceFormatter(total.category[i])}</Card.Body>
                                                     </Card>)
                                     }
                                 </div>
@@ -330,15 +345,14 @@ const SalesReport = () => {
                                                 {
                                                     type: "NumberFormat",
                                                     column: 1,
-                                                    options: {
-                                                        prefix: CURRENCY_SYMBOL_POSITION === "BEFORE PRICE" ?  CURRENCY_SYMBOL : "",
-                                                        suffix: CURRENCY_SYMBOL_POSITION === "AFTER PRICE" ?  CURRENCY_SYMBOL : "",
-                                                        decimalSymbol: DECIMAL_POINT_TYPE === "POINT" ? ".": ",",
-                                                        groupingSymbol: THOUSANDS_POINT_TYPE === "POINT" ? "." : ",",
-                                                        fractionDigits: DECIMAL_DIGIT,
-                                                    }
-                                                    }
-                                                ]}
+                                                    options: numberFormatter
+                                                }, 
+                                                {
+                                                    type: "NumberFormat",
+                                                    column: 2,
+                                                    options: numberFormatter
+                                                }
+                                            ]}
                                         />
                                     </div>
                                 }
@@ -346,7 +360,7 @@ const SalesReport = () => {
                                     {
                                         headers.map((h, i) => <Card key={h} className="text-start my-2">
                                                         <Card.Header className="p-2 fw-bold">{h}</Card.Header>
-                                                        <Card.Body className="p-3">{i===4 ? total.product[i] : priceFormatter()(total.product[i])}</Card.Body>
+                                                        <Card.Body className="p-3">{i===4 ? total.product[i] : priceFormatter(total.product[i])}</Card.Body>
                                                     </Card>)
                                     }
                                 </div>
@@ -356,6 +370,7 @@ const SalesReport = () => {
                     
                 </> 
             }
+            <CustomToast {...toast} setToast={setToast} />
         </>
        
      );

@@ -62,6 +62,9 @@ public class Product extends IdBasedEntity {
     @JoinColumn(name = "brand_id")
     private Brand brand;
 
+    private int reviewCount;
+    private float averageRating;
+
     public Product(String productName) {
         this.name = productName;
     }

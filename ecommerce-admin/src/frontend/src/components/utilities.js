@@ -174,6 +174,7 @@ export function formatDate(date, dateStyle="short", timeStyle="short") {
 }
 
 export const formatPrice = (price, s, m, t, pos) => {
+    if (!s) return 0;
     t = t === "COMMA" ? "," : ".";
     if (price || price === 0) {
         const re = '\\d(?=(\\d{3})' + (m > 0 ? '\\.' : '$') + ')';
