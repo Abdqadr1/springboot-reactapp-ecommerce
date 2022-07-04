@@ -1,14 +1,19 @@
 package com.qadr.ecommerce.ecommercecommon.controllers;
 
 import com.qadr.ecommerce.ecommercecommon.service.ProductService;
+import com.qadr.ecommerce.ecommercecommon.service.ReviewService;
 import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
+import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
+import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingParam;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.qadr.ecommerce.ecommercecommon.service.ProductService.PRODUCTS_PER_PAGE;
 import static com.qadr.ecommerce.ecommercecommon.service.ProductService.SEARCH_PRODUCTS_PER_PAGE;
@@ -17,9 +22,8 @@ import static com.qadr.ecommerce.ecommercecommon.service.ProductService.SEARCH_P
 @RestController
 @RequestMapping("/p")
 public class ProductController {
-
-    @Autowired
-    private ProductService productService;
+    @Autowired private ProductService productService;
+    @Autowired private ReviewService reviewService;
 
     @GetMapping("/cat")
     public CustomProductPage getCategoryProducts(
@@ -38,8 +42,13 @@ public class ProductController {
     }
 
     @GetMapping("/alias/{alias}")
-    Product getProductByAlias(@PathVariable("alias") String alias){
-        return productService.getByAlias(alias);
+    Map<String, Object> getProductByAlias(@PathVariable("alias") String alias,
+                              @PagingAndSortingParam("reviews")PagingAndSortingHelper helper){
+        Product product = productService.getByAlias(alias);
+        Map<String, Object> res = new HashMap<>();
+        res.put("product", product);
+        res.put("reviews", reviewService.getProductReviews(1, product, helper));
+        return res;
     }
 
     @GetMapping("/search/{keyword}")

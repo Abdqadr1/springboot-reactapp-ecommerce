@@ -21,7 +21,7 @@ import { useState } from "react";
 import Addresses from "./components/addresses";
 import Checkout from "./components/checkout";
 import Orders from "./components/orders/orders";
-
+import Reviews from "./components/review_s.js/reviews";
 function App() {
   
   // if ("serviceWorker" in window.navigator) {
@@ -61,6 +61,7 @@ function App() {
                 <Route path="/addresses" element={<Addresses />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/orders" element={<Orders />} />
+                <Route path="/reviews" element={<Reviews />} />
                 <Route path="*" element={<div className="my-4">Not found</div>} />
             </Routes>
             </div>

@@ -28,6 +28,12 @@ public class Review extends IdBasedEntity {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    public Review(Integer id, String headline, String comment) {
+        this.id = id;
+        this.headline = headline;
+        this.comment = comment;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

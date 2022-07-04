@@ -115,9 +115,9 @@ const Category = () => {
             <Row className="justify-content-start p-4 mx-0">
                 {
                     cat.children.map((p) => (
-                        <Col key={p.name} sm={3} md={2} lg={2} xlg={2} as={Link} to={"/c/"+p.alias} className="product-in-listing my-2">
+                        <Col key={p.name} xs={4} md={3} lg={2} xlg={2} as={Link} to={"/c/"+p.alias} className="product-in-listing my-2">
                             <img loading="lazy" src={p.imagePath} alt={p.name} className="cat-dp" />
-                            <h5 className="mt-2 text-primary">{p.name}</h5>
+                            <h5 className="mt-2 text-primary text-start">{p.name}</h5>
                         </Col>
                         ))
                 }

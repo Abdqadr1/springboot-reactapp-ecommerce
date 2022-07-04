@@ -1,5 +1,6 @@
 import { Col, Row, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import StarRatings from 'react-star-ratings';
 
 export const getShortName = (name, len=60) => {
     if(name.length > len){
@@ -57,6 +58,15 @@ export function listProducts(results, keyword, type="category", formatPrice){
                                 as={Link} to={"/p/" + encodeURIComponent(p.alias)}>
                                 <img loading="lazy" src={p.mainImagePath} alt={getShortName(p.name, 10)} className="cat-dp" />
                                 <h5 className="my-2 text-primary text-start">{getShortName(p.name)}</h5>
+                                <div className = "d-flex justify-content-start align-items-center">
+                                    <StarRatings 
+                                        starDimension="15px"
+                                        starSpacing="5px"
+                                        rating={p.averageRating}
+                                        starRatedColor="yellow"
+                                        name='product rating' />
+                                    <span className="ms-2">{p.reviewCount}</span>
+                                </div>
                                 {getPrices(p.discountPrice, p.price, p.realPrice, formatPrice)}
                             </Col>
                         ))

@@ -6,6 +6,7 @@ const ViewReview = ({ data, setData }) => {
     const hideModal = () => {
         setData({...data, show: false})
     }
+
     return ( 
         <Modal show={data.show} fullscreen={true} onHide={hideModal}>
             <Modal.Header closeButton>

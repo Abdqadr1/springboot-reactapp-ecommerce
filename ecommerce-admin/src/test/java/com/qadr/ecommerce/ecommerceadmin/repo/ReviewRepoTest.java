@@ -24,14 +24,14 @@ public class ReviewRepoTest {
 
     @Test
     void testAddReview(){
-        Customer customer = new Customer(3);
-        Product product = new Product(56);
+        Customer customer = new Customer(7);
+        Product product = new Product(36);
         Review review = new Review();
         review.setCustomer(customer);
         review.setProduct(product);
         review.setReviewTime(new Date());
-        review.setHeadline("Cool stuff");
-        review.setComment("No complain..");
+        review.setHeadline("Bad design");
+        review.setComment("The handle gave me bruises");
         Review save = repo.save(review);
         assertThat(save).isNotNull();
     }

@@ -24,7 +24,7 @@ const Reviews = () => {
     const [keyword, setKeyword] = useState("");
     const searchBtnRef = useRef();
     const [isLoading, setLoading] = useState(true);
-    const {array:reviews, setArray:setReviews, filterWithId:removeReview, updateItemProp} = useArray();
+    const {array:reviews, setArray:setReviews, filterWithId:removeReview, updateArray} = useArray();
     const [updateReview, setUpdateReview] = useState({show:false, id: -1, review: {}});
     const [viewReview, setViewReview] = useState({show:false, id: -1, review: {}});
     const [showCustomer, setShowCustomer] = useState({ show: false, id: -1, type: "View", customer: {} });
@@ -38,7 +38,7 @@ const Reviews = () => {
         number: 1, totalPages: 1, startCount: 1,
         endCount: null, totalElements: null,numberPerPage: 1
     })
-    const [sort, setSort] = useState({ field: "rating", dir: "asc" })
+    const [sort, setSort] = useState({ field: "reviewTime", dir: "asc" })
     
      const changePage = useCallback(function (number, search, button) {
         number = number ?? 1;
@@ -122,9 +122,9 @@ const Reviews = () => {
              }
         })
             .then(() => {
-                removeReview(reviews)
+                removeReview({id})
                 setDeleteReview({...deleteReview, show:false})
-                alert("review deleted!")
+                alert("Review deleted!")
             })
             .catch(error => {
             console.log(error.response)
@@ -132,8 +132,7 @@ const Reviews = () => {
     }
 
     function updatingReview(review) {
-        setReviews([review])
-        setKeyword(review.email.split("@")[0]);
+        updateArray(review);
     }
 
     function handleFilter(event) {
@@ -229,7 +228,7 @@ const Reviews = () => {
                 }
                 {
                     (width <= 768)
-                        ? <div className="less-details p-2">
+                        ? <div className="less-details p-2 mb-3">
                             {listReviews(reviews, "less")}
                         </div> : ""
                 }
@@ -238,7 +237,7 @@ const Reviews = () => {
                 <ViewReview data={viewReview} setData={setViewReview}/>
                 <ViewCustomer data={showCustomer} setData={setShowCustomer} />
                 <ViewProduct viewProduct={viewProduct} setViewProduct={setViewProduct} />
-                <DeleteModal deleteObject={deleteReview} setDeleteObject={setDeleteReview}   deletingFunc={deletingReview} type="review" />
+                <DeleteModal deleteObject={deleteReview} setDeleteObject={setDeleteReview} deletingFunc={deletingReview} type="review" />
             </>
         }
         

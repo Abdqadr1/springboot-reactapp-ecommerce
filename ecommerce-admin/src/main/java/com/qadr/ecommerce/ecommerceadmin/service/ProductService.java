@@ -10,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 @Service
+@Transactional
 public class ProductService {
 
     public static final int PRODUCTS_PER_PAGE = 10;
@@ -32,7 +34,10 @@ public class ProductService {
     public Map<String, Object> getPage(int pageNumber, PagingAndSortingHelper helper){
         return helper.getPageInfo(pageNumber, PRODUCTS_PER_PAGE, productRepo);
     }
-    
+
+    public Map<String, Object> searchProducts(int pageNumber, PagingAndSortingHelper helper){
+        return helper.searchProduct(pageNumber, PRODUCTS_PER_SEARCH_PAGE, productRepo);
+    }
     public Product addProduct(Product product){
         if(product.getId() != null) throw new CustomException(HttpStatus.BAD_REQUEST, "Invalid parameter (id)");
         if(product.getAlias() == null || product.getAlias().isBlank()){
@@ -94,12 +99,10 @@ public class ProductService {
         product.setCreatedTime(oldProduct.getCreatedTime());
         product.setUpdatedTime(new Date());
         Product save = productRepo.save(product);
+        productRepo.updateProductRating(save.getId());
         brandRepo.findById(save.getBrand().getId()).ifPresent(save::setBrand);
         categoryRepo.findById(save.getCategory().getId()).ifPresent(save::setCategory);
         return save;
     }
 
-    public Map<String, Object> searchProducts(int pageNumber, PagingAndSortingHelper helper){
-        return helper.searchProduct(pageNumber, PRODUCTS_PER_SEARCH_PAGE, productRepo);
-    }
 }

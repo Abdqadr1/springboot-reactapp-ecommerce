@@ -41,7 +41,7 @@ const EditReview = ({ data, setData, updateReview }) => {
     // }
 
     const handleSubmit = (event) => {
-         event.preventDefault();
+        event.preventDefault();
         const target = event.target
         const data = new FormData(target);
         
@@ -52,14 +52,14 @@ const EditReview = ({ data, setData, updateReview }) => {
         button.disabled = true
         const text = button.textContent;
         button.innerHTML = SPINNERS_BORDER_HTML
-        axios.post(`${url}/${review.id}`, data, {
+        axios.post(url, data, {
             headers: {
-                "Authorization": `Bearer ${accessToken}`
+                "Authorization": `Bearer ${accessToken}`,
             }
         })
             .then(response => {
                 updateReview(response.data);
-                setAlert({ show: true, message: "Product saved!" })
+                setAlert({ show: true, message: "Review saved!" })
             })
             .catch(error => { 
                 const response = error.response
@@ -94,27 +94,27 @@ const EditReview = ({ data, setData, updateReview }) => {
                     </Form.Group>
                     <Form.Group className="my-3 row justify-content-center mx-0" controlId="email">
                         <Form.Label className="form-label">Customer:</Form.Label>
-                        <Form.Control readOnly value={review.customer?.fullName ?? ""}  name="email" type="email" className="form-input"/>
+                        <Form.Control readOnly value={review.customer?.fullName ?? ""} type="email" className="form-input"/>
                     </Form.Group>
                     <Form.Group className="my-3 row justify-content-center mx-0" controlId="rating">
                         <Form.Label className="form-label">Rating:</Form.Label>
-                        <Form.Control readOnly value={review?.rating ?? ""} name="password" className="form-input"/>
+                        <Form.Control readOnly value={review?.rating ?? ""} className="form-input"/>
                     </Form.Group>
                     <Form.Group className="my-3 row justify-content-center mx-0">
                         <Form.Label className="form-label">Review Time:</Form.Label>
                         <div className="form-input">{review?.formattedTime ?? ""}</div>
                     </Form.Group>
-                    <Form.Group className="my-3 row justify-content-center mx-0" controlId="password">
+                    <Form.Group className="my-3 row justify-content-center mx-0" controlId="headline">
                         <Form.Label className="form-label">Headline:</Form.Label>
-                        <Form.Control value={review?.headline ?? ""} name="password" className="form-input"/>
+                        <Form.Control required maxLength="100" defaultValue={review?.headline ?? ""} name="headline" className="form-input"/>
                     </Form.Group>
-                    <Form.Group className="my-3 row justify-content-center mx-0" controlId="phoneNumber">
+                    <Form.Group className="my-3 row justify-content-center mx-0" controlId="comment">
                         <Form.Label className="form-label">Comment:</Form.Label>
                         <FloatingLabel
                             controlId="floatingTextarea"
                             className="mb-3 form-input px-0"
                         >
-                            <Form.Control style={{ height: 'fit-content' }} className="py-1" as="textarea" value={review?.comment ?? ""}  />
+                            <Form.Control required maxLength="400" style={{ height: 'fit-content' }} name="comment" className="py-1" as="textarea" defaultValue={review?.comment ?? ""}  />
                         </FloatingLabel>
                     </Form.Group>
                     <Row className="justify-content-center">

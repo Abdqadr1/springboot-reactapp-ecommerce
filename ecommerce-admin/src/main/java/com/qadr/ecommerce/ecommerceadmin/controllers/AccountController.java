@@ -25,9 +25,8 @@ public class AccountController {
 
     @PostMapping("/account")
     public User getAccount(@RequestParam("id") Long id){
-        User user = userRepo.findById(id)
+        return userRepo.findById(id)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "User not found"));
-        return user;
     }
 
     @PostMapping("/account/edit/{id}")

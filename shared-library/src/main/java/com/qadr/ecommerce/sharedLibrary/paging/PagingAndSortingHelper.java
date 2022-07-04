@@ -1,10 +1,12 @@
 package com.qadr.ecommerce.sharedLibrary.paging;
 
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
+import com.qadr.ecommerce.sharedLibrary.entities.Review;
 import com.qadr.ecommerce.sharedLibrary.entities.order.Order;
 import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
 import com.qadr.ecommerce.sharedLibrary.repo.OrderRepo;
 import com.qadr.ecommerce.sharedLibrary.repo.ProductRepo;
+import com.qadr.ecommerce.sharedLibrary.repo.ReviewRepository;
 import com.qadr.ecommerce.sharedLibrary.repo.SearchRepository;
 import com.qadr.ecommerce.sharedLibrary.util.CommonUtil;
 import lombok.Getter;
@@ -88,6 +90,23 @@ public class PagingAndSortingHelper {
         Sort sort = Sort.by("name").ascending();
         PageRequest pageable = PageRequest.of(number - 1, pageSze, sort);
         Page<Product> page = repo.search(keyword, pageable);
+        return mapInfo(number, pageSze, page);
+    }
+
+    public Map<String, Object> getCustomerReviews(int number, Customer customer, int pageSze, ReviewRepository repo) {
+        Sort sort = Sort.by(sortField);
+        sort = (dir.equals("asc")) ? sort.ascending() : sort.descending();
+        PageRequest pageable = PageRequest.of(number - 1, pageSze, sort);
+        Page<Review> page =
+                (keyword == null || keyword.isBlank()) ? repo.findByCustomer(customer, pageable) :
+                        repo.searchByCustomer(keyword, customer.getId(), pageable);
+        return mapInfo(number, pageSze, page);
+    }
+
+    public Map<String, Object> getProductReviews(int number, Product product, int pageSze, ReviewRepository repo) {
+        Sort sort = Sort.by("reviewTime").descending();
+        PageRequest pageable = PageRequest.of(number - 1, pageSze, sort);
+        Page<Review> page =  repo.findAllByProduct(product, pageable);
         return mapInfo(number, pageSze, page);
     }
 }

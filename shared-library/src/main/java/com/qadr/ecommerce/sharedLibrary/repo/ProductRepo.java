@@ -12,15 +12,12 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepo extends SearchRepository<Product, Integer> {
-
-
     @Transactional
     @Modifying
     @Query("UPDATE Product p SET p.enabled=?2 WHERE p.id=?1")
     void setEnabledStatus(int id, boolean isEnabled);
 
     Optional<Product> findByName(String name);
-
 
     @Query("SELECT p FROM Product p WHERE (p.category.id = ?2 OR "
             + "p.category.allParentIds LIKE %?3%) AND "
@@ -40,12 +37,19 @@ public interface ProductRepo extends SearchRepository<Product, Integer> {
     Optional<Product> findByAlias(String alias);
 
     @Query(
-            value = "SELECT * FROM products WHERE enabled=true AND MATCH (name, short_description, full_description) AGAINST (?1)",
+            value = "SELECT * FROM `products` WHERE `enabled`=true AND MATCH (name, short_description, full_description) AGAINST (?1)",
             nativeQuery = true
     )
     Page<Product> searchKeyword(String keyword, Pageable pageable);
 
     @Query("SELECT p FROM Product p WHERE p.name LIKE %?1%")
     Page<Product> search(String keyword, Pageable pageable);
+
+    @Query("UPDATE Product p SET p.averageRating = " +
+            "COALESCE((SELECT AVG(r.rating) FROM Review r WHERE r.product.id = ?1), 0), " +
+            "p.reviewCount= COALESCE((SELECT COUNT(r.id) FROM Review r WHERE r.product.id = ?1), 0) " +
+            "WHERE p.id = ?1")
+    @Modifying
+    void updateProductRating(Integer productId);
 
 }

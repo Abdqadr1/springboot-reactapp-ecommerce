@@ -1,37 +1,27 @@
 import { Col, Row } from "react-bootstrap";
 import { getShortName } from "../utilities";
 
-const Review = ({ review, showUpdate, setDeleteReview, showCustomer, type, showProduct, showReview }) => {
-
-    function deleteReview() {
-        setDeleteReview({
-            show:true, id: review.id
-        })
+const Review = ({ review, type, showReview }) => {
+    const showProduct = () => {
+        window.open("/#/p/" + review.product.alias,'_blank');
     }
+
     function tableItem() {
         return (
             <tr>
                 <td>{review.id}</td>
                 <td>
                     <span
-                        onClick={() => showProduct(review.id)}
+                        onClick={showProduct}
                         className="text-primary action cursor-pointer">
                     {getShortName(review.product.name, 60)}
                     </span>
                 </td>
-                <td>
-                    <span
-                        onClick={() => showCustomer(review.id)}
-                        className="text-primary action cursor-pointer">
-                    {review.customer.fullName}
-                    </span>
-                </td>
+                <td>{review.headline}</td>
                 <td>{review.rating} &nbsp; <i className="bi bi-star"></i></td>
                 <td>{review.formattedTime}</td>
                 <td className="d-flex justify-content-center">
-                    <i className="bi bi-journal-text view" title="view details" onClick={() => showReview(review.id)}></i>
-                    <i className="bi bi-pencil-fill edit" title="edit review" onClick={()=> showUpdate("Edit",review.id)}></i>
-                    <i className="bi bi-archive-fill delete" title="delete review" onClick={deleteReview}></i>
+                    <i className="bi bi-journal-text view fs-3" title="view details" onClick={() => showReview(review.id)}></i>
                 </td>
             </tr>
         )
@@ -47,15 +37,13 @@ const Review = ({ review, showUpdate, setDeleteReview, showCustomer, type, showP
                 </Col>
                 <Col xs="7">
                         <div
-                            onClick={() => showProduct(review.id)}
+                            onClick={showProduct}
                             className="text-primary text-start action cursor-pointer mb-3 d-inline-block">
                         {getShortName(review.product.name, 60)}
                         </div>
                     <div className="d-flex justify-content-start align-item-center">
                         <span className="d-block mb-3">{review.rating} &nbsp; <i className="bi bi-star"></i></span>
                         <i className="bi bi-journal-text view fs-2 ms-4 me-2" title="view details" onClick={() => showReview(review.id)}></i>
-                        <i className="bi bi-pencil-fill edit fs-6 mx-3" title="edit review" onClick={()=> showUpdate("Edit",review.id)}></i>
-                        <i className="bi bi-archive-fill delete fs-6 mx-3" title="delete review" onClick={deleteReview}></i>
                     </div>
                 </Col>
             </Row>

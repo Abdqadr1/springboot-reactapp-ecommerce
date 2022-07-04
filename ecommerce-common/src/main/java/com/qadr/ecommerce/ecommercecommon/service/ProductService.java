@@ -9,12 +9,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 @Service
 public class ProductService {
-    @Autowired
-    private ProductRepo productRepository;
-
+    @Autowired private ProductRepo productRepository;
     public static final int PRODUCTS_PER_PAGE = 10;
     public static final int SEARCH_PRODUCTS_PER_PAGE = 10;
 
