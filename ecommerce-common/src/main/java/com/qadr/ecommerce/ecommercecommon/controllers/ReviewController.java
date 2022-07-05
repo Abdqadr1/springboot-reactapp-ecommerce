@@ -19,32 +19,28 @@ import java.util.Map;
 public class ReviewController {
     @Autowired private ReviewService reviewService;
     @Autowired private CustomerService customerService;
+    @Autowired private ControllerHelper controllerHelper;
 
     @GetMapping("/page/{number}")
     public Map<String, Object> listByPage(@PathVariable("number") Integer number,
                                           @PagingAndSortingParam("reviews") PagingAndSortingHelper helper){
 
-        Customer customer = getCustomerDetails();
+        Customer customer = controllerHelper.getCustomerDetails();
         return reviewService.getPage(number, customer, helper);
     }
 
     @PostMapping("/save")
     public void postReview(Review review){
-        Customer customer = getCustomerDetails();
+        Customer customer = controllerHelper.getCustomerDetails();
         review.setCustomer(customer);
         reviewService.saveReview(review);
     }
 
     @GetMapping("/{id}")
     public Review getReview(@PathVariable Integer id){
-        Customer customer = getCustomerDetails();
+        Customer customer = controllerHelper.getCustomerDetails();
         return reviewService.getByCustomerAndId(id, customer);
     }
 
-    public Customer getCustomerDetails(){
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return customerService.getByEmail(email)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "No user found with email " + email));
-    }
 
 }

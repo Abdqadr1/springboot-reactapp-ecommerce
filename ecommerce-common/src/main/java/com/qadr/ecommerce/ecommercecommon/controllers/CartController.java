@@ -29,17 +29,11 @@ public class CartController {
     @Autowired private CustomerService customerService;
     @Autowired private AddressService addressService;
     @Autowired private ShippingRateService shippingRateService;
-
-
-    public Customer getCustomerDetails(){
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return customerService.getByEmail(email)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "No user found with email " + email));
-    }
+    @Autowired private ControllerHelper controllerHelper;
 
     @GetMapping("/view")
     public Map<String, Object> getShoppingCartItems(){
-        Customer customer = getCustomerDetails();
+        Customer customer = controllerHelper.getCustomerDetails();
         Map<String, Object> result = new HashMap<>();
         List<CartItem> itemsByCustomer = cartService.getItemsByCustomer(customer);
         result.put("items", itemsByCustomer);
@@ -62,7 +56,7 @@ public class CartController {
         String productId = request.getParameter("product_id");
         if(quantity == null || productId == null) throw new CustomException(HttpStatus.BAD_REQUEST, "Invalid parameters");
         Integer number = Integer.valueOf(quantity), id = Integer.valueOf(productId);
-        Customer customer = getCustomerDetails();
+        Customer customer = controllerHelper.getCustomerDetails();
         return cartService.addItem(number, id, customer);
     }
 
@@ -72,13 +66,13 @@ public class CartController {
         String string = request.getParameter("product_id");
         if(number == null || string == null) throw new CustomException(HttpStatus.BAD_REQUEST, "Invalid parameters");
         Integer quantity = Integer.valueOf(number), productId = Integer.valueOf(string);
-        Customer customer = getCustomerDetails();
+        Customer customer = controllerHelper.getCustomerDetails();
         return cartService.updateItem(quantity, productId, customer);
     }
 
     @DeleteMapping("/remove/{id}")
     public String removeItemInShoppingCart(@PathVariable("id") Integer id){
-        Customer customer = getCustomerDetails();
+        Customer customer = controllerHelper.getCustomerDetails();
         return cartService.removeByCustomerAndProduct(customer, id);
     }
 

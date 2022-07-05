@@ -4,6 +4,7 @@ import axios from "axios";
 import { SPINNERS_BORDER, isTokenExpired, listFormData, SPINNERS_BORDER_HTML } from "./utilities";
 import StarRatings from 'react-star-ratings';
 import { AuthContext } from "./custom_hooks/use-auth";
+import CustomToast from "./custom_toast";
 
 const ReviewForm = ({ show, setShow }) => {
     const abortController = new AbortController();
@@ -11,6 +12,7 @@ const ReviewForm = ({ show, setShow }) => {
     const product = show.product;
     const [isLoading, setLoading] = useState(false);
     const [readOnly, setReadOnly] = useState(false);
+    const [toast, setToast] = useState({ show: false, message: "" })
     const [rating, setRating] = useState(0);
     const { auth, setAuth } = useContext(AuthContext);
 
@@ -43,6 +45,7 @@ const ReviewForm = ({ show, setShow }) => {
             }).catch(err => {
                 console.log(err);
                 if (isTokenExpired(err?.response)) setAuth(null);
+                setToast({show: true, message: "Could not submit review"})
             }).finally(() => {
                 btn.disabled = false;
                 btn.textContent = text;
@@ -103,6 +106,7 @@ const ReviewForm = ({ show, setShow }) => {
                     </>
             }
                 </>
+                <CustomToast {...toast} setToast={setToast} position="bottom-end" />
         </Modal.Body>
     </Modal>
     );

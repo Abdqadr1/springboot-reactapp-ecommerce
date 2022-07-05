@@ -31,6 +31,7 @@ public class ProductController {
     @Autowired private ProductService productService;
     @Autowired private ReviewService reviewService;
     @Autowired private CustomerService customerService;
+    @Autowired private ControllerHelper controllerHelper;
 
     @GetMapping("/cat")
     public CustomProductPage getCategoryProducts(
@@ -52,8 +53,8 @@ public class ProductController {
     Map<String, Object> getProductByAlias(@PathVariable("alias") String alias,
                               @PagingAndSortingParam("reviews")PagingAndSortingHelper helper){
         Product product = productService.getByAlias(alias);
-        if(isLoggedIn()){
-            Customer customer = getCustomerDetails();
+        if(controllerHelper.isLoggedIn()){
+            Customer customer = controllerHelper.getCustomerDetails();
             product.setCustomerCanReview
                     (reviewService.canCustomerReviewProduct(product.getId(), customer.getId()));
             product.setReviewedByCustomer
@@ -86,15 +87,7 @@ public class ProductController {
         );
     }
 
-    public Customer getCustomerDetails(){
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return customerService.getByEmail(email)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "No user found with email " + email));
-    }
-    public boolean isLoggedIn(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth.getPrincipal() != null && !auth.getName().equals("anonymousUser");
-    }
+
 
     @AllArgsConstructor
     @Data

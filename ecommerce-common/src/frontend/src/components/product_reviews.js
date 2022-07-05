@@ -64,12 +64,12 @@ const ProductReviews = ({ show, setShow, id, product }) => {
                     ? <div className="mx-auto" style={{ height: "40vh", display: "grid" }}>{SPINNERS_BORDER}</div>
                     : <>
                          <Row className="justify-content-center p-4 mx-0">
-                            <Col sm={9} md={4}>
+                            <Col sm={9} md={3}>
                                 <img src={product.path} 
                                 alt="product" className="main-image" />
                             </Col>
                             <Col sm={11} md={8} className="text-start">
-                                <h2 className="fw-bold mt-2">{product.name}</h2>
+                                <h4 className="fw-bold mt-2">{product.name}</h4>
                                 <div className = "d-flex justify-content-start align-items-center my-2">
                                     <StarRatings 
                                         starDimension="20px"

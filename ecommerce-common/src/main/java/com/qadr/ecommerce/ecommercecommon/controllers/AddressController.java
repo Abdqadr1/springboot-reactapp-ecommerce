@@ -21,6 +21,7 @@ import java.util.List;
 public class AddressController {
     @Autowired private AddressService addressService;
     @Autowired private CustomerService customerService;
+    @Autowired private ControllerHelper controllerHelper;
 
     @GetMapping("/countries")
     public List<Country> getAllCountries (){
@@ -34,7 +35,7 @@ public class AddressController {
 
     @GetMapping
     public List<Address> getByCustomer(){
-        Customer customer = getCustomerDetails();
+        Customer customer = controllerHelper.getCustomerDetails();
         Address address = getAddressFromCustomer(customer);
         List<Address> addresses = new ArrayList<>();
         List<Address> all = addressService.getAllByCustomer(customer);
@@ -49,21 +50,21 @@ public class AddressController {
 
     @PostMapping({"/add", "/edit"})
     public Address saveAddress(@Valid Address address){
-        Customer customer = getCustomerDetails();
+        Customer customer = controllerHelper.getCustomerDetails();
         address.setCustomer(customer);
         return addressService.saveAddress(address);
     }
 
     @DeleteMapping("/remove/{id}")
     public String removeItemInShoppingCart(@PathVariable("id") Integer id){
-        Customer customer = getCustomerDetails();
+        Customer customer = controllerHelper.getCustomerDetails();
         addressService.deleteByCustomer(id, customer);
         return  "Address removed successfully";
     }
 
     @GetMapping("/default/{id}")
     public String setDefault(@PathVariable("id") Integer id){
-        Customer customer = getCustomerDetails();
+        Customer customer = controllerHelper.getCustomerDetails();
         addressService.setDefaultAddress(id, customer);
         return  "Address has been set has default";
     }
@@ -82,11 +83,5 @@ public class AddressController {
         address.setCountry(customer.getCountry());
         address.setDefaultAddress(false);
         return address;
-    }
-
-    public Customer getCustomerDetails(){
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return customerService.getByEmail(email)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "No user found with email " + email));
     }
 }

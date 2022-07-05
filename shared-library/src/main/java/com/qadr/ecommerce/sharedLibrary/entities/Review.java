@@ -15,9 +15,9 @@ import java.util.Objects;
 @ToString
 @RequiredArgsConstructor
 public class Review extends IdBasedEntity {
-    @Column(length = 100)
+    @Column(length = 125)
     private String headline;
-    @Column(length = 400)
+    @Column(length = 300)
     private String comment;
     private int rating;
     private Date reviewTime;

@@ -7,12 +7,14 @@ import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import com.qadr.ecommerce.sharedLibrary.repo.OrderDetailsRepo;
+import com.qadr.ecommerce.sharedLibrary.repo.ProductRepo;
 import com.qadr.ecommerce.sharedLibrary.repo.ReviewRepository;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -20,11 +22,13 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class ReviewService {
     public static final int REVIEWS_PER_PAGE = 5;
     public static final int PRODUCTS_REVIEWS_PER_PAGE = 5;
     @Autowired private ReviewRepository repo;
     @Autowired private OrderDetailsRepo orderDetailsRepo;
+    @Autowired private ProductRepo productRepo;
 
     public Map<String, Object> getPage(int pageNumber, Customer customer,
                                        @PagingAndSortingParam("reviews") PagingAndSortingHelper helper){
@@ -41,6 +45,8 @@ public class ReviewService {
     }
 
     public void saveReview(Review review){
+        productRepo.findById(review.getProduct().getId())
+                .orElseThrow(()->new CustomException(HttpStatus.BAD_REQUEST, "Could not find product"));
         if(!canCustomerReviewProduct(review.getProduct().getId(),review.getCustomer().getId())){
             throw new CustomException(
                     HttpStatus.BAD_REQUEST,
@@ -54,7 +60,8 @@ public class ReviewService {
             );
         }
         review.setReviewTime(new Date());
-        repo.save(review);
+        Review save = repo.save(review);
+        productRepo.updateProductRating(save.getProduct().getId());
     }
 
     public Map<String, Object> getProductReviews(int pageNumber, Product product,

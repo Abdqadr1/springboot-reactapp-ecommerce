@@ -189,7 +189,7 @@ const Reviews = () => {
                                 <th></th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="text-start">
                             {listOrders(reviews,"detailed")}
                         </tbody>
                     </Table> : ""

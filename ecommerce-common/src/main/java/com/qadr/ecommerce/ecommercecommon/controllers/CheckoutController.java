@@ -40,10 +40,11 @@ public class CheckoutController {
     @Autowired private OrderService orderService;
     @Autowired private SettingsService settingsService;
     @Autowired private PayPalService payPalService;
+    @Autowired private ControllerHelper controllerHelper;
 
     @GetMapping
     public Map<String, Object> checkout(){
-        Customer customer = getCustomerDetails();
+        Customer customer = controllerHelper.getCustomerDetails();
         Map<String, Object> result = new HashMap<>();
         List<CartItem> cartItems = cartService.getItemsByCustomer(customer);
 
@@ -74,7 +75,7 @@ public class CheckoutController {
         if(cod == null) throw new CustomException(HttpStatus.BAD_REQUEST, "Invalid parameters");
         PaymentMethod paymentMethod = PaymentMethod.valueOf(cod);
 
-        Customer customer = getCustomerDetails();
+        Customer customer = controllerHelper.getCustomerDetails();
         List<CartItem> cartItems = cartService.getItemsByCustomer(customer);
 
         Optional<Address> defaultAddress = addressService.findCustomerDefaultAddress(customer.getId());
@@ -101,7 +102,7 @@ public class CheckoutController {
 
         PaymentMethod paymentMethod = PaymentMethod.PAYPAL;
 
-        Customer customer = getCustomerDetails();
+        Customer customer = controllerHelper.getCustomerDetails();
         List<CartItem> cartItems = cartService.getItemsByCustomer(customer);
 
         Optional<Address> defaultAddress = addressService.findCustomerDefaultAddress(customer.getId());
@@ -116,12 +117,5 @@ public class CheckoutController {
         Order order = orderService.createOrder(customer, cartItems, checkoutInfo, address, paymentMethod);
 
         return "Order successfully placed";
-    }
-
-
-    public Customer getCustomerDetails(){
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return customerService.getByEmail(email)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "No user found with email " + email));
     }
 }

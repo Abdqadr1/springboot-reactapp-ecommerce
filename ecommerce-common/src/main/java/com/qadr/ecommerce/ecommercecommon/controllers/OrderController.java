@@ -27,11 +27,12 @@ public class OrderController {
     @Autowired private OrderService orderService;
     @Autowired private CustomerService customerService;
     @Autowired private ReviewService reviewService;
+    @Autowired private ControllerHelper controllerHelper;
 
     @GetMapping("/page/{number}")
     public Map<String, Object> listByPage(@PathVariable("number") Integer number,
                                           @PagingAndSortingParam("orders") PagingAndSortingHelper helper){
-        Customer customer = getCustomerDetails();
+        Customer customer = controllerHelper.getCustomerDetails();
         Map<String, Object> page = orderService.getPage(number, customer, helper);
         List<Order> orders = (List<Order>) page.get("orders");
         orders.forEach(order -> setReviewableStatus(customer, order));
@@ -57,13 +58,8 @@ public class OrderController {
         String note = request.getParameter("note");
         if(reason == null || reason.isBlank())
             throw new CustomException(HttpStatus.BAD_REQUEST, "Invalid parameters");
-        Customer customer = getCustomerDetails();
+        Customer customer = controllerHelper.getCustomerDetails();
         return orderService.requestReturn(customer, id, reason, note);
     }
 
-    public Customer getCustomerDetails(){
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return customerService.getByEmail(email)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "No user found with email " + email));
-    }
 }
