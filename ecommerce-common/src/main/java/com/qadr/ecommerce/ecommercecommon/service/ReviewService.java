@@ -14,8 +14,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ReviewService {
@@ -36,6 +38,23 @@ public class ReviewService {
     public Review getByCustomerAndId(Integer id, Customer customer) {
         return repo.findByIdAndCustomer(id, customer)
                 .orElseThrow(()-> new CustomException(HttpStatus.BAD_REQUEST, "Could not find review"));
+    }
+
+    public void saveReview(Review review){
+        if(!canCustomerReviewProduct(review.getProduct().getId(),review.getCustomer().getId())){
+            throw new CustomException(
+                    HttpStatus.BAD_REQUEST,
+                    "You can't review this product because you didn't purchase it, or it hasn't been delivered"
+            );
+        }
+        if(didCustomerReviewProduct(review.getProduct().getId(), review.getCustomer().getId())){
+            throw new CustomException(
+                    HttpStatus.BAD_REQUEST,
+                    "You have already posted review on this product"
+            );
+        }
+        review.setReviewTime(new Date());
+        repo.save(review);
     }
 
     public Map<String, Object> getProductReviews(int pageNumber, Product product,

@@ -1,20 +1,25 @@
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useContext } from "react";
 import { Row, Col, Breadcrumb} from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import MyCarousel from "./image-carousel";
-import { getShortName, formatPrice, listReviews } from "./utilities";
+import { getShortName, formatPrice, listReviews, isTokenExpired, SPINNERS_BORDER } from "./utilities";
 import useSettings from "./use-settings";
 import Search from "./search";
 import { Stock } from './stock';
 import StarRatings from 'react-star-ratings';
 import ProductReviews from "./product_reviews";
+import { AuthContext } from "./custom_hooks/use-auth";
+import ReviewForm from "./review_form";
 
 const Product = () => {
     const { alias } = useParams();
+    const [isLoading, setLoading] = useState(true);
     const reviewsRef = useRef();
     const [product, setProduct] = useState(null);
     const [reviews, setReviews] = useState([]);
+    const [showReviewForm, setShowReviewForm] = useState({show: false, product: {}});
+    const { auth, setAuth } = useContext(AuthContext);
     
     const { CURRENCY_SYMBOL, CURRENCY_SYMBOL_POSITION, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE,SITE_NAME } = useSettings();
 
@@ -34,7 +39,11 @@ const Product = () => {
     useEffect(() => {
         const abortController = new AbortController();
         const url = process.env.REACT_APP_SERVER_URL + "p/alias/" + alias;
+        let head = {};
+        if (auth && auth?.accessToken) head = { "Authorization": `Bearer ${auth.accessToken}` };
+        setLoading(true);
         axios.get(url, {
+            headers:{...head},
             signal: abortController.signal
         })
             .then(res => {
@@ -42,12 +51,13 @@ const Product = () => {
                 const r = data.reviews;
                 setProduct(data.product);
                 setReviews(r.reviews);
+                setShowReviewForm(s => ({ ...s, product: data.product }));
             }).catch(err => {
                 console.log(err)
-                console.log("not found")
-            })
+                if (isTokenExpired(err?.response)) setAuth(null);
+            }).finally(()=>setLoading(false))
         return () => abortController.abort();
-    }, [alias])
+    }, [alias, auth, setAuth])
 
     function breadCrumbs() {
         if(product){
@@ -114,7 +124,6 @@ const Product = () => {
         setShowCarousel(true);
     }
 
-
     function showImage(i){
         const img = bigImageRef.current;
         const images = [product.mainImagePath, ...product.extraImages.map(m => m.imagePath)];
@@ -155,7 +164,7 @@ const Product = () => {
                             <h2 className="text-start fw-bold mt-2">{product.name}</h2>
                             <div className = "d-flex justify-content-start align-items-center my-2">
                                 <StarRatings 
-                                        starDimension="20px"
+                                    starDimension="2em"
                                     starSpacing="5px" rating={product.averageRating}
                                     starRatedColor="yellow" name='product rating' />
                                 <div className="ms-2 fw-bold">
@@ -197,24 +206,40 @@ const Product = () => {
                         {listDetails()}
                     </div>
                     <hr/>
-                    <div className="px-3 p1-2" ref={reviewsRef} tabIndex={-2}>
+                    <div className="px-3 p1-2 text-start" ref={reviewsRef} tabIndex={-2}>
                         <h5 className="text-start mb-3 fw-bold">Customer Reviews:</h5>
                         <div className = "d-flex justify-content-start align-items-center my-3">
                             <StarRatings 
-                                    starDimension="25px"
+                                starDimension="2em"
                                 starSpacing="5px" rating={product.averageRating}
                                 starRatedColor="yellow" name='product rating' />
                             <div className="ms-2">{product.averageRating.toFixed(DECIMAL_DIGIT)} of 5</div>
                         </div>
-                        {(product.reviewCount > 0) && <div className="text-start">
-                            <Link to="#" onClick={()=>setShowReviews(true)}>View all {product.reviewCount} rating(s)</Link>
-                        </div>}
+                        <div className="ps-2">{product.averageRating.toFixed(DECIMAL_DIGIT)} rating</div>
+                        {
+                            (product.reviewCount > 0) && <div className="text-start">
+                                <Link to="#" onClick={()=>setShowReviews(true)}>View all {product.reviewCount} rating(s)</Link>
+                            </div>
+                        }
+                        {
+                            (!product.reviewedByCustomer && product.customerCanReview) &&
+                            <div className="mt-1">
+                                    <span className="text-info">You purchased and got this product</span> &nbsp;
+                                    <strong className="text-primary cs" onClick={()=> setShowReviewForm(s=>({...s, show:true}))}>Write your review now</strong>
+                            </div>
+                        }
+                        {
+                            (product.reviewedByCustomer) &&
+                            <div className="mt-1 text-success">You already reviewed this product</div>
+                        }
+                                
                         <Row className="justify-content-center justify-content-md-start mx-0 my-2">
                             {listReviews(reviews)}
                         </Row>
                     </div>
                     <ProductReviews product={reviewInfo} show={showReviews} setShow={setShowReviews} id={product.id} />
-                    <MyCarousel imageIndex={imageIndex} showCarousel={showCarousel} setShowCarousel={setShowCarousel} items={images} id={product.id}/>
+                    <MyCarousel imageIndex={imageIndex} showCarousel={showCarousel} setShowCarousel={setShowCarousel} items={images} id={product.id} />
+                    <ReviewForm show={showReviewForm} setShow={setShowReviewForm}/>
                 </>
                 
             )
@@ -223,10 +248,18 @@ const Product = () => {
     }
 
     return ( 
-        <>
-            <Search />
-            {breadCrumbs()}
-            {listProduct()}
+         
+         <>
+            {
+                (isLoading)
+                    ? <div className="mx-auto" style={{ height: "40vh", display: "grid" }}>{SPINNERS_BORDER}</div>
+                    : 
+                        <>
+                            <Search />
+                            {breadCrumbs()}
+                            {listProduct()}
+                        </>
+            }
         </>
         
      );

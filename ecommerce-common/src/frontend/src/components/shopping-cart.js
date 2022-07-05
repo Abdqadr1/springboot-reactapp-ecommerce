@@ -1,9 +1,9 @@
 import useArray from "./custom_hooks/use-array";
 import {AuthContext} from "./custom_hooks/use-auth";
-import { useEffect, useState,useContext } from "react";
+import { useEffect, useState,useContext, useMemo, useCallback,useRef } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
-import { getShortName, isTokenExpired,formatPrice } from "./utilities";
+import { getShortName, isTokenExpired,formatPrice,SPINNERS_BORDER } from "./utilities";
 import Search from "./search";
 import { Row, Col} from "react-bootstrap";
 import {CartItemQuantity} from "./stock";
@@ -16,63 +16,59 @@ const ShoppingCart = () => {
     const navigate = useNavigate();
     const url = process.env.REACT_APP_SERVER_URL + "cart";
     const viewURL = `${url}/view`;
-    const deleteURL = `${url}/remove`
+    const deleteURL = `${url}/remove`;
+    const [isLoading, setLoading] = useState(true);
     const {auth, setAuth} = useContext(AuthContext);
-    const { array, setArray, filterArray } = useArray();
+    const { array, setArray, filterArray } = useArray([]);
     const [variables, setVariables] = useState({usePrimaryAddress: false, addressSupported: false})
-    const [total, setTotal] = useState(0);
     const [showDelete, setShowDelete] = useState({show:false, id:-1})
     const [toast, setToast] = useState({ show: false, message: "" })
-    const abortController = new AbortController();
-
-    
+    let abortController = useRef(new AbortController()); 
     const { CURRENCY_SYMBOL, CURRENCY_SYMBOL_POSITION, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, SITE_NAME } = useSettings();
 
-    
     useEffect(()=>{document.title = `Shopping Cart - ${SITE_NAME}`},[SITE_NAME])
-
     function priceFormatter() {
         return (price) =>
             formatPrice(price, CURRENCY_SYMBOL, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, CURRENCY_SYMBOL_POSITION)
     }
-
-    useEffect(() => {
-        const abortController = new AbortController();
-        if (auth?.accessToken) {
-            axios.get(viewURL, {
-                headers: {
-                    "Authorization": `Bearer ${auth?.accessToken}`,
-                },
-                signal: abortController.signal
-            })
+    const loadCart = useCallback((abortController) => {
+        setLoading(true);
+        axios.get(viewURL, {
+            headers: {
+                "Authorization": `Bearer ${auth?.accessToken}`,
+            },
+            signal: abortController.signal
+        })
             .then(response => {
-                const {items, addressSupported, usePrimaryAddress} = response.data;
-                setVariables({addressSupported,usePrimaryAddress})
+                const { items, addressSupported, usePrimaryAddress } = response.data;
                 setArray(items);
+                setVariables({ addressSupported, usePrimaryAddress })
             })
             .catch(res => {
                 console.error(res)
-                if (isTokenExpired(res.response)) {
+                if (isTokenExpired(res?.response)) {
                     setAuth(null); navigate("/login");
                 }
-                const message = res.response.data.message ?? "An error ocurred, Try again";
-                setToast(s=>({...s, show:true, message }))
-            })
-        } else {
-           navigate("/login") 
-        }
-        return () => {
-            abortController.abort();
-        }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [auth])
-
-
+                const message = res.response?.data.message ?? "Could not fetch cart items";
+                setToast(s => ({ ...s, show: true, message }))
+            }).finally(() => setLoading(false));
+      },[auth?.accessToken, navigate, setArray, setAuth, viewURL],
+    )
+    
     useEffect(() => {
-        let total = 0;
-        total = array.map(c => c.subtotal).reduce((tot, num) => tot + num, total)
-        setTotal(total)
+        abortController.current = new AbortController();
+        loadCart(abortController.current);
+        return () => {
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+            abortController.current?.abort();
+        }
+    }, [loadCart])
 
+
+    const total = useMemo(() => {
+        let total = 0;
+        total = array.map(c => c.subtotal).reduce((tot, num) => tot + num, total);
+        return total;
     }, [array])
 
     function handleDelete() {
@@ -83,7 +79,7 @@ const ShoppingCart = () => {
                 headers: {
                     "Authorization": `Bearer ${auth?.accessToken}`
                 },
-                signal: abortController.signal
+                signal: abortController.current.signal
             })
             .then(response => {
                 const data = response.data;
@@ -159,23 +155,32 @@ const ShoppingCart = () => {
             </Row>
         )
     }
-    return ( 
+
+    if (!auth?.accessToken) navigate("/login");
+    return (
         <>
-            <Search />
-            <h3 className="my-2">Your Shopping Cart</h3>
             {
-                (array.length > 0)
-                ? listCartItems()
-                :<div className="mt-5">
-                    <h4 className="my-3 px-3">You have not chosen any product yet</h4>
-                    <a href="/" className="d-block mx-auto my-3 fs-3">
-                        <i className="bi bi-cart-plus-fill text-secondary" style={{fontSize: "5em"}}></i><br/>
-                        Go shopping
-                    </a>
-                </div>
+                (isLoading)
+                    ? <div className="mx-auto" style={{ height: "40vh", display: "grid" }}>{SPINNERS_BORDER}</div>
+                    :  
+                    <>
+                        <Search />
+                        <h3 className="my-2">Your Shopping Cart</h3>
+                        {
+                            (array.length > 0)
+                            ? listCartItems()
+                            : <div className="mt-5">
+                                <h4 className="my-3 px-3">You have not chosen any product yet</h4>
+                                <a href="/" className="d-block mx-auto my-3 fs-3">
+                                    <i className="bi bi-cart-plus-fill text-secondary" style={{fontSize: "5em"}}></i><br/>
+                                    Go shopping
+                                </a>
+                            </div>
+                        }
+                        <DeleteModal deleteObject={showDelete} setDeleteObject={setShowDelete} deletingFunc={handleDelete} type="Item" />
+                        <CustomToast {...toast} setToast={setToast} position="bottom-end" />
+                    </>
             }
-            <DeleteModal deleteObject={showDelete} setDeleteObject={setShowDelete} deletingFunc={handleDelete} type="Item" />
-            <CustomToast {...toast} setToast={setToast} position="bottom-end" />
         </>
      );
 }

@@ -10,10 +10,7 @@ import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -31,12 +28,18 @@ public class ReviewController {
         return reviewService.getPage(number, customer, helper);
     }
 
+    @PostMapping("/save")
+    public void postReview(Review review){
+        Customer customer = getCustomerDetails();
+        review.setCustomer(customer);
+        reviewService.saveReview(review);
+    }
+
     @GetMapping("/{id}")
     public Review getReview(@PathVariable Integer id){
         Customer customer = getCustomerDetails();
         return reviewService.getByCustomerAndId(id, customer);
     }
-
 
     public Customer getCustomerDetails(){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "./custom_hooks/use-auth";
@@ -34,22 +34,20 @@ const Addresses = () => {
     const [showDelete, setShowDelete] = useState({show:false, id:-1})
     const [showEdit, setShowEdit] = useState({show:false, address:{}})
     const [showAdd, setShowAdd] = useState(false)
-    // const abortController = new AbortController();
+    const abortController = useRef(new AbortController());
 
     
     const {SITE_NAME} = useSettings();
     useEffect(()=>{document.title = `Addresses - ${SITE_NAME}`},[SITE_NAME])
 
-    useEffect(() => {
-        const abortController = new AbortController();
-        if (auth) {
-            setLoading(true);
-            axios.get(url, {
-                headers: {
-                    "Authorization": `Bearer ${auth?.accessToken}`,
-                },
-                signal: abortController.signal
-            })
+     const loadAddresses = useCallback((abortController) => {
+       setLoading(true);
+        axios.get(url, {
+            headers: {
+                "Authorization": `Bearer ${auth?.accessToken}`,
+            },
+            signal: abortController.signal
+        })
             .then(response => {
                 setArray(response.data);
             })
@@ -58,17 +56,19 @@ const Addresses = () => {
                 if (isTokenExpired(res?.response)) {
                     setAuth(null); navigate("/login");
                 }
-                const message = res.response.data?.message ?? "An error ocurred, Try again";
-                setToast(s=>({...s, show:true, message }))
-            }).finally(()=> setLoading(false))
-        } else {
-           navigate("/login") 
-        }
+                const message = res.response?.data?.message ?? "Could not fetch addresses";
+                setToast(s => ({ ...s, show: true, message }))
+            }).finally(() => setLoading(false))
+      },[auth?.accessToken, navigate, setArray, setAuth, url],
+    )
+
+    useEffect(() => {
+        abortController.current = new AbortController();
+        loadAddresses(abortController.current);
         return () => {
-            abortController.abort();
+            abortController.current.abort();
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [auth])
+    }, [loadAddresses])
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -101,7 +101,8 @@ const Addresses = () => {
          axios.delete(`${deleteURL}/${id}`, {
                 headers: {
                     "Authorization": `Bearer ${auth?.accessToken}`
-                }
+             },
+             signal: abortController.current.signal
             })
             .then(response => {
                 const data = response.data;
@@ -183,7 +184,7 @@ const Addresses = () => {
         )
     }
 
-    
+    if (!auth) navigate("/login");
     return ( 
          <>
             {

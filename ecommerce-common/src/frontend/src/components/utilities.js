@@ -103,6 +103,7 @@ export function listReviews(reviews) {
     }
 
 export const isTokenExpired = (response) => {
+    if (response === undefined) return false;
     if (response?.data) {
         const message = response.data.message.toLowerCase()
         if (Number(response.status) === 400

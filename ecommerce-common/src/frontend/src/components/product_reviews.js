@@ -80,7 +80,10 @@ const ProductReviews = ({ show, setShow, id, product }) => {
                                 <div>{product.reviewCount} rating(s)</div>
                             </Col>
                         </Row> 
-                        {listReviews(reviews)}
+                        <Row className="justify-content-center p-4 mx-0" style={{minHeight: '300px'}}>
+                            {listReviews(reviews)}
+                        </Row>
+                        
                         {(reviews.length > 0) ? <MyPagination pageInfo={pageInfo} setPageInfo={setPageInfo} /> : ""} 
                     </>
             }

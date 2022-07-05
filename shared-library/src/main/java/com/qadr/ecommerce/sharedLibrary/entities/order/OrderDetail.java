@@ -33,7 +33,6 @@ public class OrderDetail extends IdBasedEntity {
     @JoinColumn(name = "order_id")
     private Order order;
 
-
     public OrderDetail(String categoryName, int quantity, float shippingCost, float productCost, float subtotal) {
         this.product = new Product();
         this.product.setCategory(new Category(categoryName));
