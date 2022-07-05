@@ -65,6 +65,9 @@ public class Product extends IdBasedEntity {
     private int reviewCount;
     private float averageRating;
 
+    @Transient private boolean customerCanReview;
+    @Transient private boolean reviewedByCustomer;
+
     public Product(String productName) {
         this.name = productName;
     }

@@ -1,6 +1,6 @@
 import {useEffect, useState } from "react";
-import { Col, Form, Modal, Row, Tab, Tabs, Table } from "react-bootstrap";
-import { formatDate } from "../utilities"
+import { Col, Form, Modal, Row, Tab, Tabs, Table, Button } from "react-bootstrap";
+import { formatDate, getShort } from "../utilities"
 import useThrottle from "../custom_hooks/use-throttle";
 import { Link } from "react-router-dom";
 
@@ -93,23 +93,35 @@ const ViewOrder = ({ viewOrder, setViewOrder, priceFunction }) => {
         return "";
     }
 
+    const seeReview = (name) => {
+        window.open(`/#/reviews?filter=${getShort(name, 20)}`, '_blank');
+    }
+
     const listProducts = () => {
         if (order && order.orderDetails?.length > 0) {
-            // console.log(order.orderDetails)
             return order.orderDetails.map((detail, i) => (
                 <Row className="justify-content-center my-2" key={detail.id}>
                     <Col xs={11} className="p-2 border rounded">
                         <Row className="justify-content-center justify-content-md-center">
-                            <Col xs={11} md={5}>
+                            <Col xs={10} md={5}>
                                 <div>{i+1}</div>
-                                    <img src={detail.product.mainImagePath} 
-                                    alt="product" className="main-image"/>
+                                <img src={detail.product.mainImagePath} 
+                                    alt="product" className="main-image"
+                                    />
                             </Col>
                             <Col xs={11} md={6}>
                                 <div className="fw-bold my-2">
                                     <Link to={"/p/"+encodeURIComponent(detail.product.alias)}>{detail.product.name}</Link>
                                 </div>
                                 <div className="my-2">Subtotal {`${detail.quantity} x ${priceFunction(detail.unitPrice)} = ${priceFunction(detail.subtotal)}`}</div>
+                                {
+                                    (!detail.product.reviewedByCustomer && detail.product.customerCanReview) && <Button variant="info" className="mt-1">Write Review</Button>
+                                }
+                                {
+                                    (detail.product.reviewedByCustomer) &&
+                                    <Button onClick={() => seeReview(detail.product.name)} variant="warning" className="mt-1">See your Review</Button>
+                                }
+                                
                             </Col>
                         </Row>
                     </Col>
@@ -123,7 +135,7 @@ const ViewOrder = ({ viewOrder, setViewOrder, priceFunction }) => {
          
         <Modal show={viewOrder.show} fullscreen={true} onHide={hideModal}>
             <Modal.Header closeButton>
-                <Modal.Title>View Order (ID : {order?.id})</Modal.Title>
+                <Modal.Title>Order Details (ID : {order?.id})</Modal.Title>
             </Modal.Header>
             <Modal.Body className="border order_modal_body">
                 <Form className="add-user-form">

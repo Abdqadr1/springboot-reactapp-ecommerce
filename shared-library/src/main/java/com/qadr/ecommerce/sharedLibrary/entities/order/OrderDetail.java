@@ -24,6 +24,16 @@ public class OrderDetail extends IdBasedEntity {
     private float subtotal;
     private float unitPrice;
 
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Order order;
+
+
     public OrderDetail(String categoryName, int quantity, float shippingCost, float productCost, float subtotal) {
         this.product = new Product();
         this.product.setCategory(new Category(categoryName));
@@ -40,17 +50,6 @@ public class OrderDetail extends IdBasedEntity {
         this.productCost = productCost * quantity;
         this.subtotal = subtotal;
     }
-
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-
-
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "order_id")
-    private Order order;
-
 
     @Override
     public boolean equals(Object o) {

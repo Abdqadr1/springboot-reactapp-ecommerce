@@ -50,6 +50,13 @@ public class ProductController {
         res.put("reviews", reviewService.getProductReviews(1, product, helper));
         return res;
     }
+    @GetMapping("/{id}/reviews/{number}")
+    public Map<String, Object> getProductReviews(@PathVariable("number") Integer number,
+                                                 @PathVariable("id") Integer id,
+                                                 @PagingAndSortingParam("reviews")PagingAndSortingHelper helper){
+        Product product = new Product(id);
+        return reviewService.getProductReviews(number, product,helper);
+    }
 
     @GetMapping("/search/{keyword}")
     CustomProductPage getProductByAlias(@PathVariable("keyword") String keyword,
@@ -65,15 +72,16 @@ public class ProductController {
         );
     }
 
+    @AllArgsConstructor
+    @Data
+    static class CustomProductPage {
+        Integer currentPage;
+        Integer startCount;
+        Integer endCount;
+        Integer totalPages;
+        Long totalElements;
+        List<Product> products;
+        Integer numberPerPage;
+    }
 }
-@AllArgsConstructor
-@Data
-class CustomProductPage {
-    Integer currentPage;
-    Integer startCount;
-    Integer endCount;
-    Integer totalPages;
-    Long totalElements;
-    List<Product> products;
-    Integer numberPerPage;
-}
+

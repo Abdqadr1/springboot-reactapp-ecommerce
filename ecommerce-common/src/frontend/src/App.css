@@ -2,7 +2,7 @@
   text-align: center;
 }
 
-#root {
+#root, .modal-dialog {
   margin: 0;
 
   font-family: 'Overpass', BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',

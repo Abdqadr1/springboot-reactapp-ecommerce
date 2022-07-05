@@ -31,4 +31,7 @@ public interface ReviewRepository extends SearchRepository<Review, Integer> {
     Page<Review> find(String keyword, Integer id, String catId, Pageable pageable);
 
     Page<Review> findAllByProduct(Product product, Pageable pageable);
+
+    @Query("SELECT COUNT(r) FROM Review r WHERE r.customer.id =?1 AND r.product.id = ?2")
+    Long countByCustomerAndProduct(Integer customer, Integer product);
 }

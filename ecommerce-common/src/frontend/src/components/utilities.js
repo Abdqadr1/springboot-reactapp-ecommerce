@@ -8,6 +8,12 @@ export const getShortName = (name, len=60) => {
     }
     return name;
 }
+export const getShort = (name, len = 30) => {
+     if(name.length > len){
+        return name.substring(0,len);
+    }
+    return name;
+}
 export const getPrices = (discount, price, realPrice, formatPrice) => {
     if(discount > 0){
         return (
@@ -79,6 +85,22 @@ export function listProducts(results, keyword, type="category", formatPrice){
     }
 }
 
+export function listReviews(reviews) {
+        return reviews.map(r => <Col key={r.id} className="text-start py-2 border-top" sm={11}>
+            <StarRatings 
+                starDimension="25px"
+                starSpacing="5px" rating={r.rating}
+                starRatedColor="yellow" />
+            <div className="ms-3 mt-2">
+                <h5 className="mb-1 fw-bold">{r.headline}</h5>
+                <p className="mb-1">{r.comment}</p>
+            </div>
+            <div className="ms-4">
+                {r.customer.fullName} &nbsp; {formatDate(r.reviewTime, "short", "short")}
+            </div>
+        </Col>
+        )
+    }
 
 export const isTokenExpired = (response) => {
     if (response?.data) {
@@ -105,6 +127,10 @@ export function formatDate(date, dateStyle, timeStyle) {
          return formatter.format(new Date(date))
     }
     return "";
+}
+
+export function isDelivered(orderTracks) {
+    return orderTracks.some(t => t.status === "DELIVERED");
 }
 
 export function listFormData(data){

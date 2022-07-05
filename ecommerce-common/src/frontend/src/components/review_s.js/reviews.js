@@ -10,8 +10,11 @@ import { AuthContext } from "../custom_hooks/use-auth";
 import ViewReview from "./view_review";
 import useThrottle from "../custom_hooks/use-throttle";
 import useSettings from "../use-settings";
+import { useSearchParams } from "react-router-dom";
 
 const Reviews = () => {
+    const [searchParams,] = useSearchParams();
+    const filter = searchParams.get("filter")
     const serverUrl = process.env.REACT_APP_SERVER_URL + "review/";
     const [width, setWidth] = useState(window.innerWidth);
     const navigate = useNavigate();
@@ -22,7 +25,7 @@ const Reviews = () => {
     const [reviews, setReviews] = useState([]);
     const [isLoading, setLoading] = useState(true);
     const [viewReview, setViewReview] = useState({show:false, id: -1, review: {}});
-    const [keyword, setKeyword] = useState("");
+    const [keyword, setKeyword] = useState(filter ?? "");
 
     const [pageInfo, setPageInfo] = useState({
         number: 1, totalPages: 1, startCount: 1,

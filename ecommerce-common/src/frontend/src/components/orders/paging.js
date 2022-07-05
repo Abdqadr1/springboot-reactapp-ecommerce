@@ -22,7 +22,7 @@ const MyPagination = ({ pageInfo, setPageInfo }) => {
         )
     }
     return ( 
-        <Pagination className="justify-content-center mx-0">    
+        <Pagination className="justify-content-center mx-0 mt-2">    
             {/* <Pagination.First /> */}
             <Pagination.Prev onClick={() => handleClick(currentPage - 1)} disabled={isPrev} />
             {items}

@@ -1,6 +1,7 @@
 package com.qadr.ecommerce.ecommerceadmin.repo;
 
 import com.qadr.ecommerce.sharedLibrary.entities.order.OrderDetail;
+import com.qadr.ecommerce.sharedLibrary.entities.order.OrderStatus;
 import com.qadr.ecommerce.sharedLibrary.repo.OrderDetailsRepo;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,5 +46,14 @@ class OrderDetailsRepoTest {
         assertThat(byOrderTimeBetween.size()).isGreaterThan(0);
         byOrderTimeBetween.forEach(o -> System.out.printf("%-50s| %d | %.2f \t | %.2f \t | %.2f \n",
                 o.getProduct().getShortName(), o.getQuantity(), o.getShippingCost(), o.getProductCost(), o.getSubtotal()));
+    }
+
+    @Test
+    void testCountByProductAndCustomerAndStatus(){
+        int productId = 106; int customerId = 1;
+        OrderStatus status = OrderStatus.DELIVERED;
+        Long count = repo.countByProductAndCustomerAndStatus(productId, customerId, status);
+        System.out.println("count is " + count);
+        assertThat(count).isGreaterThan(0);
     }
 }

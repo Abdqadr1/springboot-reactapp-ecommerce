@@ -9,7 +9,9 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/set")
@@ -21,17 +23,11 @@ public class SettingsController {
     private CurrencyRepo currencyRepo;
 
     @GetMapping("/get")
-    public SettingsPage getAllSettings(){
-        List<Setting> allSettings = settingsService.getGeneralSettings();
-        List<Currency> currencyList = currencyRepo.findAllByOrderByNameAsc();
-        return new SettingsPage(allSettings, currencyList);
+    public Map<String, List<?>> getAllSettings(){
+        Map<String, List<?>> res = new HashMap<>();
+        res.put("settings", settingsService.getGeneralSettings());
+        res.put("currencies", currencyRepo.findAllByOrderByNameAsc());
+        return res;
     }
 
-}
-
-@AllArgsConstructor
-@Data
-class SettingsPage{
-    List<Setting> settings;
-    List<Currency> currencies;
 }

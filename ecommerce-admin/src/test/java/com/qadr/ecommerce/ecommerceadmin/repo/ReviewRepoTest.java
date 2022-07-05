@@ -62,4 +62,12 @@ public class ReviewRepoTest {
         byId = repo.findById(id);
         assertThat(byId).isNotPresent();
     }
+
+    @Test
+    void testCountByCustomerAndProduct(){
+        int customer = 7; int product = 12;
+        long count = repo.countByCustomerAndProduct(customer, product);
+        assertThat(count).isGreaterThan(0);
+        System.out.println("Count is " + count);
+    }
 }

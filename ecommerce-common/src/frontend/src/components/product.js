@@ -3,21 +3,18 @@ import { useEffect, useRef, useState } from "react";
 import { Row, Col, Breadcrumb} from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import MyCarousel from "./image-carousel";
-import { getShortName, formatPrice, formatDate } from "./utilities";
+import { getShortName, formatPrice, listReviews } from "./utilities";
 import useSettings from "./use-settings";
 import Search from "./search";
 import { Stock } from './stock';
 import StarRatings from 'react-star-ratings';
+import ProductReviews from "./product_reviews";
 
 const Product = () => {
     const { alias } = useParams();
     const reviewsRef = useRef();
     const [product, setProduct] = useState(null);
     const [reviews, setReviews] = useState([]);
-    const [pageInfo, setPageInfo] = useState({
-        number: 1, totalPages: 1, startCount: 1,
-        endCount: null, totalElements: null, numberPerPage: 1
-    })
     
     const { CURRENCY_SYMBOL, CURRENCY_SYMBOL_POSITION, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE,SITE_NAME } = useSettings();
 
@@ -29,6 +26,7 @@ const Product = () => {
     }
 
     const [showCarousel, setShowCarousel] = useState(false);
+    const [showReviews, setShowReviews] = useState(false);
     const [imageIndex, setImageIndex] = useState(0);
 
     const bigImageRef = useRef();
@@ -44,18 +42,11 @@ const Product = () => {
                 const r = data.reviews;
                 setProduct(data.product);
                 setReviews(r.reviews);
-                setPageInfo(s=>({
-                    ...s,
-                        endCount: r.endCount,
-                        startCount: r.startCount,
-                        totalPages: r.totalPages,
-                        totalElements: r.totalElements,
-                        numberPerPage: r.numberPerPage
-                }))
             }).catch(err => {
                 console.log(err)
                 console.log("not found")
             })
+        return () => abortController.abort();
     }, [alias])
 
     function breadCrumbs() {
@@ -131,23 +122,6 @@ const Product = () => {
         setImageIndex(i)
     }
 
-    function listReviews() {
-        return reviews.map(r => <Col key={r.id} className="text-start py-2 border-top" sm={11}>
-            <StarRatings 
-                starDimension="25px"
-                starSpacing="5px" rating={r.rating}
-                starRatedColor="yellow" />
-            <div className="ms-3 mt-2">
-                <h5 className="mb-1 fw-bold">{r.headline}</h5>
-                <p className="mb-1">{r.comment}</p>
-            </div>
-            <div className="ms-4">
-                {r.customer.fullName} &nbsp; {formatDate(r.reviewTime, "short", "short")}
-            </div>
-        </Col>
-        )
-    }
-
     function listImages(images){
         return (
             <div className="d-flex justify-content-start my-2" style={{flexWrap: "wrap"}}>
@@ -164,6 +138,10 @@ const Product = () => {
     function listProduct(){
         if(product){
             const images = [product.mainImagePath, ...product.extraImages.map(m => m.imagePath)]
+            const reviewInfo = {
+                name: product.name, reviewCount: product.reviewCount,
+                averageRating: product.averageRating, path: product.mainImagePath
+            }
             const discountPrice = priceFormatter()(product.realPrice);
             return (
                 <>
@@ -174,7 +152,7 @@ const Product = () => {
                             {listImages(images)}
                         </Col>
                         <Col sm={9} md={5}>
-                            <h2 className="text-start fw-bold">{product.name}</h2>
+                            <h2 className="text-start fw-bold mt-2">{product.name}</h2>
                             <div className = "d-flex justify-content-start align-items-center my-2">
                                 <StarRatings 
                                         starDimension="20px"
@@ -228,11 +206,14 @@ const Product = () => {
                                 starRatedColor="yellow" name='product rating' />
                             <div className="ms-2">{product.averageRating.toFixed(DECIMAL_DIGIT)} of 5</div>
                         </div>
-                        {(product.reviewCount > 0) && <div className="text-start"><Link to="#">View all {product.reviewCount} rating(s)</Link></div>}
+                        {(product.reviewCount > 0) && <div className="text-start">
+                            <Link to="#" onClick={()=>setShowReviews(true)}>View all {product.reviewCount} rating(s)</Link>
+                        </div>}
                         <Row className="justify-content-center justify-content-md-start mx-0 my-2">
-                            {listReviews()}
+                            {listReviews(reviews)}
                         </Row>
                     </div>
+                    <ProductReviews product={reviewInfo} show={showReviews} setShow={setShowReviews} id={product.id} />
                     <MyCarousel imageIndex={imageIndex} showCarousel={showCarousel} setShowCarousel={setShowCarousel} items={images} id={product.id}/>
                 </>
                 
