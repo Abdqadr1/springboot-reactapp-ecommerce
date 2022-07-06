@@ -1,6 +1,7 @@
 import { Col, Row, Spinner } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import StarRatings from 'react-star-ratings';
+import axios from "axios";
 
 export const getShortName = (name, len=60) => {
     if(name.length > len){
@@ -85,12 +86,55 @@ export function listProducts(results, keyword, type="category", formatPrice){
     }
 }
 
-export function listReviews(reviews) {
-        return reviews.map(r => <Col key={r.id} className="text-start py-2 border-top" sm={11}>
-            <StarRatings 
-                starDimension="25px"
-                starSpacing="5px" rating={r.rating}
-                starRatedColor="yellow" />
+
+    const voteReview = (str, r, updateReviews, ctx) => {
+        const { auth, setAuth } = ctx;
+        if (auth === null || auth === undefined) {
+            alert("You need to login to vote reviews");
+            return;
+        }
+        const url = process.env.REACT_APP_SERVER_URL + "review_vote/vote/" + r.id + "/" + str;
+        axios.post(url, null, {
+            headers: {
+                "Authorization": `Bearer ${auth.accessToken}`
+            }
+        })
+        .then(res => {
+            const data = res.data;
+            if (data.successful) {
+                r.votes = data.voteCount;
+                const oldVote = r.customerVote;
+                if ((oldVote === 0 && str === 'up') || (oldVote === -1 && str === 'up')) {
+                    r.customerVote = 1;
+                } else if ((oldVote === 0 && str === 'down') || (oldVote === 1 && str === 'down')) {
+                    r.customerVote = -1;
+                } else {
+                    r.customerVote = 0;
+                }
+                updateReviews(r);
+            }
+        }).catch(err => {
+            console.log(err)
+            if (isTokenExpired(err?.response)) {
+                setAuth(null); window.open('/login');
+            }
+        });
+    }
+
+export function listReviews(reviews, updateReviews, ctx) {
+    const cb = (str, r) => voteReview(str, r, updateReviews, ctx);
+    return reviews.map(r => <Col key={r.id} className="text-start py-2 border-top" sm={11}>
+            <div className = "d-flex justify-content-start align-items-center my-2">
+                <StarRatings 
+                    starDimension="25px"
+                    starSpacing="5px" rating={r.rating}
+                    starRatedColor="yellow" />
+                <div className="ms-2 d-flex justify-content-start align-items-center flex-wrap">
+                    <i onClick={()=>cb('up', r)} className={`bi bi-hand-${(r.customerVote===1) ? 'thumbs-up-fill':'thumbs-up'} fs-5 cs text-primary`}></i> &nbsp; &nbsp;
+                    <span>{r.votes} votes</span> &nbsp; &nbsp;
+                    <i onClick={()=>cb('down', r)} className={`bi bi-hand-${(r.customerVote===-1) ? 'thumbs-down-fill':'thumbs-down'} fs-5 cs text-primary`}></i>
+                </div>
+            </div>
             <div className="ms-3 mt-2">
                 <h5 className="mb-1 fw-bold">{r.headline}</h5>
                 <p className="mb-1">{r.comment}</p>

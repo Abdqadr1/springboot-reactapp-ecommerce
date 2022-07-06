@@ -1,6 +1,6 @@
 package com.qadr.ecommerce.ecommerceadmin.service;
 
-import com.qadr.ecommerce.sharedLibrary.entities.Review;
+import com.qadr.ecommerce.sharedLibrary.entities.review.Review;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import com.qadr.ecommerce.sharedLibrary.repo.ProductRepo;

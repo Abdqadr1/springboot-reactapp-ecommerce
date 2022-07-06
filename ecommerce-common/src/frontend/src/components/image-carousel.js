@@ -20,9 +20,9 @@ const MyCarousel = ({showCarousel: show, setShowCarousel: setShow, items, imageI
         );
     })
     return (
-      <Modal size="lg" show={show} fullscreen={false} onHide={() => setShow(!show)} centered>
+      <Modal size="lg" show={show} onHide={() => setShow(!show)} className="mx-auto" centered>
         <Modal.Header closeButton></Modal.Header>
-        <Modal.Body className="border modal-body">
+        <Modal.Body className="border">
           <Carousel variant="dark" interval={2000} activeIndex={index} onSelect={handleSelect}>
             {items_array}
           </Carousel>

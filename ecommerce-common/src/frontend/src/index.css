@@ -33,6 +33,9 @@
     margin: 0 auto;
     width: 800px
 }
+.modal.show .modal-dialog{
+    margin-inline: auto;
+}
 
 .action{
     cursor: pointer;

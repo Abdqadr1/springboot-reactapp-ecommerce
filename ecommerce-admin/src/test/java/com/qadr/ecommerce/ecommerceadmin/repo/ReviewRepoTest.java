@@ -1,7 +1,7 @@
 package com.qadr.ecommerce.ecommerceadmin.repo;
 
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
-import com.qadr.ecommerce.sharedLibrary.entities.Review;
+import com.qadr.ecommerce.sharedLibrary.entities.review.Review;
 import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
 import com.qadr.ecommerce.sharedLibrary.repo.ReviewRepository;
 import org.junit.jupiter.api.Test;

@@ -1,7 +1,7 @@
 package com.qadr.ecommerce.ecommercecommon.repo;
 
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
-import com.qadr.ecommerce.sharedLibrary.entities.Review;
+import com.qadr.ecommerce.sharedLibrary.entities.review.Review;
 import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
 import com.qadr.ecommerce.sharedLibrary.repo.ReviewRepository;
 import org.junit.jupiter.api.Test;
@@ -65,5 +65,18 @@ class ReviewRepositoryTest {
         Page<Review> allByProduct = repo.findAllByProduct(product, pageable);
         assertThat(allByProduct.getContent().size()).isGreaterThan(0);
         System.out.println(allByProduct.getContent());
+    }
+
+    @Test
+    void testUpdateVote(){
+        int id = 4;
+        repo.updateVote(id);
+    }
+
+    @Test
+    void testVoteCount(){
+        int id = 4;
+        int voteCount = repo.getVoteCount(id);
+        assertThat(voteCount).isEqualTo(2);
     }
 }

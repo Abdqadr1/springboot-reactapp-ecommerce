@@ -1,11 +1,10 @@
 package com.qadr.ecommerce.ecommerceadmin.controllers;
 
 import com.qadr.ecommerce.ecommerceadmin.service.ReviewService;
-import com.qadr.ecommerce.sharedLibrary.entities.Review;
+import com.qadr.ecommerce.sharedLibrary.entities.review.Review;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;

@@ -38,7 +38,6 @@ const ReviewForm = ({ show, setShow }) => {
             signal: abortController.signal
         })
             .then(res => {
-                const data = res.data;
                 product.customerCanReview = false;
                 product.reviewedByCustomer = true;
                 setReadOnly(true);
@@ -91,7 +90,7 @@ const ReviewForm = ({ show, setShow }) => {
                                 {(!readOnly) && <i onClick={reduceStar} className="bi bi-dash-square cs text-info fs-5 d-block mx-2"></i>}
                                 <StarRatings name="review_rating" isSelectable={true} starDimension="2em"
                                     starRatedColor="yellow" starHoverColor="yellow" changeRating={setStar}
-                                    starSpacing="5px"  rating={rating}
+                                    starSpacing="5px" rating={rating}
                                  />
                             </div>
                             <input name="rating" value={rating} type="hidden" required />

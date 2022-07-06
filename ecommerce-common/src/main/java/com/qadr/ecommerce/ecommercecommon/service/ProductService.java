@@ -30,4 +30,8 @@ public class ProductService {
         return productRepository.findByAlias(alias)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Product not found with alias " + alias));
     }
+    public Product getById(Integer id) {
+        return productRepository.findById(id)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Product not found with id " + id));
+    }
 }

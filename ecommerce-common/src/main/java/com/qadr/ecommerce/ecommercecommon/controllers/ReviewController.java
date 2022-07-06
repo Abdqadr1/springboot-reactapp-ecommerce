@@ -2,14 +2,12 @@ package com.qadr.ecommerce.ecommercecommon.controllers;
 
 import com.qadr.ecommerce.ecommercecommon.service.CustomerService;
 import com.qadr.ecommerce.ecommercecommon.service.ReviewService;
+import com.qadr.ecommerce.ecommercecommon.service.ReviewVoteService;
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
-import com.qadr.ecommerce.sharedLibrary.entities.Review;
-import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
+import com.qadr.ecommerce.sharedLibrary.entities.review.Review;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;

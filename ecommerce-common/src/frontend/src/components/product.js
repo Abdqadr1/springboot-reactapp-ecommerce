@@ -11,13 +11,14 @@ import StarRatings from 'react-star-ratings';
 import ProductReviews from "./product_reviews";
 import { AuthContext } from "./custom_hooks/use-auth";
 import ReviewForm from "./review_form";
+import useArray from "./custom_hooks/use-array";
 
 const Product = () => {
     const { alias } = useParams();
     const [isLoading, setLoading] = useState(true);
     const reviewsRef = useRef();
     const [product, setProduct] = useState(null);
-    const [reviews, setReviews] = useState([]);
+    const {array: reviews, setArray: setReviews, updateArray: updateReviews} = useArray();
     const [showReviewForm, setShowReviewForm] = useState({show: false, product: {}});
     const { auth, setAuth } = useContext(AuthContext);
     
@@ -48,16 +49,17 @@ const Product = () => {
         })
             .then(res => {
                 const data = res.data;
-                const r = data.reviews;
+                console.log(data.reviews.reviews)
                 setProduct(data.product);
-                setReviews(r.reviews);
+                setReviews(data.reviews.reviews);
                 setShowReviewForm(s => ({ ...s, product: data.product }));
             }).catch(err => {
                 console.log(err)
                 if (isTokenExpired(err?.response)) setAuth(null);
             }).finally(()=>setLoading(false))
         return () => abortController.abort();
-    }, [alias, auth, setAuth])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [alias])
 
     function breadCrumbs() {
         if(product){
@@ -149,7 +151,8 @@ const Product = () => {
             const images = [product.mainImagePath, ...product.extraImages.map(m => m.imagePath)]
             const reviewInfo = {
                 name: product.name, reviewCount: product.reviewCount,
-                averageRating: product.averageRating, path: product.mainImagePath
+                averageRating: product.averageRating, path: product.mainImagePath,
+                reviewedByCustomer: product.reviewedByCustomer
             }
             const discountPrice = priceFormatter()(product.realPrice);
             return (
@@ -234,7 +237,7 @@ const Product = () => {
                         }
                                 
                         <Row className="justify-content-center justify-content-md-start mx-0 my-2">
-                            {listReviews(reviews)}
+                            {listReviews(reviews, updateReviews, {auth, setAuth})}
                         </Row>
                     </div>
                     <ProductReviews product={reviewInfo} show={showReviews} setShow={setShowReviews} id={product.id} />

@@ -1,15 +1,17 @@
 package com.qadr.ecommerce.ecommercecommon.service;
 
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
-import com.qadr.ecommerce.sharedLibrary.entities.Review;
+import com.qadr.ecommerce.sharedLibrary.entities.review.Review;
 import com.qadr.ecommerce.sharedLibrary.entities.order.OrderStatus;
 import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
+import com.qadr.ecommerce.sharedLibrary.entities.review.ReviewVote;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import com.qadr.ecommerce.sharedLibrary.repo.OrderDetailsRepo;
 import com.qadr.ecommerce.sharedLibrary.repo.ProductRepo;
 import com.qadr.ecommerce.sharedLibrary.repo.ReviewRepository;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingParam;
+import com.qadr.ecommerce.sharedLibrary.repo.ReviewVoteRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -29,6 +31,7 @@ public class ReviewService {
     @Autowired private ReviewRepository repo;
     @Autowired private OrderDetailsRepo orderDetailsRepo;
     @Autowired private ProductRepo productRepo;
+    @Autowired private ReviewVoteRepo voteRepo;
 
     public Map<String, Object> getPage(int pageNumber, Customer customer,
                                        @PagingAndSortingParam("reviews") PagingAndSortingHelper helper){
@@ -66,7 +69,28 @@ public class ReviewService {
 
     public Map<String, Object> getProductReviews(int pageNumber, Product product,
                                        @PagingAndSortingParam("reviews") PagingAndSortingHelper helper){
-        return helper.getProductReviews(pageNumber, product, PRODUCTS_REVIEWS_PER_PAGE, repo);
+         return helper.getProductReviews(pageNumber, product, PRODUCTS_REVIEWS_PER_PAGE, repo);
+    }
+
+
+    public Map<String, Object> getProductReviews(int pageNumber, Customer customer, Product product, PagingAndSortingHelper helper) {
+        Map<String, Object> objectMap =
+                helper.getProductReviews(pageNumber, product, PRODUCTS_REVIEWS_PER_PAGE, repo);
+        List<Review> reviews = (List<Review>) objectMap.get("reviews");
+        markReviewsVoteForProductByCustomer(reviews, customer);
+        return objectMap;
+    }
+
+
+    public void markReviewsVoteForProductByCustomer(List<Review> reviews, Customer customer){
+        reviews.forEach(review -> {
+            Optional<ReviewVote> optional = voteRepo.findByReviewAndCustomer(review, customer);
+            if (optional.isPresent()){
+                review.setCustomerVote(optional.get().getVotes());
+            } else{
+                review.setCustomerVote(0);
+            }
+        });
     }
 
     public boolean didCustomerReviewProduct(Integer productId, Integer customerId){

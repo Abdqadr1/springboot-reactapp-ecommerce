@@ -53,16 +53,20 @@ public class ProductController {
     Map<String, Object> getProductByAlias(@PathVariable("alias") String alias,
                               @PagingAndSortingParam("reviews")PagingAndSortingHelper helper){
         Product product = productService.getByAlias(alias);
+        Map<String, Object> res = new HashMap<>();
         if(controllerHelper.isLoggedIn()){
             Customer customer = controllerHelper.getCustomerDetails();
             product.setCustomerCanReview
                     (reviewService.canCustomerReviewProduct(product.getId(), customer.getId()));
             product.setReviewedByCustomer
                     (reviewService.didCustomerReviewProduct(product.getId(), customer.getId()));
+
+            res.put("reviews", reviewService.getProductReviews(1, customer,  product, helper));
+        }else{
+            res.put("reviews", reviewService.getProductReviews(1, product, helper));
+
         }
-        Map<String, Object> res = new HashMap<>();
         res.put("product", product);
-        res.put("reviews", reviewService.getProductReviews(1, product, helper));
         return res;
     }
     @GetMapping("/{id}/reviews/{number}")
@@ -70,6 +74,10 @@ public class ProductController {
                                                  @PathVariable("id") Integer id,
                                                  @PagingAndSortingParam("reviews")PagingAndSortingHelper helper){
         Product product = new Product(id);
+        if(controllerHelper.isLoggedIn()){
+            Customer customer = controllerHelper.getCustomerDetails();
+            return reviewService.getProductReviews(number, customer, product, helper);
+        }
         return reviewService.getProductReviews(number, product,helper);
     }
 

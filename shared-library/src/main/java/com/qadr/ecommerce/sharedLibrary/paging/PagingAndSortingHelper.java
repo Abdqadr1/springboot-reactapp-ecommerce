@@ -1,14 +1,13 @@
 package com.qadr.ecommerce.sharedLibrary.paging;
 
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
-import com.qadr.ecommerce.sharedLibrary.entities.Review;
+import com.qadr.ecommerce.sharedLibrary.entities.review.Review;
 import com.qadr.ecommerce.sharedLibrary.entities.order.Order;
 import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
 import com.qadr.ecommerce.sharedLibrary.repo.OrderRepo;
 import com.qadr.ecommerce.sharedLibrary.repo.ProductRepo;
 import com.qadr.ecommerce.sharedLibrary.repo.ReviewRepository;
 import com.qadr.ecommerce.sharedLibrary.repo.SearchRepository;
-import com.qadr.ecommerce.sharedLibrary.util.CommonUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.Page;
@@ -18,8 +17,6 @@ import org.springframework.data.domain.Sort;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import static com.qadr.ecommerce.sharedLibrary.util.CommonUtil.decodePath;
 
 @Getter @Setter
 public class PagingAndSortingHelper {
@@ -104,7 +101,7 @@ public class PagingAndSortingHelper {
     }
 
     public Map<String, Object> getProductReviews(int number, Product product, int pageSze, ReviewRepository repo) {
-        Sort sort = Sort.by("reviewTime").descending();
+        Sort sort = Sort.by("votes").descending();
         PageRequest pageable = PageRequest.of(number - 1, pageSze, sort);
         Page<Review> page =  repo.findAllByProduct(product, pageable);
         return mapInfo(number, pageSze, page);

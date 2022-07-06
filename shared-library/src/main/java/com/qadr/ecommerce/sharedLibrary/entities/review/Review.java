@@ -1,5 +1,7 @@
-package com.qadr.ecommerce.sharedLibrary.entities;
+package com.qadr.ecommerce.sharedLibrary.entities.review;
 
+import com.qadr.ecommerce.sharedLibrary.entities.Customer;
+import com.qadr.ecommerce.sharedLibrary.entities.IdBasedEntity;
 import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -21,6 +23,7 @@ public class Review extends IdBasedEntity {
     private String comment;
     private int rating;
     private Date reviewTime;
+    private int votes;
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
@@ -33,6 +36,13 @@ public class Review extends IdBasedEntity {
         this.headline = headline;
         this.comment = comment;
     }
+
+    public Review(int id) {
+        this.id = id;
+    }
+
+    @Transient
+    private int customerVote;
 
     @Override
     public boolean equals(Object o) {
