@@ -56,6 +56,7 @@ public class Customer extends  AddressBasedEntity{
                 "enabled = "+ enabled +" ]";
     }
 
+    @Transient
     public String getFullName() {
         return firstName + " " + lastName;
     }

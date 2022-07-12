@@ -1,5 +1,5 @@
 import { Form, Modal, FloatingLabel, Row, Button, Alert } from "react-bootstrap";
-import { useRef, useState } from "react";
+import { useRef, useState , useEffect} from "react";
 import { useNavigate } from "react-router";
 import useAuth from "../custom_hooks/use-auth";
 import { SPINNERS_BORDER_HTML, isTokenExpired } from "../utilities";
@@ -15,30 +15,18 @@ const EditReview = ({ data, setData, updateReview }) => {
     const toggleAlert = () => {
         setAlert({...alert, show: !alert.show})
     }
+
+    
+    useEffect(() => {
+        setAlert(s => ({ ...s, show: false }))
+    }, [data.show]);
+    useEffect(() => {
+        alertRef.current && alertRef.current.focus()
+    }, [alert])
     
     const hideModal = () => {
         setData({...data, show: false})
     }
-
-    // const handleInput = (event) => {
-    //     setForm({
-    //         ...review,
-    //         [event.target.id]: event.target.value
-    //     })
-    // }
-
-    // const handleSelect = (e, which) => {
-    //     if (which === "c") {
-    //         const id = Number(e.target.value);
-    //         const country = countries.find(c => c.id === id);
-    //         setCountry({ ...country })
-    //         setForm(s=>({...s, country}))
-    //     } else if (which === "s") {
-    //         const state = e.target.value;
-    //         setState(state)
-    //         setForm(s=>({...s, state}))
-    //     }
-    // }
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -77,7 +65,7 @@ const EditReview = ({ data, setData, updateReview }) => {
             <Modal.Header closeButton>
                 <Modal.Title>Edit Review (ID : {review.id})</Modal.Title>
             </Modal.Header>
-            <Modal.Body className="border modal-body">
+            <Modal.Body className="border my-modal-body">
                 <Alert ref={alertRef} tabIndex={-1} variant={alert.variant} show={alert.show} dismissible onClose={toggleAlert}>
                     {alert.message}
                 </Alert>
@@ -99,6 +87,10 @@ const EditReview = ({ data, setData, updateReview }) => {
                     <Form.Group className="my-3 row justify-content-center mx-0" controlId="rating">
                         <Form.Label className="form-label">Rating:</Form.Label>
                         <Form.Control readOnly value={review?.rating ?? ""} className="form-input"/>
+                    </Form.Group>
+                    <Form.Group className="my-3 row justify-content-center mx-0" controlId="votes">
+                        <Form.Label className="form-label">Votes:</Form.Label>
+                        <Form.Control readOnly value={review?.votes ?? ""} className="form-input"/>
                     </Form.Group>
                     <Form.Group className="my-3 row justify-content-center mx-0">
                         <Form.Label className="form-label">Review Time:</Form.Label>

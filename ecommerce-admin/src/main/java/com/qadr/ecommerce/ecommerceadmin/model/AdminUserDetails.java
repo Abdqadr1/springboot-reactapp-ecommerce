@@ -1,5 +1,6 @@
 package com.qadr.ecommerce.ecommerceadmin.model;
 
+import com.qadr.ecommerce.sharedLibrary.entities.User;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

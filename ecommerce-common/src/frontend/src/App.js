@@ -7,8 +7,8 @@ import Register from "./components/register";
 import ListCategories from "./components/list-categories";
 import useSettings from "./components/use-settings";
 import Category from "./components/category";
-import Product from "./components/product";
-import ProductSearch from "./components/product-search";
+import Product from "./components/products/product";
+import ProductSearch from "./components/products/product-search";
 import RegisterSuccess from "./components/register-success";
 import "./css/home.css";
 import Logout from "./components/logout";
@@ -22,6 +22,9 @@ import Addresses from "./components/addresses";
 import Checkout from "./components/checkout";
 import Orders from "./components/orders/orders";
 import Reviews from "./components/review_s.js/reviews";
+import ProductReviews from "./components/products/product_reviews";
+import Questions from "./components/questions/questions";
+import ProductQuestions from "./components/products/product_questions";
 function App() {
   
   // if ("serviceWorker" in window.navigator) {
@@ -62,6 +65,9 @@ function App() {
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/orders" element={<Orders />} />
                 <Route path="/reviews" element={<Reviews />} />
+                <Route path="/product_reviews/:id" element={<ProductReviews />} />
+                <Route path="/questions" element={<Questions />} />
+                <Route path="/product_questions/:id" element={<ProductQuestions/>} />
                 <Route path="*" element={<div className="my-4">Not found</div>} />
             </Routes>
             </div>

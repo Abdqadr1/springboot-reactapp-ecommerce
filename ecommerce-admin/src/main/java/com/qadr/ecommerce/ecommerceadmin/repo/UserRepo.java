@@ -1,6 +1,6 @@
 package com.qadr.ecommerce.ecommerceadmin.repo;
 
-import com.qadr.ecommerce.ecommerceadmin.model.User;
+import com.qadr.ecommerce.sharedLibrary.entities.User;
 import com.qadr.ecommerce.sharedLibrary.repo.SearchRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

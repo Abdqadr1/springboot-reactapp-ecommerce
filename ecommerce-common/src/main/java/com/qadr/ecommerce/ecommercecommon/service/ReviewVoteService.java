@@ -22,17 +22,10 @@ public class ReviewVoteService {
     @Autowired private ReviewVoteRepo repo;
     @Autowired private ReviewRepository reviewRepository;
 
-    public void voteUp(Integer reviewId, Customer customer){
-
-    }
-    public void voteDown(Integer reviewId, Customer customer){
-
-    }
-
     public VoteResult doVote(Integer reviewId,Customer customer, VoteType voteType){
         Review review = reviewRepository
                 .findById(reviewId)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "The view ID " + reviewId + " no longer exists"));
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "The Review ID " + reviewId + " no longer exists"));
         final VoteResult[] voteResult = new VoteResult[1];
         repo.findByReviewAndCustomer(review, customer)
                 .map(vote -> {

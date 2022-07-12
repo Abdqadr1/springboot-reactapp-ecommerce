@@ -54,14 +54,14 @@ const SalesReport = () => {
         })
             .then(response => {
                 const result = response.data
-                // console.log(result);
+//                 console.log(result);
                 setDivisor(divisor);
                 setData(s => ({...s, [filterType]: result}));
                 setChartTitles(s => ({...s, [filterType] : "Sales in " + title}));
             })
             .catch(error => {
                 const response = error.response;
-                let message = "An error ocurred";
+                let message = "An error occurred";
                 if (response) {
                     message = response.data.message;
                     (isTokenExpired(response))  && navigate("/login/2");
@@ -230,18 +230,6 @@ const SalesReport = () => {
         )
     }
 
-    const onLoad = e => {
-        // console.log("loading...", e);
-        // e.setOnLoadCallback(
-        //      function () {
-        //         setLoading(true);
-        //         const id = filter[filterType];
-        //         const title = id.split("_").join(" ");
-        //         changePage(firstBtn.current, id, divisor, abortController, title, "by_date");
-        //     }
-        // ) 
-    }
-
 
     return ( 
         
@@ -260,7 +248,6 @@ const SalesReport = () => {
                                     (filterType === "date") && 
                                     <div>
                                         <Chart
-                                            onLoad={onLoad}
                                             chartType="ColumnChart"
                                             data={chartData.date}
                                             options={{

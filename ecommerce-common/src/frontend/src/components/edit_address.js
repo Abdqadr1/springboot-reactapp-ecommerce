@@ -114,7 +114,7 @@ const EditAddressModal = ({ countries, showEdit, setShowEdit, updateAddresses, r
             <Modal.Header closeButton>
                 <Modal.Title>Edit Address (ID : {form?.id ?? ""})</Modal.Title>
             </Modal.Header>
-            <Modal.Body className="border modal-body">
+            <Modal.Body className="border my-modal-body">
                 <Alert ref={alertRef} tabIndex={-1} variant={alert.variant} show={alert.show} dismissible onClose={toggleAlert}>
                     {alert.message}
                 </Alert>

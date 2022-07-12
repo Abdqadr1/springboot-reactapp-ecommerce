@@ -2,7 +2,7 @@ package com.qadr.ecommerce.ecommerceadmin.service;
 
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
 import com.qadr.ecommerce.ecommerceadmin.model.AdminUserDetails;
-import com.qadr.ecommerce.ecommerceadmin.model.User;
+import com.qadr.ecommerce.sharedLibrary.entities.User;
 import com.qadr.ecommerce.ecommerceadmin.repo.UserRepo;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import com.qadr.ecommerce.sharedLibrary.util.AmazonS3Util;
@@ -86,12 +86,15 @@ public class UserService implements UserDetailsService {
         return helper.getPageInfo(pageNumber, USERS_PER_PAGE, userRepo);
     }
 
+    public User getByEmail(String email){
+        return userRepo.findByEmail(email)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST,
+                        "Email does not exist"));
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepo.findByEmail(username)
-                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST,
-                        String.format("Email does not exist")));
-
+        User user = getByEmail(username);
         return new AdminUserDetails(user);
     }
 

@@ -5,7 +5,7 @@ import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
-import com.qadr.ecommerce.ecommerceadmin.model.User;
+import com.qadr.ecommerce.sharedLibrary.entities.User;
 
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;

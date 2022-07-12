@@ -3,7 +3,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "./custom_hooks/use-auth";
 import { SPINNERS_BORDER_HTML } from "./utilities";
 import axios from "axios";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 const Login = () => {
     const url = `${process.env.REACT_APP_SERVER_URL}customer/login`;
@@ -84,7 +84,7 @@ const Login = () => {
                         style={{ width: "100%" }}
                     ><i className="bi bi-facebook"></i> &nbsp; Log In with Facebook</a>
                     <div className="text-end my-2"><a href="/forgot-password">Forgot Password ?</a></div>
-                    <div className="mt-2">Don't have an account yet? <a href="/register" className="fw-bold">Sign UP</a></div>
+                    <div className="mt-2">Don't have an account yet? <Link to="/register" className="fw-bold">Sign UP</Link></div>
                 </Col>
             </Row>
         </>

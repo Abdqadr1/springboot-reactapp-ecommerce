@@ -34,6 +34,12 @@ class ProductRepoTest {
     }
 
     @Test
+    void testUpdateProductQuestionsCount(){
+        int id = 43;
+        productRepo.updateProductQuestionCount(id);
+    }
+
+    @Test
     void testCreateDell(){
         Category laptopCategory = entityManager.find(Category.class, 18);
         Brand dellBrand = entityManager.find(Brand.class, 6);

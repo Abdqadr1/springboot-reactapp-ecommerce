@@ -47,7 +47,7 @@ public class PayPalService {
 
     private void checkStatusCode(HttpStatus statusCode) {
         if(!statusCode.equals(HttpStatus.OK)){
-            String message = "";
+            String message;
             switch (statusCode) {
                 case NOT_FOUND -> message = "Order ID not found";
                 case INTERNAL_SERVER_ERROR -> message = "PayPal Server Error";

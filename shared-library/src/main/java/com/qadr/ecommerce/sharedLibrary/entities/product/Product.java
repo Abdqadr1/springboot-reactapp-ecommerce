@@ -63,6 +63,7 @@ public class Product extends IdBasedEntity {
     private Brand brand;
 
     private int reviewCount;
+    private int questionCount;
     private float averageRating;
 
     @Transient private boolean customerCanReview;

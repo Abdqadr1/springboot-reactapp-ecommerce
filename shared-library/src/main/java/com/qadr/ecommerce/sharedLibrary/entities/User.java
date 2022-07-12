@@ -1,4 +1,4 @@
-package com.qadr.ecommerce.ecommerceadmin.model;
+package com.qadr.ecommerce.sharedLibrary.entities;
 
 import com.qadr.ecommerce.sharedLibrary.entities.Constants;
 import lombok.Getter;
@@ -57,6 +57,12 @@ public class User {
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+
+
+    @Transient
+    public String getFullName() {
+        return firstName + " " + lastName;
     }
 
     public void addRole(Role role){

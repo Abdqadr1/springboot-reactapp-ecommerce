@@ -28,12 +28,15 @@
     width: 70% !important;
     color: #495057;
 }
-.modal-body {
+.my-modal-body {
     max-width: 900px;
     margin: 0 auto;
     width: 800px
 }
 .modal.show .modal-dialog{
+    margin-inline: auto;
+}
+.modal.fade .modal-dialog {
     margin-inline: auto;
 }
 
@@ -50,7 +53,7 @@
 /* small phone screen */
 @media screen and (min-width: 200px) and (max-width: 768px) {
 
-    .modal-body,
+    .my-modal-body,
     .product_modal_body {
         width: 100% !important;
     }

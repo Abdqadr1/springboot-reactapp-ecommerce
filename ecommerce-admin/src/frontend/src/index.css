@@ -1,19 +1,19 @@
 body {
   margin: 0;
-  font-family: Overpass, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: Overpass, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.cs{
+.cs {
   cursor: pointer;
 }
 
-*{
+* {
   box-sizing: border-box;
 }
-.site-logo{
+.site-logo {
   display: block;
   width: 90%;
   height: 100px;
@@ -28,7 +28,7 @@ body {
 .cursor-pointer {
   cursor: pointer;
 }
-.word-break{
+.word-break {
   word-break: break-all;
 }
 .hideable-col {
@@ -55,17 +55,16 @@ body {
   width: 100px;
   height: 100px;
 }
-.modal-body {
+.my-modal-body {
   max-width: 900px;
   margin: 0 auto;
   width: 90%;
-  min-width: 700px
+  min-width: 700px;
 }
-.product_modal_body{
-    width: 100% !important;
-    margin: 0 auto;
+.product_modal_body {
+  width: 100% !important;
+  margin: 0 auto;
 }
-
 
 i.delete {
   display: inline-block;
@@ -121,7 +120,7 @@ i.edit:hover {
   margin-bottom: 0 !important;
   color: #495057;
 }
-.data-label{
+.data-label {
   width: 30% !important;
   align-self: center;
   margin-bottom: 0 !important;
@@ -154,7 +153,7 @@ i.edit:hover {
   border-radius: 5px;
 }
 
-.person-span>i {
+.person-span > i {
   display: inline-block;
   font-size: 5em;
 }
@@ -171,13 +170,13 @@ i.edit:hover {
   border-radius: 5px;
 }
 
-.avatar>i {
+.avatar > i {
   display: inline-block;
   font-size: 2em;
 }
 
 /* ipad screen styles  */
-@media screen and (min-width:769px) and (max-width: 1024px) {
+@media screen and (min-width: 769px) and (max-width: 1024px) {
   .hideable-col {
     display: none;
   }
@@ -199,11 +198,13 @@ i.edit:hover {
 
 /* small phone screen */
 @media screen and (min-width: 200px) and (max-width: 768px) {
-  .modal-body, .product_modal_body {
+  .my-modal-body,
+  .product_modal_body {
     min-width: 100% !important;
   }
 
-  .form-label, .data-label{
+  .form-label,
+  .data-label {
     width: 100% !important;
     align-self: center;
     margin-bottom: 10px !important;
@@ -214,7 +215,8 @@ i.edit:hover {
     max-width: 80%;
   }
 
-  .form-input, .data-input {
+  .form-input,
+  .data-input {
     width: 100% !important;
   }
 

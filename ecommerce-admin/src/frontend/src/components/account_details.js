@@ -118,7 +118,7 @@ const AccountDetails = ({show, setShow}) => {
             <Modal.Header closeButton>
                 <Modal.Title>Account Information</Modal.Title>
             </Modal.Header>
-            <Modal.Body className="border modal-body">
+            <Modal.Body className="border my-modal-body">
                 <Alert ref={alertRef} tabIndex={-1} variant={alert.variant} show={alert.show} dismissible onClose={toggleAlert}>
                     {alert.message}
                 </Alert>

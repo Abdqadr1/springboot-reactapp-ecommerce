@@ -1,6 +1,6 @@
 package com.qadr.ecommerce.ecommerceadmin.export;
 
-import com.qadr.ecommerce.ecommerceadmin.model.User;
+import com.qadr.ecommerce.sharedLibrary.entities.User;
 import com.qadr.ecommerce.sharedLibrary.entities.Category;
 import org.supercsv.io.CsvBeanWriter;
 import org.supercsv.io.ICsvBeanWriter;

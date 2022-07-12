@@ -50,4 +50,9 @@ class ReviewVoteRepoTest {
         assertThat(byProductAndCustomer).isPresent();
         System.out.println(byProductAndCustomer.get());
     }
+    @Test
+    void testDeleteByQuestion(){
+        int reviewID = 5;
+        repo.deleteByReview(reviewID);
+    }
 }

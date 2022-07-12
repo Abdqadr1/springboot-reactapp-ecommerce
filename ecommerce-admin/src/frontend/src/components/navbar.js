@@ -68,7 +68,10 @@ const MyNavbar = () => {
                                         }
                                         {
                                             (hasAnyAuthority(auth, ["Admin", "Assistant"]))
-                                            ? <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="/account/reviews">Reviews</Link>
+                                            ? <>
+                                                <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="/account/reviews">Reviews</Link>
+                                                <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="/account/questions">Questions</Link>
+                                            </>
                                             : ""
                                         }
                                         {

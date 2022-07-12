@@ -16,3 +16,18 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+
+.q-icon{
+  position: absolute;
+}
+.q-icon.up {
+  top: -10px;
+}
+.q-icon.down{
+  left: calc(80px + 10px);
+  bottom: -10px;
+}
+.q-s{
+  margin-left: 2em;
+}

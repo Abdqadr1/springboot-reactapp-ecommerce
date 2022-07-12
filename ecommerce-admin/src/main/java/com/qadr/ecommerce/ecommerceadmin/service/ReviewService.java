@@ -5,6 +5,7 @@ import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import com.qadr.ecommerce.sharedLibrary.repo.ProductRepo;
 import com.qadr.ecommerce.sharedLibrary.repo.ReviewRepository;
+import com.qadr.ecommerce.sharedLibrary.repo.ReviewVoteRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import java.util.Map;
 public class ReviewService {
     public static final int REVIEWS_PER_PAGE = 5;
     @Autowired private ReviewRepository repo;
+    @Autowired private ReviewVoteRepo voteRepo;
     @Autowired private ProductRepo productRepo;
 
     private Review get(Integer id){
@@ -35,6 +37,7 @@ public class ReviewService {
     public void deleteReview(Integer id){
         get(id);
         repo.deleteById(id);
+        voteRepo.deleteByReview(id);
     }
 
     public Map<String, Object> getPage(int pageNumber, PagingAndSortingHelper helper){

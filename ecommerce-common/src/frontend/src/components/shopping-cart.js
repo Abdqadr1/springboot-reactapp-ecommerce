@@ -119,9 +119,9 @@ const ShoppingCart = () => {
                                 </Col>
                                 <Col className="text-start">
                                     <h5 className="mb-3">
-                                        <a href={"/p/" + c.product.alias}>
+                                        <Link to={"/p/" + c.product.alias}>
                                              {getShortName(c.product.name, 100)}
-                                        </a>
+                                        </Link>
                                     </h5>
                                     <CartItemQuantity
                                         item={c}
@@ -161,7 +161,7 @@ const ShoppingCart = () => {
         <>
             {
                 (isLoading)
-                    ? <div className="mx-auto" style={{ height: "40vh", display: "grid" }}>{SPINNERS_BORDER}</div>
+                    ? <div className="mx-auto" style={{ height: "30vh", display: "grid" }}>{SPINNERS_BORDER}</div>
                     :  
                     <>
                         <Search />

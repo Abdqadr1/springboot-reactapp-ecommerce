@@ -145,9 +145,9 @@ const Reviews = () => {
          <>
             {
                 (isLoading)
-                    ? <div className="mx-auto" style={{ height: "40vh", display: "grid" }}>{SPINNERS_BORDER}</div>
+                    ? <div className="mx-auto" style={{ height: "30vh", display: "grid" }}>{SPINNERS_BORDER}</div>
                         : <>
-                <h3 className="fw-bold my-3">Reviews Posted by me</h3>
+                <h3 className="fw-bold my-3">Reviews posted by me</h3>
                 <Row className="justify-content-start align-items-center p-1 mx-0">
                     <Col xs={12} md={7} className="my-2">
                         <Form className="row justify-content-between" onSubmit={handleFilter}>

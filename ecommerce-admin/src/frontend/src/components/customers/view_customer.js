@@ -60,7 +60,8 @@ const ViewCustomer = ({ data, setData, updatingCustomer }) => {
     }
 
     useEffect(() => {
-        axios.get(`${url}/countries`, {
+        if (updatingCustomer) {
+            axios.get(`${url}/countries`, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
@@ -72,6 +73,7 @@ const ViewCustomer = ({ data, setData, updatingCustomer }) => {
             .catch(err => {
                 console.error(err)
             })
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -129,7 +131,7 @@ const ViewCustomer = ({ data, setData, updatingCustomer }) => {
             <Modal.Header closeButton>
                 <Modal.Title>{data.type} Customer (ID : {customer.id})</Modal.Title>
             </Modal.Header>
-            <Modal.Body className="border modal-body">
+            <Modal.Body className="border my-modal-body">
                 <Form className="add-customer-form" onSubmit={handleSubmit}>
                         
                     <Alert ref={alertRef} tabIndex={-1} variant={alert.variant} show={alert.show} dismissible onClose={toggleAlert}>
@@ -151,10 +153,13 @@ const ViewCustomer = ({ data, setData, updatingCustomer }) => {
                                     <Form.Label className="form-label">Email:</Form.Label>
                                     <Form.Control value={form?.email ?? ""} onChange={handleInput}  name="email" type="email" className="form-input" placeholder="Enter email" required maxLength="64"/>
                                 </Form.Group>
-                                <Form.Group className="mb-3 row justify-content-center mx-0" controlId="password">
-                                    <Form.Label className="form-label">Password:</Form.Label>
-                                    <Form.Control value={form?.password ?? ""} onChange={handleInput} name="password" className="form-input" placeholder="Enter password" minLength="8" maxLength="64"/>
-                                </Form.Group>
+                                {
+                                    (data.type === "Edit") &&
+                                    <Form.Group className="mb-3 row justify-content-center mx-0" controlId="password">
+                                        <Form.Label className="form-label">Password:</Form.Label>
+                                        <Form.Control value={form?.password ?? ""} onChange={handleInput} name="password" className="form-input" placeholder="Enter password" minLength="8" maxLength="64"/>
+                                    </Form.Group>
+                                }
                                 <Form.Group className="mb-3 row justify-content-center mx-0" controlId="phoneNumber">
                                     <Form.Label className="form-label">Phone Number:</Form.Label>
                                     <Form.Control value={form?.phoneNumber ?? ""} onChange={handleInput}  name="phoneNumber" className="form-input" placeholder="Enter phone number" required maxLength="15"/>

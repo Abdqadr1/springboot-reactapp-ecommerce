@@ -182,7 +182,7 @@ const Orders = () => {
          <>
             {
                 (isLoading)
-                    ? <div className="mx-auto" style={{ height: "40vh", display: "grid" }}>{SPINNERS_BORDER}</div>
+                    ? <div className="mx-auto" style={{ height: "30vh", display: "grid" }}>{SPINNERS_BORDER}</div>
                         : <>
                 <CustomToast show={toast.show} setToast={setToast} message={toast.message} variant={toast.variant} />
                 <h3 className="fw-bold mt-3">My Orders</h3>

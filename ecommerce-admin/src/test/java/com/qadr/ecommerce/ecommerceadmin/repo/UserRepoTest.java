@@ -1,7 +1,7 @@
 package com.qadr.ecommerce.ecommerceadmin.repo;
 
-import com.qadr.ecommerce.ecommerceadmin.model.Role;
-import com.qadr.ecommerce.ecommerceadmin.model.User;
+import com.qadr.ecommerce.sharedLibrary.entities.Role;
+import com.qadr.ecommerce.sharedLibrary.entities.User;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -52,16 +52,17 @@ const Login = () => {
 
     useEffect(() => {
         const type = Number(out)
-        if (type === 1) setParam({ show: '', message: "You logged out" })
-        else if(type === 2) setParam({ show: '', message: "You've been logged out" })
+        if (type === 1) setParam({ show: ' text-warning', message: "You logged out" })
+        if(type === 2) setParam({ show: ' text-warning', message: "You've been logged out" })
     }, [out])
 
     return ( 
         <Row className="login-body p-3 justify-content-center mx-0">
-            <Col xs={12} md={8} lg={6} className="border p-4 rounded h-fit-content my-auto">
+            <Col xs={12} md={8} lg={6} className="h-fit-content my-auto">
                 <img className='login-logo' alt="logo" src={SITE_LOGO} />
-                <Form className="" onSubmit={handleSubmit} encType="multipart/form-data">
-                    <h4 className={`text-center py-3` + param.show}>{param.message}</h4>
+                <h4 className={`text-center py-3` + param.show}>{param.message}</h4>
+                <Form className="border pt-2 pb-5 px-3 rounded" onSubmit={handleSubmit}>
+                    <h5 className={`text-center py-3`}>Access to QShop Control Panel</h5>
                     <Alert ref={alertRef} className="text-center" tabIndex={-1} variant="danger" show={alert.show} dismissible onClose={toggleAlert}>
                         {alert.msg}
                     </Alert>
@@ -73,7 +74,7 @@ const Login = () => {
                         <Form.Label className="mb-2">Password:</Form.Label>
                         <Form.Control value={form.password} onInput={handleInput} required type="password" />
                     </Form.Group>
-                    <Button ref={buttonRef} variant="secondary" type="submit">
+                    <Button ref={buttonRef} variant="primary" type="submit" className="mx-auto d-block">
                         Log In
                     </Button>
                 </Form>

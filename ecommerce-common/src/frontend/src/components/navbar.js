@@ -233,7 +233,7 @@ const NavBar = () => {
                     <Modal.Header closeButton>
                         <Modal.Title>Account Information</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body className="border modal-body">
+                    <Modal.Body className="border my-modal-body">
                         <Form className="form-input mx-auto" onSubmit={handleSubmitEditInfo} data-action="update-customer">
                                 
                             <Alert className="text-center" ref={alertRef} tabIndex={-1} variant={alert.variant} show={alert.show} dismissible onClose={toggleAlert}>

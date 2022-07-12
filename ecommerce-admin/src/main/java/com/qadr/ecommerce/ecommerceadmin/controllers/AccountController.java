@@ -1,11 +1,10 @@
 package com.qadr.ecommerce.ecommerceadmin.controllers;
 
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
-import com.qadr.ecommerce.ecommerceadmin.model.User;
+import com.qadr.ecommerce.sharedLibrary.entities.User;
 import com.qadr.ecommerce.ecommerceadmin.repo.UserRepo;
 import com.qadr.ecommerce.ecommerceadmin.service.UserService;
 import com.qadr.ecommerce.sharedLibrary.util.AmazonS3Util;
-import com.qadr.ecommerce.sharedLibrary.util.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.StringUtils;

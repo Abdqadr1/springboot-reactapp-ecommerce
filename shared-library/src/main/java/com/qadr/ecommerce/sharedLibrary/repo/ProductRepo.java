@@ -52,4 +52,11 @@ public interface ProductRepo extends SearchRepository<Product, Integer> {
     @Modifying
     void updateProductRating(Integer productId);
 
+    @Query("UPDATE Product p SET p.questionCount = " +
+            "COALESCE((SELECT COUNT(q.id) FROM Question q " +
+            "WHERE q.product.id = ?1 AND q.answerContent != '' AND " +
+            "q.answerTime != NULL AND q.approvalStatus = true), 0) WHERE p.id = ?1")
+    @Modifying
+    void updateProductQuestionCount(Integer productId);
+
 }

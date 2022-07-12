@@ -90,7 +90,7 @@ export function listProducts(results, keyword, type="category", formatPrice){
     const voteReview = (str, r, updateReviews, ctx) => {
         const { auth, setAuth } = ctx;
         if (auth === null || auth === undefined) {
-            alert("You need to login to vote reviews");
+            updateReviews(r, "You need to login to vote reviews");
             return;
         }
         const url = process.env.REACT_APP_SERVER_URL + "review_vote/vote/" + r.id + "/" + str;
@@ -111,7 +111,7 @@ export function listProducts(results, keyword, type="category", formatPrice){
                 } else {
                     r.customerVote = 0;
                 }
-                updateReviews(r);
+                updateReviews(r, data.message);
             }
         }).catch(err => {
             console.log(err)
@@ -126,13 +126,15 @@ export function listReviews(reviews, updateReviews, ctx) {
     return reviews.map(r => <Col key={r.id} className="text-start py-2 border-top" sm={11}>
             <div className = "d-flex justify-content-start align-items-center my-2">
                 <StarRatings 
-                    starDimension="25px"
+                    starDimension="1.2em"
                     starSpacing="5px" rating={r.rating}
                     starRatedColor="yellow" />
                 <div className="ms-2 d-flex justify-content-start align-items-center flex-wrap">
-                    <i onClick={()=>cb('up', r)} className={`bi bi-hand-${(r.customerVote===1) ? 'thumbs-up-fill':'thumbs-up'} fs-5 cs text-primary`}></i> &nbsp; &nbsp;
+                    <i onClick={()=>cb('up', r)} 
+                        className={`bi bi-hand-${(r.customerVote===1) ? 'thumbs-up-fill':'thumbs-up'} fs-6 cs text-primary`}></i> &nbsp; &nbsp;
                     <span>{r.votes} votes</span> &nbsp; &nbsp;
-                    <i onClick={()=>cb('down', r)} className={`bi bi-hand-${(r.customerVote===-1) ? 'thumbs-down-fill':'thumbs-down'} fs-5 cs text-primary`}></i>
+                    <i onClick={()=>cb('down', r)} 
+                        className={`bi bi-hand-${(r.customerVote===-1) ? 'thumbs-down-fill':'thumbs-down'} fs-6 cs text-primary`}></i>
                 </div>
             </div>
             <div className="ms-3 mt-2">
@@ -140,11 +142,69 @@ export function listReviews(reviews, updateReviews, ctx) {
                 <p className="mb-1">{r.comment}</p>
             </div>
             <div className="ms-4">
-                {r.customer.fullName} &nbsp; {formatDate(r.reviewTime, "short", "short")}
+                {r.customer.fullName} &nbsp; {r.formattedTime}
             </div>
         </Col>
         )
     }
+    
+export const voteQuestion = (str, r, updateQuestion, ctx) => {
+        const { auth, setAuth } = ctx;
+        if (auth === null || auth === undefined) {
+            updateQuestion(r, "You need to login to vote questions");
+            return;
+        }
+        const url = process.env.REACT_APP_SERVER_URL + "question_vote/vote/" + r.id + "/" + str;
+        axios.post(url, null, {
+            headers: {
+                "Authorization": `Bearer ${auth.accessToken}`
+            }
+        })
+        .then(res => {
+            const data = res.data;
+            if (data.successful) {
+                r.votes = data.voteCount;
+                const oldVote = r.customerVote;
+                if ((oldVote === 0 && str === 'up') || (oldVote === -1 && str === 'up')) {
+                    r.customerVote = 1;
+                } else if ((oldVote === 0 && str === 'down') || (oldVote === 1 && str === 'down')) {
+                    r.customerVote = -1;
+                } else {
+                    r.customerVote = 0;
+                }
+                updateQuestion(r, data.message);
+            }
+        }).catch(err => {
+            console.log(err)
+            if (isTokenExpired(err?.response)) {
+                setAuth(null); window.open('/login');
+            }
+        });
+    }
+
+export const listQuestions = (questions, updateQuestions, ctx) => {
+    const cb = (str, q) => voteQuestion(str, q, updateQuestions, ctx);
+    return questions.map(q => <Col key={q.id} className="text-start py-2 border-top" sm={11}>
+            <div className="ms-2 d-flex justify-content-start align-items-center flex-wrap">
+                <strong>Question: </strong> &nbsp; &nbsp;
+                <i onClick={()=>cb('up', q)} 
+                    className={`bi bi-hand-${(q.customerVote===1) ? 'thumbs-up-fill':'thumbs-up'} fs-6 cs text-primary`}></i> &nbsp; &nbsp;
+                <span>{q.votes} votes</span> &nbsp; &nbsp;
+                <i onClick={()=>cb('down', q)} 
+                    className={`bi bi-hand-${(q.customerVote===-1) ? 'thumbs-down-fill':'thumbs-down'} fs-6 cs text-primary`}></i>
+            </div>
+            <div className="my-2 ms-2">{q.questionContent}</div>
+            <div className="my-2 ms-4">{`${q.asker.fullName}, ${q.formattedAskTime}`}</div>
+
+            {(q.isAnswered) && <div className="ms-2">
+                <div className="my-2"><strong>Answer: </strong></div>
+                <div className="my-2 ms-2">{q.answerContent}</div>
+                <div className="my-2 ms-4">{`${q.answerer.fullName}, ${q.formattedAnswerTime}`}</div>
+            </div>
+            }
+        </Col>
+        )
+}
 
 export const isTokenExpired = (response) => {
     if (response === undefined) return false;

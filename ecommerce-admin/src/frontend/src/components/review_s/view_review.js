@@ -9,9 +9,9 @@ const ViewReview = ({ data, setData }) => {
     return ( 
         <Modal show={data.show} fullscreen={true} onHide={hideModal}>
             <Modal.Header closeButton>
-                <Modal.Title>View Review (ID : {review.id})</Modal.Title>
+                <Modal.Title>Review Details (ID : {review.id})</Modal.Title>
             </Modal.Header>
-            <Modal.Body className="border modal-body">
+            <Modal.Body className="border my-modal-body">
                 <fieldset disabled>
                     <Form.Group className="my-3 row justify-content-center mx-0" controlId="firstName">
                         <Form.Label className="form-label">Review ID:</Form.Label>
@@ -37,6 +37,10 @@ const ViewReview = ({ data, setData }) => {
                     <Form.Group className="my-3 row justify-content-center mx-0" controlId="rating">
                         <Form.Label className="form-label">Rating:</Form.Label>
                         <Form.Control readOnly value={review?.rating ?? ""} name="password" className="form-input"/>
+                    </Form.Group>
+                    <Form.Group className="my-3 row justify-content-center mx-0" controlId="votes">
+                        <Form.Label className="form-label">Votes:</Form.Label>
+                        <Form.Control readOnly value={review?.votes ?? ""} name="password" className="form-input"/>
                     </Form.Group>
                     <Form.Group className="my-3 row justify-content-center mx-0" controlId="phoneNumber">
                         <Form.Label className="form-label">Comment:</Form.Label>

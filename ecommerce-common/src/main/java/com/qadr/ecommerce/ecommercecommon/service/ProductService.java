@@ -1,14 +1,20 @@
 package com.qadr.ecommerce.ecommercecommon.service;
 
+import com.qadr.ecommerce.sharedLibrary.entities.Customer;
 import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
+import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import com.qadr.ecommerce.sharedLibrary.repo.ProductRepo;
+import com.qadr.ecommerce.sharedLibrary.repo.QuestionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
+
 @Service
 public class ProductService {
     @Autowired private ProductRepo productRepository;

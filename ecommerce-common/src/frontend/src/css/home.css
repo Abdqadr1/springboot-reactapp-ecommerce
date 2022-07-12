@@ -26,6 +26,10 @@ a:hover{
     width: 92%;
     max-height: 300px;
 }
+.main-image-product {
+    width: 80%;
+    aspect-ratio: 1;
+}
 .small-img{
     width: 50px;
     height: 50px;

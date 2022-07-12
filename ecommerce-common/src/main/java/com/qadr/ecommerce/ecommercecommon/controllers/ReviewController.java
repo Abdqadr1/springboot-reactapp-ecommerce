@@ -16,7 +16,6 @@ import java.util.Map;
 @RequestMapping("/review")
 public class ReviewController {
     @Autowired private ReviewService reviewService;
-    @Autowired private CustomerService customerService;
     @Autowired private ControllerHelper controllerHelper;
 
     @GetMapping("/page/{number}")

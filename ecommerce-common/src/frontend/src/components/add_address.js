@@ -93,7 +93,7 @@ const AddAddressModal = ({ countries, show, setShow,setAdd }) => {
             <Modal.Header closeButton>
                 <Modal.Title>Add New Shipping Rate</Modal.Title>
             </Modal.Header>
-            <Modal.Body className="border modal-body">
+            <Modal.Body className="border my-modal-body">
                 <Alert ref={alertRef} tabIndex={-1} variant={alert.variant} show={alert.show} dismissible onClose={toggleAlert}>
                     {alert.message}
                 </Alert>

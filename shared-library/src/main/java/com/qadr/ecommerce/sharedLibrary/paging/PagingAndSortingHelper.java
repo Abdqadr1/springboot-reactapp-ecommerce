@@ -1,13 +1,11 @@
 package com.qadr.ecommerce.sharedLibrary.paging;
 
 import com.qadr.ecommerce.sharedLibrary.entities.Customer;
+import com.qadr.ecommerce.sharedLibrary.entities.question.Question;
 import com.qadr.ecommerce.sharedLibrary.entities.review.Review;
 import com.qadr.ecommerce.sharedLibrary.entities.order.Order;
 import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
-import com.qadr.ecommerce.sharedLibrary.repo.OrderRepo;
-import com.qadr.ecommerce.sharedLibrary.repo.ProductRepo;
-import com.qadr.ecommerce.sharedLibrary.repo.ReviewRepository;
-import com.qadr.ecommerce.sharedLibrary.repo.SearchRepository;
+import com.qadr.ecommerce.sharedLibrary.repo.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.Page;
@@ -100,10 +98,28 @@ public class PagingAndSortingHelper {
         return mapInfo(number, pageSze, page);
     }
 
+    public Map<String, Object> getCustomerQuestions(int number, Customer customer, int pageSze, QuestionRepo repo) {
+        Sort sort = Sort.by(sortField);
+        sort = (dir.equals("asc")) ? sort.ascending() : sort.descending();
+        PageRequest pageable = PageRequest.of(number - 1, pageSze, sort);
+        Page<Question> page =
+                (keyword == null || keyword.isBlank()) ? repo.findByAsker(customer, pageable) :
+                        repo.searchByCustomer(keyword, customer.getId(), pageable);
+        return mapInfo(number, pageSze, page);
+    }
     public Map<String, Object> getProductReviews(int number, Product product, int pageSze, ReviewRepository repo) {
-        Sort sort = Sort.by("votes").descending();
+        if(sortField == null) sortField = "votes";
+        Sort sort = Sort.by(sortField).descending();
         PageRequest pageable = PageRequest.of(number - 1, pageSze, sort);
         Page<Review> page =  repo.findAllByProduct(product, pageable);
+        return mapInfo(number, pageSze, page);
+    }
+
+    public Map<String, Object> getProductQuestions(Integer number, Integer productID, int pageSze, QuestionRepo repo) {
+        if(sortField == null) sortField = "votes";
+        Sort sort = Sort.by(sortField).descending();
+        PageRequest pageable = PageRequest.of(number - 1, pageSze, sort);
+        Page<Question> page =  repo.findAllByProduct(productID, pageable);
         return mapInfo(number, pageSze, page);
     }
 }
