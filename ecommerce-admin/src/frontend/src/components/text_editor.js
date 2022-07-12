@@ -1,44 +1,60 @@
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css"; 
+
+import { useQuill } from 'react-quilljs';
+import 'quill/dist/quill.snow.css'; 
+import { useEffect } from 'react';
 const TextEditor = ({placeholder, text, setText, disabled, width, height}) => {
-
-
-  function handleChange(value) {
-    if(setText) setText(value)
-  }
-
+  const theme = 'snow';
+  // const theme = 'bubble';  
   const modules = {
-    toolbar: [
-      [{ 'header': [1, 2, false] }],
-      ['bold', 'italic', 'underline','strike', 'blockquote'],
-      [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' },
-        { 'background': [] }, { 'color': ['#f8f9fa', '##212529','#198754','#ffc107', '#6c757d', '#dc3545','#343a40','#0d6efd', '#198754', 'custom-color'] },
-      ],
-      
-      ['link', 'image'],
-      ['clean']
-    ],
-  }
+  toolbar: [
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ align: [] }],
+
+    [{ list: 'ordered'}, { list: 'bullet' }],
+    [{ indent: '-1'}, { indent: '+1' }],
+
+    [{ size: ['small', false, 'large', 'huge'] }],
+    [{ header: [1, 2, 3, 4, 5, 6, false] }],
+    ['link', 'image', 'video'],
+    [{ color: [] }, { background: [] }],
+
+    ['clean'],
+  ],
+  clipboard: {
+    matchVisual: false,
+  },
+}
  
   const formats = [
-    'header',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet', 'indent','align',
-    'link', 'image', 'background', 'color'
+    'bold', 'italic', 'underline', 'strike',
+    'align', 'list', 'indent',
+    'size', 'header',
+    'link', 'image', 'video',
+    'color', 'background',
+    'clean',
   ]
+  const { quill, quillRef } = useQuill({ theme, modules, formats, placeholder });
+  useEffect(() => {
+    if (quill) {
+        quill.clipboard.dangerouslyPasteHTML(text);
+        quill.on('text-change', (delta, oldDelta, source) => {
+          setText(quill.root.innerHTML);
+        });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quill, text]);
+
+
+
 
 
 return (
-  <ReactQuill
-    readOnly={disabled ?? false}
-    theme="snow"
-    className={`mb-5 text-editor ${width} ${height}`}
-    value={text}
-    onChange={handleChange}
-    placeholder={placeholder ?? ""}
-    modules={modules}
-    formats={formats}
-  />
+  <div className={`mb-5 text-editor ${width} ${height}`}>
+    <div style={{ height: 300 }}>
+          <div ref={quillRef} />
+    </div>
+  </div>
+  
 );
      
 }
