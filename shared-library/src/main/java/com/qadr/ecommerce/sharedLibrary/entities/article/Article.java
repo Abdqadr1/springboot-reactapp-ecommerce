@@ -9,6 +9,7 @@ import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity @Table(name = "articles")
@@ -39,4 +40,10 @@ public class Article  extends IdBasedEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+
+    public String getFormattedUpdatedTime(){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        return dateFormat.format(updatedTime);
+    }
 }

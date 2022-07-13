@@ -7,7 +7,7 @@ import MyPagination from "../paging";
 import Review from "./review";
 import { Navigate, useNavigate } from 'react-router-dom';
 import useAuth from "../custom_hooks/use-auth";
-import { isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, SPINNERS_BORDER } from "../utilities";
+import { isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, SPINNERS_BORDER, hasAnyAuthority } from "../utilities";
 import useThrottle from "../custom_hooks/use-throttle";
 import useArray from "../custom_hooks/use-array";
 import useSettings from "../custom_hooks/use-settings";
@@ -20,7 +20,10 @@ const Reviews = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "review/";
     const [width, setWidth] = useState(window.innerWidth);
     const navigate = useNavigate();
-    const [{accessToken}] = useAuth();
+    const [auth, ] = useAuth();    
+    const {accessToken} = auth;
+    const abortController = useRef(new AbortController());
+
     const [keyword, setKeyword] = useState("");
     const searchBtnRef = useRef();
     const [isLoading, setLoading] = useState(true);
@@ -85,7 +88,11 @@ const Reviews = () => {
     
 
     useEffect(() => {
-        changePage(pageInfo.number, keyword)
+        abortController.current = new AbortController();
+        changePage(pageInfo.number, keyword);
+        return ()=> {
+            abortController.current.abort();
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [changePage, pageInfo?.number])
     
@@ -119,7 +126,8 @@ const Reviews = () => {
         axios.get(url, {
              headers: {
                  "Authorization": `Bearer ${accessToken}`
-             }
+             },
+             signal: abortController.current.signal
         })
             .then(() => {
                 removeReview({id})
@@ -174,7 +182,9 @@ const Reviews = () => {
                 : <div className="text-center">No review found</div>)
     }
 
-    if(!accessToken) return <Navigate to="/login/2" />
+    if(!accessToken) return <Navigate to="/login/2" />    
+    if(!hasAnyAuthority(auth, ["Admin", "Assistant"])) return <Navigate to="/403" />
+
     return ( 
           <>
             {

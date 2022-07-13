@@ -1,10 +1,10 @@
 import { Tabs, Tab, Card, Button } from "react-bootstrap";
 import "../css/sales_report.css";
 import { useState, useEffect, useCallback,useMemo, useRef } from "react";
-import { SPINNERS_BORDER, SPINNERS_BORDER_HTML, isTokenExpired, formatPrice} from "./utilities";
+import { SPINNERS_BORDER, SPINNERS_BORDER_HTML, isTokenExpired, formatPrice, hasAnyAuthority} from "./utilities";
 import axios from "axios";
 import useAuth from "./custom_hooks/use-auth";
-import { useNavigate } from "react-router";
+import { useNavigate, Navigate } from "react-router";
 import useSettings from "./custom_hooks/use-settings";
 import { Chart } from "react-google-charts";
 import CustomToast from "./custom_toast";
@@ -20,7 +20,9 @@ const SalesReport = () => {
     const [customDates, setCustomDates] = useState({start: "", end: ""})
     const [data, setData] = useState({date: [], category: [], product: []});
     const headers = ["Total Gross Sales:", "Total Net Sales:", "Avg. Gross Sales:", "Avg. Net Sales:", "Total Products:"]
-    const [{ accessToken }] = useAuth();
+    const [auth, ] = useAuth();    
+    const {accessToken} = auth;
+
     const dayInMilliSeconds = 1000 * 60 * 60 * 24;
     const abortController = new AbortController();
     const settings = useSettings();
@@ -143,7 +145,6 @@ const SalesReport = () => {
 
     useEffect(() => {
         return () => {
-            console.log("cleaning up...")
             abortController.abort()
       }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -231,6 +232,9 @@ const SalesReport = () => {
     }
 
 
+    
+    if(!accessToken) return <Navigate to="/login/2" />
+    if(!hasAnyAuthority(auth, ["Admin", "Salesperson"])) return <Navigate to="/403" />
     return ( 
         
          <>

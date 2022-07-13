@@ -20,6 +20,7 @@ const Products = () => {
     const navigate = useNavigate();
     const [auth] = useAuth();
     const accessToken = auth.accessToken;
+    const abortController = useRef(new AbortController());
     
     const [keyword, setKeyword] = useState("");
     const searchBtnRef = useRef();
@@ -57,7 +58,8 @@ const Products = () => {
         axios.get(url, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
-            }
+            },
+             signal: abortController.current.signal
         })
             .then(response => {
                 const data = response.data
@@ -92,7 +94,11 @@ const Products = () => {
     useEffect(()=>{document.title = `Products - ${SITE_NAME}`},[SITE_NAME])
     
     useEffect(() => {
+        abortController.current = new AbortController();
         changePage(pageInfo.number, keyword)
+        return ()=> {
+            abortController.current.abort();
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [changePage, pageInfo?.number])
     
@@ -113,7 +119,8 @@ const Products = () => {
         axios.get(url, {
              headers: {
                  "Authorization": `Bearer ${accessToken}`
-             }
+             },
+             signal: abortController.current.signal
         })
             .then(() => {
                 alterArrayDelete(products, id, setProducts)
@@ -173,6 +180,7 @@ const Products = () => {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
+          signal: abortController.current.signal
         })
         .then((response) => {
           alterArrayEnable(products, id, status, setProducts);
@@ -193,7 +201,8 @@ const Products = () => {
                 : <div className="text-center">No Product found</div>)
     }
 
-    if(!accessToken) return <Navigate to="/login/2" />
+    if(!accessToken) return <Navigate to="/login/2" />    
+    if(!hasAnyAuthority(auth, ["Admin", "Salesperson", "Editor", "Shipper"])) return <Navigate to="/403" />
     return ( 
         <>
         {

@@ -328,10 +328,10 @@ const UpdateProduct = ({ updateProduct, setUpdateProduct, updatingProduct, brand
                         </Tab>
                         <Tab eventKey="description" title="Description">
                             <h4>Short description</h4>
-                            <TextEditor text={shortDescription} setText={setShortDescription} placeholder ="Short description..." />
+                            <TextEditor height="big-height" text={product?.shortDescription ?? ""} setText={setShortDescription} placeholder ="Short description..." />
 
                             <h4>Full description</h4>
-                            <TextEditor text={fullDescription} setText={setFullDescription} placeholder="Full description..." />
+                            <TextEditor height="big-height" text={product?.fullDescription ?? ""} setText={setFullDescription} placeholder="Full description..." />
                         </Tab>
                         <Tab eventKey="images" title="Images">
                             {/* main image row */}
@@ -396,17 +396,14 @@ const UpdateProduct = ({ updateProduct, setUpdateProduct, updatingProduct, brand
                             </Form.Group>
                         </Tab>
                     </Tabs>
-                    <Row className="justify-content-center">
-                    <div className="w-25"></div>
-                    <div className="form-input ps-0 my-3">
+                    <div className="d-flex flex-wrap justify-content-center">
                         <Button ref={submitBtnRef} className="fit-content mx-1" variant="primary" type="submit">
                             Save
                         </Button>
                         <Button onClick={handleReset}  className="fit-content mx-1" variant="secondary" type="reset">
                             Clear
                         </Button>
-                    </div>
-                </Row>          
+                    </div>   
                 </Form>
             </Modal.Body>
       </Modal>

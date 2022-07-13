@@ -1,0 +1,10 @@
+.div-view{
+    min-height: 6em;
+    max-height: 25em;
+    overflow: auto;
+}
+.article-modal-body{
+    width: 95%;
+    max-width: 95%;
+    margin: 0 auto;
+}

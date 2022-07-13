@@ -54,14 +54,14 @@ public class ArticleService {
         article.setUpdatedTime(new Date());
         return repo.save(article);
     }
-    public Article updateArticle(Article article){
+    public Article updateArticle(Article article, User user){
         if (article.getId() != null){
             Article articleInDb = get(article.getId());
             validateArticleUniqueProps(article, article.getId());
             if(article.getAlias().isBlank()){
                 article.setAlias(articleInDb.getAlias());
             }
-            article.setUser(articleInDb.getUser());
+            article.setUser(user);
             article.setUpdatedTime(new Date());
             return repo.save(article);
         }else throw new CustomException(HttpStatus.BAD_REQUEST, "Invalid request");

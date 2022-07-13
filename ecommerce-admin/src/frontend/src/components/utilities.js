@@ -103,6 +103,7 @@ export const getAccessToken = () => {
 }
 
 export const isTokenExpired = (response) => {
+    if(response === null || response === undefined) return false;
     const message = response.data.message.toLowerCase()
     if (Number(response.status) === 400
         && message.indexOf("token") > -1

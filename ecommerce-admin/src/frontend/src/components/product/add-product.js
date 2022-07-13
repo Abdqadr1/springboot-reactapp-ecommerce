@@ -229,10 +229,10 @@ const AddProduct = ({ showAddProduct, setShowAddProduct, addingProduct, brands }
                         </Tab>
                         <Tab eventKey="description" title="Description">
                             <h4>Short description</h4>
-                            <TextEditor text={shortDescription} setText={setShortDescription} placeholder ="Short description..." />
+                            <TextEditor height="big-height" text={shortDescription} setText={setShortDescription} placeholder ="Short description..." />
 
                             <h4>Full description</h4>
-                            <TextEditor text={fullDescription} setText={setFullDescription} placeholder="Full description..." />
+                            <TextEditor height="big-height" text={fullDescription} setText={setFullDescription} placeholder="Full description..." />
                         </Tab>
                         <Tab eventKey="images" title="Images">
                             <Row className="justify-content-start">

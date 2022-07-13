@@ -24,7 +24,7 @@ public class ArticleController {
         return articleService.getPage(number, helper);
     }
 
-    @PostMapping("/add")
+    @PostMapping("/new")
     public Article addArticle(Article article){
         User user = controllerHelper.getUserDetails();
         return articleService.saveArticle(article, user);
@@ -32,7 +32,8 @@ public class ArticleController {
 
     @PostMapping("/edit")
     public Article updateArticle(Article article){
-        return articleService.updateArticle(article);
+        User user = controllerHelper.getUserDetails();
+        return articleService.updateArticle(article, user);
     }
 
     @GetMapping("/{id}/enable/{status}")

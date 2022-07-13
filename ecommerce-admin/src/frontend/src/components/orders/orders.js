@@ -25,6 +25,7 @@ const Orders = () => {
     const navigate = useNavigate();
     const [auth] = useAuth();
     const accessToken = auth.accessToken;
+    const abortController = useRef(new AbortController());
     
     const [keyword, setKeyword] = useState("");
     const searchBtnRef = useRef();
@@ -74,7 +75,8 @@ const Orders = () => {
         axios.get(url, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
-            }
+            },
+            signal: abortController.current.signal
         })
             .then(response => {
                 const data = response.data;
@@ -119,7 +121,11 @@ const Orders = () => {
     }
     
     useEffect(() => {
-        changePage(pageInfo.number, keyword)
+        abortController.current = new AbortController();
+        changePage(pageInfo.number, keyword);
+        return ()=> {
+            abortController.current.abort();
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [changePage, pageInfo?.number])
     
@@ -136,7 +142,8 @@ const Orders = () => {
         axios.get(url, {
              headers: {
                  "Authorization": `Bearer ${accessToken}`
-             }
+             },
+             signal: abortController.current.signal
         })
             .then(() => {
                 alterArrayDelete(orders, id, setOrders)
@@ -172,7 +179,8 @@ const Orders = () => {
         axios.post(`${url}${id}/${status}`, null, {
              headers: {
                  "Authorization": `Bearer ${accessToken}`
-             }
+             },
+             signal: abortController.current.signal
         })
         .then((res) => {
             const id = res.data.id, status = res.data.status;
@@ -218,7 +226,8 @@ const Orders = () => {
                 : <div className="text-center">No Order found</div>)
     }
 
-    if(!accessToken) return <Navigate to="/login/2" />
+    if(!accessToken) return <Navigate to="/login/2" />    
+    if(!hasAnyAuthority(auth, ["Admin", "Salesperson", "Shipper"])) return <Navigate to="/403" />
     return ( 
          <>
             {

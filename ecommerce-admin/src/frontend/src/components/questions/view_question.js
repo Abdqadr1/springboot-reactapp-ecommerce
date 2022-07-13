@@ -42,31 +42,31 @@ const ViewQuestion = ({ data, setData }) => {
                         <Form.Label className="form-label">Votes:</Form.Label>
                         <Form.Control readOnly value={question?.votes ?? ""} name="password" className="form-input"/>
                     </Form.Group>
+                    {(question.isAnswered)
+                        ?
+                        <>
+                            <Form.Group className="my-3 row justify-content-center mx-0" controlId="">
+                                <Form.Label className="form-label">Answer:</Form.Label>
+                                <FloatingLabel
+                                controlId="floatingTextarea"
+                                className="mb-3 form-input px-0"
+                            >
+                                <Form.Control style={{ height: 'fit-content' }} className="py-1" as="textarea" readOnly value={question?.answerContent ?? ""}  />
+                            </FloatingLabel>
+                            </Form.Group>
+                            
+                            <Form.Group className="my-3 row justify-content-center mx-0" controlId="answerer">
+                                <Form.Label className="form-label">Answered by:</Form.Label>
+                                <Form.Control readOnly value={question.answerer?.fullName ?? ""} className="form-input"/>
+                            </Form.Group>
+                            <Form.Group className="my-3 row justify-content-center mx-0" controlId="votes">
+                                <Form.Label className="form-label">Answer Time:</Form.Label>
+                                <Form.Control readOnly value={question?.formattedAnswerTime ?? ""} className="form-input"/>
+                            </Form.Group>  
+                        </>
+                        : <div className="fw-bold text-warning text-center">This question has not been answered</div>
+                    }
                 </fieldset>
-                {(question.isAnswered)
-                    ?
-                    <>
-                        <Form.Group className="my-3 row justify-content-center mx-0" controlId="">
-                            <Form.Label className="form-label">Answer:</Form.Label>
-                             <FloatingLabel
-                            controlId="floatingTextarea"
-                            className="mb-3 form-input px-0"
-                        >
-                            <Form.Control style={{ height: 'fit-content' }} className="py-1" as="textarea" readOnly value={question?.answerContent ?? ""}  />
-                        </FloatingLabel>
-                        </Form.Group>
-                        
-                        <Form.Group className="my-3 row justify-content-center mx-0" controlId="answerer">
-                            <Form.Label className="form-label">Answered by:</Form.Label>
-                            <Form.Control readOnly value={question.answerer?.fullName ?? ""} className="form-input"/>
-                        </Form.Group>
-                        <Form.Group className="my-3 row justify-content-center mx-0" controlId="votes">
-                            <Form.Label className="form-label">Answer Time:</Form.Label>
-                            <Form.Control readOnly value={question?.formattedAnswerTime ?? ""} className="form-input"/>
-                        </Form.Group>  
-                    </>
-                    : <div className="fw-bold text-warning text-center">This question has not been answered</div>
-                }
             </Modal.Body>
         </Modal>
      );

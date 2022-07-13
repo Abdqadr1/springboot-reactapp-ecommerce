@@ -33,10 +33,10 @@ const TextEditor = ({placeholder, text, setText, disabled, width, height}) => {
     'color', 'background',
     'clean',
   ]
-  const { quill, quillRef } = useQuill({ theme, modules, formats, placeholder });
+  const { quill, quillRef } = useQuill({ theme, modules, formats, placeholder, readOnly: disabled });
   useEffect(() => {
     if (quill) {
-        quill.clipboard.dangerouslyPasteHTML(text);
+        quill.clipboard.dangerouslyPasteHTML( text );
         quill.on('text-change', (delta, oldDelta, source) => {
           setText(quill.root.innerHTML);
         });
@@ -49,9 +49,9 @@ const TextEditor = ({placeholder, text, setText, disabled, width, height}) => {
 
 
 return (
-  <div className={`mb-5 text-editor ${width} ${height}`}>
-    <div style={{ height: 300 }}>
-          <div ref={quillRef} />
+  <div className={`mb-5 text-editor ${width} ${height} px-0`}>
+    <div>
+          <div style={{ height:'300px', maxHeight: '300px', overflow: 'auto' }} ref={quillRef} />
     </div>
   </div>
   

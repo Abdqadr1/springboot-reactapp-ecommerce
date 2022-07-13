@@ -3,14 +3,17 @@ import {useEffect, useRef, useState } from "react";
 import { Alert, Button, Col, Form, Row, Tab, Tabs, Toast, ToastContainer } from "react-bootstrap";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import "../css/settings.css";
-import { isFileValid, isTokenExpired, showThumbnail,listFormData, SPINNERS_BORDER_HTML } from "./utilities";
+import { isFileValid, isTokenExpired, showThumbnail,listFormData, SPINNERS_BORDER_HTML, hasAnyAuthority } from "./utilities";
 import useAuth from "./custom_hooks/use-auth";
 import useArray from "./custom_hooks/use-array";
 import TextEditor from "./text_editor";
 import useSettings from "./custom_hooks/use-settings";
 
 const SettingsPage = () => {
-    const [{accessToken}] = useAuth()
+    const [auth, ] = useAuth();   
+    const {accessToken} = auth;
+    const abortController = useRef(new AbortController());
+
     const navigate = useNavigate()
     const { which } = useParams();
     const url = process.env.REACT_APP_SERVER_URL + "set";
@@ -39,7 +42,10 @@ const SettingsPage = () => {
     const setOrderMailContent = (content) => setSettings(s=> ({...s, ORDER_CONFIRMATION_CONTENT : content}))
     
     useEffect(() => {
-        axios.get(`${url}/get`)
+        abortController.current = new AbortController();
+        axios.get(`${url}/get`, {
+             signal: abortController.current.signal
+            })
              .then(response => {
                  const data = response.data
                  setCurrencies(data.currencies);
@@ -52,7 +58,9 @@ const SettingsPage = () => {
                  const response = error.response
                 if(isTokenExpired(response)) navigate("/login/2")
              })
-        
+        return ()=> {
+            abortController.current.abort();
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -71,7 +79,8 @@ const SettingsPage = () => {
            axios.post(`${statesUrl}/list`,stateC, {
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
-                }
+                },
+                              signal: abortController.current.signal
             })
             .then(response => {
                 const data = response.data;
@@ -105,7 +114,8 @@ const SettingsPage = () => {
         axios.post(`${url}/${action}`, data, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
-            }
+            },
+                          signal: abortController.current.signal
         })
             .then(response => {
                 console.log(response.data)
@@ -159,7 +169,8 @@ const SettingsPage = () => {
          axios.get(`${countriesUrl}/list`,{
                     headers: {
                         "Authorization": `Bearer ${accessToken}`
-                    }
+                    },
+                                  signal: abortController.current.signal
                 })
              .then(response => {
                  const data = response.data
@@ -226,7 +237,8 @@ const SettingsPage = () => {
             axios.delete(url,{
                     headers: {
                         "Authorization": `Bearer ${accessToken}`
-                    }
+                    },
+                                  signal: abortController.current.signal
                 })
                 .then(() => {
                     type==="country" ? fCountries(country) : fState(state)
@@ -262,7 +274,8 @@ const SettingsPage = () => {
          axios.post(url,data, {
                     headers: {
                         "Authorization": `Bearer ${accessToken}`
-                    }
+                    },
+                                  signal: abortController.current.signal
                 })
                 .then(response => {
                     const data = response.data;
@@ -283,6 +296,8 @@ const SettingsPage = () => {
 
     
     if(!accessToken) return <Navigate to="/login/2" />
+    if(!hasAnyAuthority(auth, ["Admin"])) return <Navigate to="/403" />
+
     return ( 
         <Row className="justify-content-center mx-0">
             <Col md={10} className="border p-4">

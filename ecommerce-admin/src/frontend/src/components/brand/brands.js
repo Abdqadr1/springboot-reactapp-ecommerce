@@ -6,7 +6,7 @@ import MyPagination from "../paging";
 import { Navigate, useNavigate } from 'react-router-dom';
 import {
     alterArrayAdd, alterArrayDelete, alterArrayUpdate, getCategoriesWithHierarchy,
-    isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, SPINNERS_BORDER
+    isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, SPINNERS_BORDER, hasAnyAuthority
 } from "../utilities";
 import Brand from "./brand";
 import AddBrand from './add-brand'
@@ -19,8 +19,9 @@ const Brands = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "brand/";
     const [width, setWidth] = useState(window.innerWidth);
     const navigate = useNavigate();
-    const [{accessToken}] = useAuth();
-    
+    const [auth,] = useAuth();
+    const {accessToken} = auth;
+    const abortController = useRef(new AbortController());
     const [keyword, setKeyword] = useState("");
     const searchBtnRef = useRef();
     const [brands, setBrands] = useState([]);
@@ -37,9 +38,10 @@ const Brands = () => {
         endCount: null, totalElements: null,numberPerPage: 1
     })
     const [sort, setSort] = useState({ field: "name", dir: "asc" })
-    const [categories, setCategories] = useState([])
+    const [categories, setCategories] = useState([]);
     
-     const changePage = useCallback(function (number, search, button) {
+    
+    const changePage = useCallback(function (number, search, button) {
          number = number ?? 1;
          const keyword = (search) ? encodeURIComponent(search) : "";
         setLoading(true);
@@ -51,33 +53,34 @@ const Brands = () => {
          axios.get(`${serverUrl}page/${number}?sortField=${sort.field}&dir=${sort.dir}&keyword=${keyword}`, {
              headers: {
                  "Authorization": `Bearer ${accessToken}`
-             }
+             },
+             signal: abortController.current.signal
          })
-             .then(response => {
-                 const data = response.data
-                 setPageInfo(state => (
-                     {
-                     ...state,
-                     endCount: data.endCount,
-                     startCount: data.startCount,
-                     totalPages: data.totalPages,
-                     totalElements: data.totalElements,
-                     numberPerPage: data.numberPerPage
-                     }
-                 ))
-                 setBrands(data.brands)
-             })
-             .catch(error => {
-                 const response = error.response
-                if(isTokenExpired(response)) navigate("/login/2")
-             })
-             .finally(() => {
-                    setLoading(false);
-                 if (button) {
-                    button.disabled = false
-                    button.innerHTML = SEARCH_ICON;
+        .then(response => {
+            const data = response.data
+            setPageInfo(state => (
+                {
+                ...state,
+                endCount: data.endCount,
+                startCount: data.startCount,
+                totalPages: data.totalPages,
+                totalElements: data.totalElements,
+                numberPerPage: data.numberPerPage
                 }
-             })
+            ))
+            setBrands(data.brands)
+        })
+        .catch(error => {
+            const response = error.response
+            if(isTokenExpired(response)) navigate("/login/2")
+        })
+        .finally(() => {
+            setLoading(false);
+            if (button) {
+            button.disabled = false
+            button.innerHTML = SEARCH_ICON;
+        }
+        })
      }, [serverUrl, sort.field, sort.dir, accessToken, navigate])
     
     const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500);
@@ -85,7 +88,11 @@ const Brands = () => {
     useEffect(()=>{document.title = `Brands - ${SITE_NAME}`},[SITE_NAME])
     
     useEffect(() => {
+        abortController.current = new AbortController();
         changePage(pageInfo.number, keyword)
+        return ()=> {
+            abortController.current.abort();
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [changePage, pageInfo?.number])
     
@@ -106,7 +113,8 @@ const Brands = () => {
         axios.get(url, {
              headers: {
                  "Authorization": `Bearer ${accessToken}`
-             }
+             },
+             signal: abortController.current.signal
         })
             .then(() => {
                 alterArrayDelete(brands, id, setBrands)
@@ -117,6 +125,7 @@ const Brands = () => {
             console.log(error.response)
         })
     }
+    
     function addingBrand(brand) {
         alterArrayAdd(brands, brand, setBrands)
     }
@@ -163,6 +172,7 @@ const Brands = () => {
     }
 
     if(!accessToken) return <Navigate to="/login/2" />
+    if(!hasAnyAuthority(auth, ["Admin", "Editor"])) return <Navigate to="/403" />
     return ( 
           <>
             {

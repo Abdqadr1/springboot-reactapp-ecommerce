@@ -7,7 +7,7 @@ import MyPagination from "../paging";
 import Customer from "./customer";
 import { Navigate, useNavigate } from 'react-router-dom';
 import useAuth from "../custom_hooks/use-auth";
-import { isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, SPINNERS_BORDER } from "../utilities";
+import { isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, SPINNERS_BORDER, hasAnyAuthority } from "../utilities";
 import useThrottle from "../custom_hooks/use-throttle";
 import useArray from "../custom_hooks/use-array";
 import ViewCustomer from "./view_customer";
@@ -17,7 +17,9 @@ const Customers = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "customer/";
     const [width, setWidth] = useState(window.innerWidth);
     const navigate = useNavigate();
-    const [{accessToken}] = useAuth();
+    const [auth, ] = useAuth();
+    const {accessToken} = auth;
+    const abortController = useRef(new AbortController());
     
     
     const [keyword, setKeyword] = useState("");
@@ -47,7 +49,8 @@ const Customers = () => {
          axios.get(`${serverUrl}page/${number}?sortField=${sort.field}&dir=${sort.dir}&keyword=${keyword}`, {
              headers: {
                  "Authorization": `Bearer ${accessToken}`
-             }
+             },
+             signal: abortController.current.signal
          })
              .then(response => {
                  const data = response.data
@@ -81,7 +84,11 @@ const Customers = () => {
     
 
     useEffect(() => {
-        changePage(pageInfo.number, keyword)
+        abortController.current = new AbortController();
+        changePage(pageInfo.number, keyword);
+        return ()=> {
+            abortController.current.abort();
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [changePage, pageInfo?.number])
     
@@ -97,7 +104,8 @@ const Customers = () => {
         axios.get(url,{
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
-                }
+                },
+                signal: abortController.current.signal
             })
             .then((response) => {
                 updateItemProp(id, "enabled", status)
@@ -114,7 +122,8 @@ const Customers = () => {
         axios.get(url, {
              headers: {
                  "Authorization": `Bearer ${accessToken}`
-             }
+             },
+             signal: abortController.current.signal
         })
             .then(() => {
                 removeCustomer(customers)
@@ -169,6 +178,7 @@ const Customers = () => {
     }
 
     if(!accessToken) return <Navigate to="/login/2" />
+    if(!hasAnyAuthority(auth, ["Admin", "Salesperson"])) return <Navigate to="/403" />
     return ( 
           <>
             {

@@ -98,10 +98,10 @@ const ViewProduct = ({ viewProduct, setViewProduct }) => {
                         </Tab>
                         <Tab eventKey="description" title="Description">
                             <h4>Short description</h4>
-                            <TextEditor disabled={true} text={product?.shortDescription} setText={null} />
+                            <TextEditor height="big-height" disabled={true} text={product?.shortDescription} setText={null} />
 
                             <h4>Full description</h4>
-                            <TextEditor disabled={true} text={product?.fullDescription} setText={null}/>
+                            <TextEditor height="big-height" disabled={true} text={product?.fullDescription} setText={null}/>
                         </Tab>
                         <Tab eventKey="images" title="Images">
                             {/* main image row */}

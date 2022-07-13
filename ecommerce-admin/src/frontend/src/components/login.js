@@ -48,7 +48,11 @@ const Login = () => {
         })
     }
 
-    useEffect(()=>{document.title = `Login`},[])
+    useEffect(()=>{
+        document.title = `Login`;
+        setAuth(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[])
 
     useEffect(() => {
         const type = Number(out)

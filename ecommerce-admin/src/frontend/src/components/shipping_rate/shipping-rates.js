@@ -7,7 +7,7 @@ import MyPagination from "../paging";
 import ShippingRate from "./shipping-rate";
 import { Navigate, useNavigate } from 'react-router-dom';
 import useAuth from "../custom_hooks/use-auth";
-import { isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, SPINNERS_BORDER } from "../utilities";
+import { isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, SPINNERS_BORDER, hasAnyAuthority } from "../utilities";
 import useThrottle from "../custom_hooks/use-throttle";
 import useArray from "../custom_hooks/use-array";
 import AddShippingRate from "./add_shipping_rate";
@@ -18,7 +18,9 @@ const ShippingRates = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "shipping_rate/";
     const [width, setWidth] = useState(window.innerWidth);
     const navigate = useNavigate();
-    const [{accessToken}] = useAuth();
+    const [auth, ] = useAuth();
+    const {accessToken} = auth;
+    const abortController = useRef(new AbortController());
     
     
     const [keyword, setKeyword] = useState("");
@@ -51,7 +53,8 @@ const ShippingRates = () => {
          axios.get(`${serverUrl}page/${number}?sortField=${sort.field}&dir=${sort.dir}&keyword=${keyword}`, {
              headers: {
                  "Authorization": `Bearer ${accessToken}`
-             }
+             },
+            signal: abortController.current.signal
          })
              .then(response => {
                  const data = response.data
@@ -85,7 +88,11 @@ const ShippingRates = () => {
     
 
     useEffect(() => {
-        changePage(pageInfo.number, keyword)
+        abortController.current = new AbortController();
+        changePage(pageInfo.number, keyword);
+        return ()=> {
+            abortController.current.abort();
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [changePage, pageInfo?.number])
 
@@ -94,7 +101,8 @@ const ShippingRates = () => {
         axios.get(`${serverUrl}countries`,{
             headers: {
                 "Authorization": `Bearer ${accessToken}`
-            }
+            },
+             signal: abortController.current.signal
         })
             .then(response => {
                 const data = response.data;
@@ -118,7 +126,8 @@ const ShippingRates = () => {
         axios.get(url,{
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
-                }
+                },
+                signal: abortController.current.signal
             })
             .then((response) => {
                 updateItemProp(id, "cod", status)
@@ -135,7 +144,8 @@ const ShippingRates = () => {
         axios.get(url, {
              headers: {
                  "Authorization": `Bearer ${accessToken}`
-             }
+             },
+             signal: abortController.current.signal
         })
             .then((res) => {
                 removeShippingRate(res.data)
@@ -194,6 +204,8 @@ const ShippingRates = () => {
     }
 
     if(!accessToken) return <Navigate to="/login/2" />
+    if(!hasAnyAuthority(auth, ["Admin", "Salesperson"])) return <Navigate to="/403" />
+
     return ( 
         <>
             {

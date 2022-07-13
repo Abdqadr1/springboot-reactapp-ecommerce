@@ -9,7 +9,7 @@ import UpdateUser from "./update_user";
 import User from "./user";
 import { Navigate, useNavigate } from 'react-router-dom';
 import useAuth from "../custom_hooks/use-auth";
-import { alterArrayAdd, alterArrayDelete, alterArrayEnable, alterArrayUpdate, isTokenExpired, SEARCH_ICON, SPINNERS_BORDER, SPINNERS_BORDER_HTML } from "../utilities";
+import { alterArrayAdd, alterArrayDelete, alterArrayEnable, alterArrayUpdate, isTokenExpired, SEARCH_ICON,hasAnyAuthority, SPINNERS_BORDER, SPINNERS_BORDER_HTML } from "../utilities";
 import useThrottle from "../custom_hooks/use-throttle";
 import useSettings from "../custom_hooks/use-settings";
 
@@ -17,7 +17,10 @@ const Users = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "user/";
     const [width, setWidth] = useState(window.innerWidth);
     const navigate = useNavigate();
-    const [{accessToken}] = useAuth();
+    const [auth, ] = useAuth();
+    const {accessToken} = auth;
+    const abortController = useRef(new AbortController());
+
     
     const [keyword, setKeyword] = useState("");
     const searchBtnRef = useRef();
@@ -47,7 +50,8 @@ const Users = () => {
          axios.get(`${serverUrl}page/${number}?sortField=${sort.field}&dir=${sort.dir}&keyword=${keyword}`, {
              headers: {
                  "Authorization": `Bearer ${accessToken}`
-             }
+             },
+             signal: abortController.current.signal
          })
              .then(response => {
                  const data = response.data
@@ -81,7 +85,11 @@ const Users = () => {
     
 
     useEffect(() => {
-        changePage(pageInfo.number,keyword)
+        abortController.current = new AbortController();
+        changePage(pageInfo.number,keyword);
+        return ()=> {
+            abortController.current.abort();
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [changePage, pageInfo?.number])
     
@@ -97,7 +105,8 @@ const Users = () => {
         axios.get(url,{
                 headers: {
                     "Authorization": `Bearer ${accessToken}`
-                }
+                },
+                              signal: abortController.current.signal
             })
             .then((response) => {
                 alterArrayEnable(users, id, status, setUsers)
@@ -114,7 +123,8 @@ const Users = () => {
         axios.get(url, {
              headers: {
                  "Authorization": `Bearer ${accessToken}`
-             }
+             },
+                           signal: abortController.current.signal
         })
             .then(() => {
                 alterArrayDelete(users, id, setUsers)
@@ -172,6 +182,8 @@ const Users = () => {
     }
 
     if(!accessToken) return <Navigate to="/login/2" />
+    if(!hasAnyAuthority(auth, ["Admin"])) return <Navigate to="/403" />
+
     return ( 
           <>
         {
