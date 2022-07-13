@@ -4,15 +4,11 @@ import com.qadr.ecommerce.ecommerceadmin.service.QuestionService;
 import com.qadr.ecommerce.ecommerceadmin.service.UserService;
 import com.qadr.ecommerce.sharedLibrary.entities.User;
 import com.qadr.ecommerce.sharedLibrary.entities.question.Question;
-import com.qadr.ecommerce.sharedLibrary.entities.review.Review;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 @RestController
@@ -20,6 +16,7 @@ import java.util.Map;
 public class QuestionController {
     @Autowired private QuestionService questionService;
     @Autowired private UserService userService;
+    @Autowired private ControllerHelper controllerHelper;
 
 
     @GetMapping("/page/{number}")
@@ -31,7 +28,7 @@ public class QuestionController {
 
     @PostMapping("/edit")
     public Question editQuestion(Question question){
-        User user = getUserDetails();
+        User user = controllerHelper.getUserDetails();
         return questionService.saveQuestion(question, user);
     }
 
@@ -41,11 +38,6 @@ public class QuestionController {
         questionService.deleteQuestion(id);
     }
 
-    public User getUserDetails(){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String name = auth.getName();
-        return userService.getByEmail(name);
-    }
 
 }
 

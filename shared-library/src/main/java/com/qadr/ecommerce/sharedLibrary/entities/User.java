@@ -59,6 +59,10 @@ public class User {
         this.lastName = lastName;
     }
 
+    public User(Long id) {
+        this.id = id;
+    }
+
 
     @Transient
     public String getFullName() {
