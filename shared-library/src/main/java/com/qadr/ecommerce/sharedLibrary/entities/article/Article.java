@@ -25,6 +25,7 @@ public class Article  extends IdBasedEntity {
     @Column(length = 150, nullable = false, unique = true)
     private String alias;
 
+    @ToString.Exclude
     @Column(length = 10000, nullable = false)
     private String content;
 
@@ -40,6 +41,10 @@ public class Article  extends IdBasedEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    public Article (Integer id){
+        this.id = id;
+    }
 
 
     public String getFormattedUpdatedTime(){
