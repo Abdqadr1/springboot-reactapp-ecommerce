@@ -22,6 +22,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class MenuRepoTest {
     @Autowired private MenuRepo repo;
 
+    @Test
+    void testFindByTypeAndPosition(){
+        Optional<Menu> typeAndPosition = repo.findByTypeAndPosition(MenuType.FOOTER_MENU, 3);
+        assertThat(typeAndPosition).isNotPresent();
+//        Menu menu = typeAndPosition.get();
+//        System.out.println(menu);
+    }
+
 
     @Test
     void testAddMenu(){

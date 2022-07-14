@@ -44,7 +44,7 @@ public class ArticleController {
 
 
     @GetMapping("/delete/{id}")
-    public void deleteCategory(@PathVariable("id") Integer id){
+    public void deleteArticle(@PathVariable("id") Integer id){
         articleService.deleteArticle(id);
     }
 }

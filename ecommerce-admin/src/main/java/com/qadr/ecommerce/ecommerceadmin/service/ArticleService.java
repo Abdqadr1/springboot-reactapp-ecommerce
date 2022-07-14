@@ -54,6 +54,7 @@ public class ArticleService {
         article.setUpdatedTime(new Date());
         return repo.save(article);
     }
+
     public Article updateArticle(Article article, User user){
         if (article.getId() != null){
             Article articleInDb = get(article.getId());
