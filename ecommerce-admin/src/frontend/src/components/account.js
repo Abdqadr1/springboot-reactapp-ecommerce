@@ -13,6 +13,7 @@ import SalesReport from "./sales_report";
 import Reviews from "./review_s/reviews";
 import Questions from "./questions/questions";
 import Articles from "./articles/articles";
+import Menus from "./menus/menus";
 
 const Account = () => {
 
@@ -34,6 +35,7 @@ const Account = () => {
                 <Route path="/reviews" element={<Reviews />} />
                 <Route path="/questions" element={<Questions />} />
                 <Route path="/articles" element={<Articles />} />
+                <Route path="/menus" element={<Menus />} />
                 <Route path='*' element={<h2 className='text-center text-danger'>Page not found</h2>}></Route>
             </Routes>
         </div>

@@ -34,4 +34,11 @@ public class Menu extends IdBasedEntity {
     private int position;
 
     private boolean enabled;
+
+    public void moveUp(){
+        position--;
+    }
+    public void moveDown(){
+        position++;
+    }
 }

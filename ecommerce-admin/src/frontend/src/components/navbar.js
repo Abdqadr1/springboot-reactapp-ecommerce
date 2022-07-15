@@ -107,6 +107,11 @@ const MyNavbar = () => {
                                                 ? <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="/account/articles">Articles</Link>
                                                 : ""
                                         }
+                                        {
+                                            (hasAnyAuthority(auth, ["Admin", "Editor"]))
+                                                ? <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="/account/menus">Menus</Link>
+                                                : ""
+                                        }
                                     </NavDropdown>
                                 : ""
                             }

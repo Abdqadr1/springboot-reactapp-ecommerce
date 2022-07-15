@@ -123,6 +123,8 @@ const Articles = () => {
                 setMessage(s=> ({...s,show:true, title: "Delete Article", message: "Article has been deleted."}))
             })
             .catch(error => {
+                const response = error?.response
+                if(isTokenExpired(response)) navigate("/login/2")
                 setMessage(s=> ({...s,show:true, title: "Delete Article", message: "An error ocurred."}))
         })
     }
@@ -141,6 +143,8 @@ const Articles = () => {
                 setMessage(s=> ({...s,show:true, title: "Publish Article", message}))
             })
             .catch(error => {
+                const response = error?.response
+                if(isTokenExpired(response)) navigate("/login/2")
                 setMessage(s=> ({...s,show:true, title: "Publish Article", message: "An error ocurred."}))
         })
     }

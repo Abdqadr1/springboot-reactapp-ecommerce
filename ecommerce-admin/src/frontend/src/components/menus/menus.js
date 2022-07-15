@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Col, Form, Row, Table, Button } from "react-bootstrap";
+import { Col, Row, Table } from "react-bootstrap";
 import '../../css/users.css';
 import DeleteModal from "../delete_modal";
 import MyPagination from "../paging";
@@ -11,10 +11,10 @@ import { isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, SPINNERS_BORDER, has
 import useThrottle from "../custom_hooks/use-throttle";
 import useArray from "../custom_hooks/use-array";
 import useSettings from "../custom_hooks/use-settings";
-import ViewMenu from "./view_menu";
 import EditMenu from "./edit_menu";
 import MessageModal from "../message_modal";
 import "../../css/articles.css";
+import ViewArticle from "../articles/view_article";
 
 const Menus = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "menu/";
@@ -22,34 +22,74 @@ const Menus = () => {
     const navigate = useNavigate();
     const [auth,] = useAuth();
     const {accessToken} = auth;
-    const [keyword, setKeyword] = useState("");
-    const searchBtnRef = useRef();
     const [isLoading, setLoading] = useState(true);
     const {array:menus, setArray:setMenus, filterWithId:removeMenu, updateArray, addToArray, updateItemProp} = useArray();
     const [updateMenu, setUpdateMenu] = useState({show:false, id: -1, menu: {}});
-    const [viewMenu, setViewMenu] = useState({show:false, id: -1, menu: {}});
+    const [viewArticle, setViewArticle] = useState({show:false, id: -1, article: {}});
     const [deleteMenu, setDeleteMenu] = useState({show:false, id: -1});
     const [message, setMessage] = useState({ show:false, message:"", title: ""});
     const abortController = useRef(new AbortController());
     const showUpdate = (type, id) => {
-        const menu = menus.filter(u => u.id === id)[0]
+        const menu = menus.find(u => u.id === id)
         setUpdateMenu(s=> ({...s, type, show: true, id, menu}))
     };
+     function showArticle(id) {
+        const menu = menus.find(u => u.id === id);
+        const article = menu.article;
+        setViewArticle(s => ({ ...s, id, show: true, article }));
+    }
     const [pageInfo, setPageInfo] = useState({
         number: 1, totalPages: 1, startCount: 1,
         endCount: null, totalElements: null,numberPerPage: 1
     })
-    const [sort, setSort] = useState({ field: "title", dir: "asc" })
+
+    const sort = (a, b) => {
+        const x = a.type.toLowerCase();
+        const y = b.type.toLowerCase();
+        if(x < y) return -1;
+        if(x > y) return 1;
+        return a.position - b.position;
+    }
+
+    const movePosition = (e, id, dir) => {
+        const menu = menus.find(u => u.id === id);
+        const type = menu.type;
+        const data = {
+            id, moveType: dir.toUpperCase(), menuType: menu.type
+        }
+        console.log(e.target, id, dir, type);
+        const url = serverUrl + "move";
+        axios.post(url, data, {
+             headers: {
+                 "Authorization": `Bearer ${accessToken}`
+             },
+             signal: abortController.current.signal
+        })
+            .then((res) => {
+                const data = res.data;
+                data.forEach(d => {
+                    const menu = menus.find(m => m.id === d.id);
+                    menu.position = d.position;
+                })
+                setMenus(menus.sort(sort))
+                setMessage(s=> ({...s,show:true, title: "Move Menu", message:"Menu moved"}))
+            })
+            .catch(error => {
+                const response = error?.response
+                if(isTokenExpired(response)) navigate("/login/2")
+                const message = response.data.message ?? "An error ocurred."
+                setMessage(s=> ({...s,show:true, title: "Move Menu", message}))
+        })
+    }
     
-    const changePage = useCallback(function (number, search, button) {
+    const changePage = useCallback(function (number, button) {
         number = number ?? 1;
-         const keyword = (search) ? encodeURIComponent(search) : "";
         setLoading(true);
          if (button) {
             button.disabled = true
             button.innerHTML = SPINNERS_BORDER_HTML
          }
-         axios.get(`${serverUrl}page/${number}?sortField=${sort.field}&dir=${sort.dir}&keyword=${keyword}`, {
+         axios.get(`${serverUrl}page/${number}`, {
              headers: {
                  "Authorization": `Bearer ${accessToken}`
              },
@@ -65,7 +105,7 @@ const Menus = () => {
                      totalElements: data.totalElements,
                      numberPerPage: data.numberPerPage
                  }));
-                 setMenus(data.menus);
+                 setMenus(data.menus.sort(sort));
              })
              .catch(error => {
                 const response = error?.response
@@ -78,7 +118,7 @@ const Menus = () => {
                     button.innerHTML = SEARCH_ICON;
                 }
              })
-    }, [serverUrl, sort.field, sort.dir, accessToken, setMenus, navigate])
+    }, [serverUrl, accessToken, setMenus, navigate])
     
     const handleWindowWidthChange = useThrottle(() => setWidth(window.innerWidth), 500)
     const {SITE_NAME } = useSettings();
@@ -88,7 +128,7 @@ const Menus = () => {
 
     useEffect(() => {
         abortController.current = new AbortController();
-        changePage(pageInfo.number, keyword)
+        changePage(pageInfo.number)
 
         return ()=> {
             abortController.current.abort();
@@ -104,10 +144,6 @@ const Menus = () => {
     
     })
     
-    function showMenu(id) {
-        const menu = menus.find(u => u.id === id);
-        setViewMenu(s => ({ ...s, id, show: true, menu }));
-    }
     function deletingMenu() {
         const id = deleteMenu.id
         const url = serverUrl + "delete/" + id;
@@ -123,6 +159,8 @@ const Menus = () => {
                 setMessage(s=> ({...s,show:true, title: "Delete Menu", message: "Menu has been deleted."}))
             })
             .catch(error => {
+                const response = error?.response
+                if(isTokenExpired(response)) navigate("/login/2")
                 setMessage(s=> ({...s,show:true, title: "Delete Menu", message: "An error ocurred."}))
         })
     }
@@ -135,13 +173,15 @@ const Menus = () => {
              signal: abortController.current.signal
         })
             .then(() => {
-                updateItemProp(id, "published", status);
-                const stat = status ? "published" : "unpublished";
+                updateItemProp(id, "enabled", status);
+                const stat = status ? "enabled" : "disabled";
                 const message = "Menu has been " + stat;
-                setMessage(s=> ({...s,show:true, title: "Publish Menu", message}))
+                setMessage(s=> ({...s,show:true, title: "Enable Menu", message}))
             })
             .catch(error => {
-                setMessage(s=> ({...s,show:true, title: "Publish Menu", message: "An error ocurred."}))
+                const response = error?.response
+                if(isTokenExpired(response)) navigate("/login/2")
+                setMessage(s=> ({...s,show:true, title: "Enable Menu", message: "An error ocurred."}))
         })
     }
 
@@ -153,39 +193,11 @@ const Menus = () => {
         }
     }
 
-    function handleFilter(event) {
-        event.preventDefault();
-        pageInfo.number = 1;
-        changePage(null, keyword, searchBtnRef.current)
-    }
-    function clearFilter() {
-       if (keyword.length > 1) {
-            setKeyword("")
-            pageInfo.number = 1;
-            changePage(null, "")
-        }
-    }
-    
-    function isSort(name) {
-        if (name === sort.field) {
-           if(sort.dir === "asc") return (<i className="bi bi-caret-up-fill text-light"></i> )
-           else return (<i className="bi bi-caret-down-fill text-light"></i> )
-        }
-        return ""
-    }
-
-    function handleSort(event) {
-        const id = event.target.id;
-        const field = (id === sort.field) ? sort.field : id;
-        const dir = (sort.dir === "asc" && field === sort.field) ? "desc" : "asc";
-        setSort({ field, dir })
-    }
-
     function listMenus(menus, type) {
         return (menus.length > 0)
             ? menus.map(menu => <Menu key={menu.id} type={type} menu={menu}
-                showUpdate={showUpdate} setDeleteMenu={setDeleteMenu} showMenu={showMenu}
-                updateStatus={updateMenuStatus}
+                showUpdate={showUpdate} setDeleteMenu={setDeleteMenu} movePosition={movePosition}
+                updateStatus={updateMenuStatus} showArticle={showArticle}
             />)
             : ((type === 'detailed')
                 ? <tr><td colSpan={8} className="text-center" >No menu found</td></tr>
@@ -204,32 +216,13 @@ const Menus = () => {
                             <Col xs={12} md={5} className="my-2">
                                 <h3 className="">Manage Menus</h3>
                                 <div>
-                                    <span onClick={()=>setUpdateMenu(s=> ({...s, type: "New", show: true, id:null, menu: {}}))} className="text-secondary cursor-pointer">
-                                        <i title="New menu" className="bi bi-folder-plus fs-2"></i>
+                                    <span onClick={()=>setUpdateMenu(s=> ({...s, type: "New", show: true, id:null, menu: {}}))} 
+                                        className="text-secondary cursor-pointer">
+                                        <i title="New article" className="bi bi-folder-plus fs-2"></i>
                                     </span>
                                 </div>
                             </Col>
                             <Col xs={12} md={7} className="my-2">
-                                <Form className="row justify-content-between" onSubmit={handleFilter}>
-                                    <Form.Group as={Row} className="mb-3" controlId="keyword">
-                                        <Col sm="2" md="2">
-                                            <label className="d-block text-start text-md-end fs-5" htmlFor="keyword">Filter:</label>
-                                        </Col>
-                                        <Col sm="9" md="6">
-                                            <Form.Control value={keyword} onChange={e=>setKeyword(e.target.value)} type="text" placeholder="keyword" required />
-                                        </Col>
-                                        <Col sm="12" md="4">
-                                        <div className="mt-md-0 mt-2">
-                                            <Button ref={searchBtnRef} variant="primary" className="mx-1" type="submit">
-                                                <i title="search keyword" className="bi bi-search"></i>   
-                                            </Button>
-                                            <Button onClick={clearFilter} variant="secondary" className="mx-1" type="button" alt="clear search">
-                                                <i title="clear keyword" className="bi bi-eraser"></i>
-                                            </Button>
-                                        </div>
-                                        </Col>
-                                    </Form.Group>
-                                </Form> 
                             </Col>
                         </Row>
                         {
@@ -237,12 +230,12 @@ const Menus = () => {
                                 <Table bordered responsive hover className="more-details">
                                 <thead className="bg-dark text-light">
                                     <tr>
-                                        <th onClick={handleSort} id="id" className="cursor-pointer">ID {isSort("id")}</th>
-                                        <th onClick={handleSort} id="title" className="cursor-pointer">Title {isSort("title")}</th>
-                                        <th onClick={handleSort} id="menuType" className="cursor-pointer">Type {isSort("menuType")}</th>
-                                        <th onClick={handleSort} id="user" className="cursor-pointer  hideable-col">Created by {isSort("user")}</th>
-                                        <th onClick={handleSort} id="updatedTime" className="cursor-pointer">Updated Time {isSort("updatedTime")}</th>
-                                        <th>Published</th>
+                                        <th>ID</th>
+                                        <th>Title</th>
+                                        <th>Type</th>
+                                        <th className="hideable-col">Article</th>
+                                        <th>Enabled</th>
+                                        <th>Position</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -259,7 +252,7 @@ const Menus = () => {
                     }
                 {(menus.length > 0) ? <MyPagination pageInfo={pageInfo} setPageInfo={setPageInfo} /> : ""}
                 <EditMenu data={updateMenu} setData={setUpdateMenu} updateMenu={updatingMenu} />
-                <ViewMenu data={viewMenu} setData={setViewMenu}/>
+                <ViewArticle data={viewArticle} setData={setViewArticle}/>
                 <MessageModal obj={message} setShow={setMessage} />
                 <DeleteModal deleteObject={deleteMenu} setDeleteObject={setDeleteMenu} deletingFunc={deletingMenu} type="menu" />
             </>

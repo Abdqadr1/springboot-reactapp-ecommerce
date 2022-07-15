@@ -24,10 +24,10 @@ class MenuRepoTest {
 
     @Test
     void testFindByTypeAndPosition(){
-        Optional<Menu> typeAndPosition = repo.findByTypeAndPosition(MenuType.FOOTER_MENU, 3);
-        assertThat(typeAndPosition).isNotPresent();
-//        Menu menu = typeAndPosition.get();
-//        System.out.println(menu);
+        Optional<Menu> typeAndPosition = repo.findByTypeAndPosition(MenuType.FOOTER_MENU, 2);
+        assertThat(typeAndPosition).isPresent();
+        Menu menu = typeAndPosition.get();
+        System.out.println(menu);
     }
 
 
