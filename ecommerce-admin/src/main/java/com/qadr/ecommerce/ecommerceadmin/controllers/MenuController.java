@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/menu")
@@ -28,10 +27,9 @@ public class MenuController {
         return menuService.movePosition(moveDTO);
     }
 
-    @GetMapping("/page/{number}")
-    public Map<String, Object> listByPage(@PathVariable("number") Integer number){
-
-        return menuService.getPage(number);
+    @GetMapping("/page")
+    public List<Menu> listByPage(){
+        return menuService.getAll();
     }
 
     @PostMapping("/new")

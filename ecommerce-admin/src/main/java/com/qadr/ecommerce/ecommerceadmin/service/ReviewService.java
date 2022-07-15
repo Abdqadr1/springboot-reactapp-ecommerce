@@ -16,7 +16,7 @@ import java.util.Map;
 
 @Service
 public class ReviewService {
-    public static final int REVIEWS_PER_PAGE = 5;
+    public static final int REVIEWS_PER_PAGE = 10;
     @Autowired private ReviewRepository repo;
     @Autowired private ReviewVoteRepo voteRepo;
     @Autowired private ProductRepo productRepo;

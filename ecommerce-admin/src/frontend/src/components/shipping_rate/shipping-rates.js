@@ -247,7 +247,7 @@ const ShippingRates = () => {
             {
                 (width >= 769) ?
                     <Table bordered responsive hover className="more-details">
-                    <thead className="bg-dark text-light">
+                    <thead className="bg-light text-secondary">
                         <tr>
                             <th onClick={handleSort} title="id" className="cursor-pointer">ID {isSort("id")}</th>
                             <th onClick={handleSort} title="country" className="cursor-pointer">Country {isSort("country")}</th>
@@ -258,7 +258,7 @@ const ShippingRates = () => {
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="bg-light text-secondary">
                         {listShippingRates(rates,"detailed")}
                     </tbody>
                 </Table> : ""

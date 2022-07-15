@@ -18,7 +18,7 @@ public class JWTUtil {
                 .withSubject(details.getUsername())
                 .withIssuer(path)
                 .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 30 * 60 * 1000));
+                .withExpiresAt(new Date(System.currentTimeMillis() + 60 * 60 * 1000));
         if(details.getAuthorities() != null && details.getAuthorities().size() > 0){
             builder.withClaim("roles",
                     details.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));

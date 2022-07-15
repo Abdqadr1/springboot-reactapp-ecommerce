@@ -24,14 +24,14 @@ const ViewOrder = ({ viewOrder, setViewOrder, priceFunction }) => {
             if (width >= 769) {
                 return (
                     <Table bordered responsive hover className="more-details">
-                        <thead className="bg-dark text-light">
+                        <thead className="bg-light text-secondary">
                             <tr>
                                 <th>Updated Time</th>
                                 <th>Status</th>
                                 <th>Note</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="bg-light text-secondary">
                             {order.orderTracks.map(track =>
                                 <tr key={track.id}>
                                     <td>{formatDate(track.updatedTime, "short", "medium")}</td>

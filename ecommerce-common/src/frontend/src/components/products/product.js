@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, useContext } from "react";
 import { Row, Col, Breadcrumb, Button, Form, FloatingLabel} from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import MyCarousel from "./image-carousel";
-import { getShortName, formatPrice, listReviews, isTokenExpired, SPINNERS_BORDER,SPINNERS_BORDER_HTML, listQuestions, listFormData } from "../utilities";
+import { getShortName, formatPrice, listReviews, isTokenExpired, SPINNERS_BORDER,SPINNERS_BORDER_HTML, listQuestions } from "../utilities";
 import useSettings from "../use-settings";
 import Search from "../search";
 import { Stock } from '../stock';

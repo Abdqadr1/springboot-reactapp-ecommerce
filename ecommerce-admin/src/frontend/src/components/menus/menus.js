@@ -3,11 +3,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Col, Row, Table } from "react-bootstrap";
 import '../../css/users.css';
 import DeleteModal from "../delete_modal";
-import MyPagination from "../paging";
 import Menu from "./menu";
 import { Navigate, useNavigate } from 'react-router-dom';
 import useAuth from "../custom_hooks/use-auth";
-import { isTokenExpired, SEARCH_ICON, SPINNERS_BORDER_HTML, SPINNERS_BORDER, hasAnyAuthority } from "../utilities";
+import { isTokenExpired, SPINNERS_BORDER, hasAnyAuthority } from "../utilities";
 import useThrottle from "../custom_hooks/use-throttle";
 import useArray from "../custom_hooks/use-array";
 import useSettings from "../custom_hooks/use-settings";
@@ -38,10 +37,6 @@ const Menus = () => {
         const article = menu.article;
         setViewArticle(s => ({ ...s, id, show: true, article }));
     }
-    const [pageInfo, setPageInfo] = useState({
-        number: 1, totalPages: 1, startCount: 1,
-        endCount: null, totalElements: null,numberPerPage: 1
-    })
 
     const sort = (a, b) => {
         const x = a.type.toLowerCase();
@@ -53,11 +48,9 @@ const Menus = () => {
 
     const movePosition = (e, id, dir) => {
         const menu = menus.find(u => u.id === id);
-        const type = menu.type;
         const data = {
             id, moveType: dir.toUpperCase(), menuType: menu.type
         }
-        console.log(e.target, id, dir, type);
         const url = serverUrl + "move";
         axios.post(url, data, {
              headers: {
@@ -82,14 +75,9 @@ const Menus = () => {
         })
     }
     
-    const changePage = useCallback(function (number, button) {
-        number = number ?? 1;
+    const changePage = useCallback(function () {
         setLoading(true);
-         if (button) {
-            button.disabled = true
-            button.innerHTML = SPINNERS_BORDER_HTML
-         }
-         axios.get(`${serverUrl}page/${number}`, {
+         axios.get(`${serverUrl}page`, {
              headers: {
                  "Authorization": `Bearer ${accessToken}`
              },
@@ -97,15 +85,7 @@ const Menus = () => {
          })
              .then(response => {
                  const data = response.data;
-                 setPageInfo(state => ({
-                     ...state,
-                     endCount: data.endCount,
-                     startCount: data.startCount,
-                     totalPages: data.totalPages,
-                     totalElements: data.totalElements,
-                     numberPerPage: data.numberPerPage
-                 }));
-                 setMenus(data.menus.sort(sort));
+                 setMenus(data.sort(sort));
              })
              .catch(error => {
                 const response = error?.response
@@ -113,10 +93,6 @@ const Menus = () => {
              })
              .finally(() => {
                  setLoading(false);
-                 if (button) {
-                    button.disabled = false
-                    button.innerHTML = SEARCH_ICON;
-                }
              })
     }, [serverUrl, accessToken, setMenus, navigate])
     
@@ -128,13 +104,13 @@ const Menus = () => {
 
     useEffect(() => {
         abortController.current = new AbortController();
-        changePage(pageInfo.number)
+        changePage()
 
         return ()=> {
             abortController.current.abort();
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [changePage, pageInfo?.number])
+    }, [changePage])
     
     useEffect(() => {
         window.addEventListener("resize", handleWindowWidthChange)
@@ -228,7 +204,7 @@ const Menus = () => {
                         {
                             (width >= 769) ?
                                 <Table bordered responsive hover className="more-details">
-                                <thead className="bg-dark text-light">
+                                <thead className="bg-light text-secondary">
                                     <tr>
                                         <th>ID</th>
                                         <th>Title</th>
@@ -239,7 +215,7 @@ const Menus = () => {
                                         <th></th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="bg-light text-secondary">
                                     {listMenus(menus,"detailed")}
                                 </tbody>
                             </Table> : ""
@@ -250,7 +226,6 @@ const Menus = () => {
                                 {listMenus(menus, "less")}
                             </div> : ""
                     }
-                {(menus.length > 0) ? <MyPagination pageInfo={pageInfo} setPageInfo={setPageInfo} /> : ""}
                 <EditMenu data={updateMenu} setData={setUpdateMenu} updateMenu={updatingMenu} />
                 <ViewArticle data={viewArticle} setData={setViewArticle}/>
                 <MessageModal obj={message} setShow={setMessage} />

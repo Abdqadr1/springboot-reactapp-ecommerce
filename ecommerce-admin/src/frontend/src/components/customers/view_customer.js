@@ -60,20 +60,18 @@ const ViewCustomer = ({ data, setData, updatingCustomer }) => {
     }
 
     useEffect(() => {
-        if (updatingCustomer) {
-            axios.get(`${url}/countries`, {
+        axios.get(`${url}/countries`, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`
             }
         })
-            .then(response => {
-                const data = response.data;
-                setCountries(data)
-            })
-            .catch(err => {
-                console.error(err)
-            })
-        }
+        .then(response => {
+            const data = response.data;
+            setCountries(data)
+        })
+        .catch(err => {
+            console.error(err)
+        })
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 

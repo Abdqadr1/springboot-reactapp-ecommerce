@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
@@ -30,6 +31,18 @@ class MenuRepoTest {
         System.out.println(menu);
     }
 
+    @Test
+    void testFindByType(){
+        List<Menu> byType = repo.findByType(MenuType.FOOTER_MENU);
+        assertThat(byType.size()).isGreaterThan(0);
+        System.out.println(byType);
+    }
+    @Test
+    void testFindByAliasAndEnabled(){
+        Optional<Menu> byType = repo.findByAliasAndEnabled("about", true);
+        assertThat(byType).isNotPresent();
+//        System.out.println(byType);
+    }
 
     @Test
     void testAddMenu(){

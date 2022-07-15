@@ -7,7 +7,7 @@ import axios from 'axios';
 import {isTokenExpired, SPINNERS_BORDER_HTML} from './utilities'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
-const NavBar = () => {
+const NavBar = ({menus}) => {
   const { SITE_LOGO } = useSettings();
   const navigate = useNavigate();
   
@@ -147,7 +147,11 @@ const NavBar = () => {
         })
   }
 
-
+const listMenus = () => {
+  if(menus && menus.length > 0){
+    return menus.map(m => <Link key={m.id} className="nav-link" to={`/m/`+m.alias}>{m.title}</Link>)
+  }
+}
 
     return (
       <AuthContext.Consumer>
@@ -167,15 +171,7 @@ const NavBar = () => {
                       <Navbar.Toggle aria-controls="basic-navbar-nav" />
                       <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="ms-auto text-end">
-                          <Link className="nav-link" to="/careers">
-                            Careers
-                          </Link>
-                          <Link className="nav-link" to="/payments">
-                            Payments
-                          </Link>
-                          <Link className="nav-link" to="/shipping">
-                            Shipping & Delivery
-                          </Link>
+                          {listMenus()}
                           <Link className="nav-link" to="/contact">
                             Contact
                           </Link>

@@ -22,7 +22,6 @@ import java.util.*;
 @Service
 @Transactional
 public class MenuService {
-    public static final int MENUS_PER_PAGE = 5;
     @Autowired private MenuRepo repo;
 
     public Menu saveMenu(Menu menu){
@@ -56,12 +55,10 @@ public class MenuService {
         repo.updateStatus(id, status);
     }
 
-    public Map<String, Object> getPage(Integer number) {
-        Sort sort = Sort.by("type").ascending().and(Sort.by("position").ascending());
-        PageRequest pageable = PageRequest.of(number - 1, MENUS_PER_PAGE, sort);
-        Page<Menu> all = repo.findAll(pageable);
-        return mapInfo(number, MENUS_PER_PAGE, all);
+    public List<Menu> getAll() {
+        return repo.findAll();
     }
+
     public List<Menu> movePosition(MoveDTO moveDTO){
         Menu menu = get(moveDTO.getId());
         int oldPosition = menu.getPosition();

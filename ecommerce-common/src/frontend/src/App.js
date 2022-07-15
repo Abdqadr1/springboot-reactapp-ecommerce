@@ -5,7 +5,6 @@ import NavBar from "./components/navbar";
 import Login from "./components/login";
 import Register from "./components/register";
 import ListCategories from "./components/list-categories";
-import useSettings from "./components/use-settings";
 import Category from "./components/category";
 import Product from "./components/products/product";
 import ProductSearch from "./components/products/product-search";
@@ -17,7 +16,7 @@ import ForgotPassword from "./components/forgot-password";
 import ResetPassword from "./components/reset-password";
 import ShoppingCart from "./components/shopping-cart";
 import { AuthContext, getAuthFromLocalStorage, setAuthToLocalStorage } from "./components/custom_hooks/use-auth";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import Addresses from "./components/addresses";
 import Checkout from "./components/checkout";
 import Orders from "./components/orders/orders";
@@ -25,13 +24,18 @@ import Reviews from "./components/review_s.js/reviews";
 import ProductReviews from "./components/products/product_reviews";
 import Questions from "./components/questions/questions";
 import ProductQuestions from "./components/products/product_questions";
+import Footer from "./components/footer";
+import axios from "axios";
+import MessageModal from "./components/message_modal";
+import MenuArticle from "./components/menu_article";
 function App() {
   
   // if ("serviceWorker" in window.navigator) {
   //   navigator.serviceWorker.register("worker.js");
   // }
-
-  const { COPYRIGHT } = useSettings();
+  
+  const [message, setMessage] = useState({ show:false, message:"", title: ""});
+  const [menus, setMenus] = useState({});
   const saved = getAuthFromLocalStorage();
   const [auth, setA] = useState(saved ?? null)
   const setAuth = (a) => {
@@ -39,11 +43,24 @@ function App() {
     setAuthToLocalStorage(a);
   }
 
+  useLayoutEffect(()=>{
+    const url = process.env.REACT_APP_SERVER_URL + "menu";
+    axios.get(url)
+      .then(response => {
+          const data = response.data;
+          setMenus(data);
+      })
+      .catch(error => {
+        setMessage(s=>({...s, show:true, title: "", message: "Could not get menus"}))
+      })
+  }, [])
+
+
   return (
     <AuthContext.Provider value={{auth, setAuth}}>
         <div className="App">
             <HashRouter>
-            <NavBar />
+            <NavBar menus={menus?.header} />
             <div className="content">
             <Routes>
                 <Route path="/" element={<ListCategories />} />
@@ -68,12 +85,13 @@ function App() {
                 <Route path="/product_reviews/:id" element={<ProductReviews />} />
                 <Route path="/questions" element={<Questions />} />
                 <Route path="/product_questions/:id" element={<ProductQuestions/>} />
+                <Route path="/m/:alias" element={<MenuArticle/>} />
                 <Route path="*" element={<div className="my-4">Not found</div>} />
             </Routes>
             </div>
+            <Footer menus={menus?.footer}/>
           </HashRouter>
-        
-          <footer className="bg-dark py-3 text-light fw-bold">{COPYRIGHT ?? ""}</footer>
+          <MessageModal obj={message} setShow={setMessage} />
       </div>
     </AuthContext.Provider>
     

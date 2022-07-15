@@ -1,0 +1,7 @@
+.no-article{
+    height: 40vh;
+    display: grid;
+    place-items: center;
+    place-content: center;
+    font-weight: bold;
+}

@@ -236,7 +236,7 @@ const Categories = () => {
             {
                 (width >= 769) ?
                 <Table bordered responsive hover className="more-details">
-                    <thead className="bg-dark text-light">
+                    <thead className="bg-light text-secondary">
                         <tr>
                             <th onClick={handleSort} id="id" className="cursor-pointer">ID {isSort("id")}</th>
                             <th>Photo</th>
@@ -246,7 +246,7 @@ const Categories = () => {
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="bg-light text-secondary">
                         {listCategories(categories,"detailed")}
                     </tbody>
                 </Table> : ""

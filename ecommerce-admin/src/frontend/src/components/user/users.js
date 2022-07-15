@@ -235,7 +235,7 @@ const Users = () => {
             {
                 (width >= 769) ?
                     <Table bordered responsive hover className="more-details">
-                    <thead className="bg-dark text-light">
+                    <thead className="bg-light text-secondary">
                         <tr>
                             <th onClick={handleSort} id="id" className="cursor-pointer hideable-col">User ID {isSort("id")}</th>
                             <th>Photo</th>
@@ -247,7 +247,7 @@ const Users = () => {
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="bg-light text-secondary">
                         {listUsers(users,"detailed")}
                     </tbody>
                 </Table> : ""

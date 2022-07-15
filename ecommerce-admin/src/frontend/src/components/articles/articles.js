@@ -239,7 +239,7 @@ const Articles = () => {
                         {
                             (width >= 769) ?
                                 <Table bordered responsive hover className="more-details">
-                                <thead className="bg-dark text-light">
+                                <thead className="bg-light text-secondary">
                                     <tr>
                                         <th onClick={handleSort} id="id" className="cursor-pointer">ID {isSort("id")}</th>
                                         <th onClick={handleSort} id="title" className="cursor-pointer">Title {isSort("title")}</th>
@@ -250,7 +250,7 @@ const Articles = () => {
                                         <th></th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="bg-light text-secondary">
                                     {listArticles(articles,"detailed")}
                                 </tbody>
                             </Table> : ""
