@@ -38,9 +38,12 @@ export function showThumbnail(file, setImage, type="thumbnail", id=0, setType="t
 }
 
 export function listFormData(data){
-      for (const pair of data.entries()) {
-        console.log(pair[0] + ", " + pair[1]);
-      }
+    if(!process.env.NODE_ENV || process.env.NODE_ENV === "development"){
+        for (const pair of data.entries()) {
+            console.log(pair[0] + ", " + pair[1]);
+        }
+    }
+      
 }
 
 

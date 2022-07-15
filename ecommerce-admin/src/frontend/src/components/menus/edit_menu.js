@@ -106,7 +106,12 @@ const EditMenu = ({ data, setData, updateMenu }) => {
                     {alert.message}
                 </Alert>
                 <Form onSubmit={handleSubmit}>
-                    <input type="hidden" name="id" value={form?.id ?? ""} />
+                    {
+                        (data.type !== "New") &&  <>
+                            <input type="hidden" name="id" value={form?.id ?? ""} />
+                            <input type="hidden" name="position" value={form?.position ?? ""} />
+                        </>
+                    }
                     <Form.Group className="my-4 row justify-content-center mx-0" controlId="title">
                         <Form.Label className="form-label">Title:</Form.Label>
                         <Form.Control onChange={handleInput} value={form?.title ?? ""} name="title" required className="form-input"/>

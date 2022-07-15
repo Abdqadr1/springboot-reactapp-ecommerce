@@ -13,7 +13,7 @@ const listMenus = () => {
             <div className="ms-md-3 d-flex flew-wrap justify-content-center justify-content-md-start my-2">
                 {listMenus()}
             </div>
-            <div>{COPYRIGHT ?? ""}</div>
+            <div style={{fontSize: '.8em'}}>{COPYRIGHT ?? ""}</div>
         </footer>
      );
 }

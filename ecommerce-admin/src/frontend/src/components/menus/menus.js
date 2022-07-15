@@ -22,7 +22,7 @@ const Menus = () => {
     const [auth,] = useAuth();
     const {accessToken} = auth;
     const [isLoading, setLoading] = useState(true);
-    const {array:menus, setArray:setMenus, filterWithId:removeMenu, updateArray, addToArray, updateItemProp} = useArray();
+    const {array:menus, setArray:setMenus, filterWithId:removeMenu, updateItemProp} = useArray();
     const [updateMenu, setUpdateMenu] = useState({show:false, id: -1, menu: {}});
     const [viewArticle, setViewArticle] = useState({show:false, id: -1, article: {}});
     const [deleteMenu, setDeleteMenu] = useState({show:false, id: -1});
@@ -41,8 +41,8 @@ const Menus = () => {
     const sort = (a, b) => {
         const x = a.type.toLowerCase();
         const y = b.type.toLowerCase();
-        if(x < y) return -1;
-        if(x > y) return 1;
+        if(x > y) return -1;
+        if(x < y) return 1;
         return a.position - b.position;
     }
 
@@ -163,10 +163,12 @@ const Menus = () => {
 
     function updatingMenu(menu, type) {
         if(type.toLowerCase() === "new"){
-            addToArray(menu);
+            menus.push(menu)
         } else {
-            updateArray(menu);
+            const index = menus.findIndex(arr => arr.id === menu.id);
+            menus[index] = menu;
         }
+        setMenus(menus.sort(sort))
     }
 
     function listMenus(menus, type) {

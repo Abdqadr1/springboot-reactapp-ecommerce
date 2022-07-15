@@ -239,9 +239,11 @@ export function isDelivered(orderTracks) {
 }
 
 export function listFormData(data){
-      for (const pair of data.entries()) {
-        console.log(pair[0] + ", " + pair[1]);
-      }
+     if(!process.env.NODE_ENV || process.env.NODE_ENV === "development"){
+        for (const pair of data.entries()) {
+            console.log(pair[0] + ", " + pair[1]);
+        }
+    }
 }
 
 export const SPINNERS_BORDER = <Spinner animation="border" size="sm" className="d-block m-auto" style={{width: "4rem", height: "4rem"}} />
