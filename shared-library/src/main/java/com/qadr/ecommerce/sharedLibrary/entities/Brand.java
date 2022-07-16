@@ -1,5 +1,6 @@
 package com.qadr.ecommerce.sharedLibrary.entities;
 
+import com.qadr.ecommerce.sharedLibrary.entities.storefront.StoreFront;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -28,6 +29,10 @@ public class Brand extends IdBasedEntity{
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private Set<Category> categories = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "store_front_id")
+    private StoreFront storeFront;
 
     public Brand(Integer id){
         this.id = id;

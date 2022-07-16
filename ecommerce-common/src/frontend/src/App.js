@@ -26,15 +26,12 @@ import Questions from "./components/questions/questions";
 import ProductQuestions from "./components/products/product_questions";
 import Footer from "./components/footer";
 import axios from "axios";
-import MessageModal from "./components/message_modal";
 import MenuArticle from "./components/menu_article";
 function App() {
   
   // if ("serviceWorker" in window.navigator) {
   //   navigator.serviceWorker.register("worker.js");
   // }
-  
-  const [message, setMessage] = useState({ show:false, message:"", title: ""});
   const [menus, setMenus] = useState({});
   const saved = getAuthFromLocalStorage();
   const [auth, setA] = useState(saved ?? null)
@@ -49,9 +46,6 @@ function App() {
       .then(response => {
           const data = response.data;
           setMenus(data);
-      })
-      .catch(error => {
-        setMessage(s=>({...s, show:true, title: "", message: "Could not get menus"}))
       })
   }, [])
 
@@ -91,7 +85,6 @@ function App() {
             </div>
             <Footer menus={menus?.footer}/>
           </HashRouter>
-          <MessageModal obj={message} setShow={setMessage} />
       </div>
     </AuthContext.Provider>
     

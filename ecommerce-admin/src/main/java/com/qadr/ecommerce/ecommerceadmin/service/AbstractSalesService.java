@@ -27,8 +27,6 @@ public abstract class AbstractSalesService {
         Date startDate = calendar.getTime();
 
         dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-        System.out.println("Start date " + startDate);
-        System.out.println("End date " + endDate);
         return getDataByDateRange(startDate, endDate, type);
     }
 

@@ -93,14 +93,14 @@ public class MenuService {
     }
 
     public void validateMenuUniqueProps(Menu menu, Integer id){
-        Optional<Menu> byTitle = repo.findByTitle(menu.getTitle());
-        if (byTitle.isPresent() && !byTitle.get().getId().equals(id)){
-            throw new CustomException(HttpStatus.BAD_REQUEST, "Title already exists");
-        }
-        Optional<Menu> byAlias = repo.findByAlias(menu.getAlias());
-        if (byAlias.isPresent() && !byAlias.get().getId().equals(id)){
-            throw new CustomException(HttpStatus.BAD_REQUEST, "Alias already exists");
-        }
+//        Optional<Menu> byTitle = repo.findByTitle(menu.getTitle());
+//        if (byTitle.isPresent() && !byTitle.get().getId().equals(id)){
+//            throw new CustomException(HttpStatus.BAD_REQUEST, "Title already exists");
+//        }
+//        Optional<Menu> byAlias = repo.findByAlias(menu.getAlias());
+//        if (byAlias.isPresent() && !byAlias.get().getId().equals(id)){
+//            throw new CustomException(HttpStatus.BAD_REQUEST, "Alias already exists");
+//        }
         Optional<Menu> byTypeAndPosition = repo.findByTypeAndPosition(menu.getType(), menu.getPosition());
         if (byTypeAndPosition.isPresent() && !byTypeAndPosition.get().getId().equals(id)){
             throw new CustomException(HttpStatus.BAD_REQUEST, "There's already a menu in that position");

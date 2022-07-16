@@ -1,6 +1,7 @@
 package com.qadr.ecommerce.sharedLibrary.entities;
 
 import com.fasterxml.jackson.annotation.*;
+import com.qadr.ecommerce.sharedLibrary.entities.storefront.StoreFront;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,6 +40,10 @@ public class Category extends IdBasedEntity{
 
     @Column(name = "all_parent_ids")
     private String allParentIds;
+
+    @ManyToOne
+    @JoinColumn(name = "store_front_id")
+    private StoreFront storeFront;
 
     public Category(Integer id){
         this.id = id;

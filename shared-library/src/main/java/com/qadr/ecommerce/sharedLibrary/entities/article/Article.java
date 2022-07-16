@@ -2,6 +2,7 @@ package com.qadr.ecommerce.sharedLibrary.entities.article;
 
 import com.qadr.ecommerce.sharedLibrary.entities.IdBasedEntity;
 import com.qadr.ecommerce.sharedLibrary.entities.User;
+import com.qadr.ecommerce.sharedLibrary.entities.storefront.StoreFront;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -18,7 +19,6 @@ import java.util.Date;
 @ToString
 @RequiredArgsConstructor
 public class Article  extends IdBasedEntity {
-
     @Column(length = 150, nullable = false, unique = true)
     private String title;
 
@@ -41,6 +41,10 @@ public class Article  extends IdBasedEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "store_front_id")
+    private StoreFront storeFront;
 
     public Article (Integer id){
         this.id = id;
