@@ -41,6 +41,7 @@ public class Category extends IdBasedEntity{
     @Column(name = "all_parent_ids")
     private String allParentIds;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "store_front_id")
     private StoreFront storeFront;

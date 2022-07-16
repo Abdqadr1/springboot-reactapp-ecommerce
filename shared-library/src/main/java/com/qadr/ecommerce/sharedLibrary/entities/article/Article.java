@@ -1,5 +1,6 @@
 package com.qadr.ecommerce.sharedLibrary.entities.article;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qadr.ecommerce.sharedLibrary.entities.IdBasedEntity;
 import com.qadr.ecommerce.sharedLibrary.entities.User;
 import com.qadr.ecommerce.sharedLibrary.entities.storefront.StoreFront;
@@ -42,6 +43,7 @@ public class Article  extends IdBasedEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "store_front_id")
     private StoreFront storeFront;

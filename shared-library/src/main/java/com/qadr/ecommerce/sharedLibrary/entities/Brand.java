@@ -1,5 +1,6 @@
 package com.qadr.ecommerce.sharedLibrary.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qadr.ecommerce.sharedLibrary.entities.storefront.StoreFront;
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -30,6 +31,7 @@ public class Brand extends IdBasedEntity{
     )
     private Set<Category> categories = new HashSet<>();
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "store_front_id")
     private StoreFront storeFront;

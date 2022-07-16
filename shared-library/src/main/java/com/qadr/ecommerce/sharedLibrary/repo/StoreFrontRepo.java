@@ -21,6 +21,8 @@ public interface StoreFrontRepo extends JpaRepository<StoreFront, Integer> {
     @Query("SELECT COALESCE(MAX(s.position), 0) FROM StoreFront s")
     int findMaxPosition();
 
+    Optional<StoreFront> findByPosition(int position);
+
     @Modifying
     @Query("UPDATE StoreFront a SET a.enabled=?2 WHERE a.id=?1")
     void updateEnabled(Integer id, boolean status);

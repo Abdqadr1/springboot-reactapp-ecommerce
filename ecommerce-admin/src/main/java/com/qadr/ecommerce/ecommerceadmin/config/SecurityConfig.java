@@ -52,7 +52,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper");
 
         http.authorizeRequests().antMatchers("/product/delete/**", "/product/add/**",
-                        "/article/**", "/menu/**")
+                        "/article/**", "/menu/**", "/storefront/**")
                 .hasAnyAuthority("Admin", "Editor");
 
         http.authorizeRequests().antMatchers("/review/**")

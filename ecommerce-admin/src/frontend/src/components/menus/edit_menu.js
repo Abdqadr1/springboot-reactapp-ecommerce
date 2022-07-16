@@ -108,8 +108,7 @@ const EditMenu = ({ data, setData, updateMenu }) => {
                 <Form onSubmit={handleSubmit}>
                     {
                         (data.type !== "New") &&  <>
-                            <input type="hidden" name="id" value={form?.id ?? ""} />
-                            <input type="hidden" name="position" value={form?.position ?? ""} />
+                            <input type="hidden" name="id" value={form?.id ?? ""}/>
                         </>
                     }
                     <Form.Group className="my-4 row justify-content-center mx-0" controlId="title">

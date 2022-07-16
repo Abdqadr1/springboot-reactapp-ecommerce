@@ -72,4 +72,20 @@ public class StoreFrontRepoTest {
         int maxPosition = repo.findMaxPosition();
         assertThat(maxPosition).isEqualTo(2);
     }
+
+    @Test
+    void testDeleteById(){
+        int id = 3;
+        repo.deleteById(id);
+        Optional<StoreFront> byId = repo.findById(id);
+        assertThat(byId).isNotPresent();
+    }
+
+    @Test
+    void testFindByPosition(){
+        int position = 1;
+        Optional<StoreFront> byPosition = repo.findByPosition(position);
+        assertThat(byPosition).isPresent();
+        System.out.println(byPosition.get());
+    }
 }

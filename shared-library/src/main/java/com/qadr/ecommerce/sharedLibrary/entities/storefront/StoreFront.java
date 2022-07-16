@@ -51,6 +51,14 @@ public class StoreFront extends IdBasedEntity {
     @ToString.Exclude
     private Set<Product> productList = new HashSet<>();
 
+
+    public void moveUp(){
+        position--;
+    }
+    public void moveDown(){
+        position++;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

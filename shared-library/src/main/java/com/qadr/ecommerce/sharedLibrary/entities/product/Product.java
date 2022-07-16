@@ -1,5 +1,6 @@
 package com.qadr.ecommerce.sharedLibrary.entities.product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qadr.ecommerce.sharedLibrary.entities.Brand;
 import com.qadr.ecommerce.sharedLibrary.entities.Category;
 import com.qadr.ecommerce.sharedLibrary.entities.Constants;
@@ -63,6 +64,7 @@ public class Product extends IdBasedEntity {
     @JoinColumn(name = "brand_id")
     private Brand brand;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "store_front_id")
     private StoreFront storeFront;

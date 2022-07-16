@@ -30,13 +30,11 @@ public class MenuService {
         }
         int maxPositionForType = repo.findMaxPositionForType(menu.getType());
         menu.setPosition(++maxPositionForType);
-        validateMenuUniqueProps(menu, null);
         return repo.save(menu);
     }
     public Menu editMenu(Menu menu){
         if (menu.getId() != null){
             Menu menuInDb = get(menu.getId());
-            validateMenuUniqueProps(menu, menu.getId());
             if(menu.getAlias().isBlank()){
                 menu.setAlias(menuInDb.getAlias());
             }
@@ -90,36 +88,6 @@ public class MenuService {
         if(newPosition < 1){
             throw new CustomException(HttpStatus.BAD_REQUEST, "You can not move a menu below 1");
         }
-    }
-
-    public void validateMenuUniqueProps(Menu menu, Integer id){
-//        Optional<Menu> byTitle = repo.findByTitle(menu.getTitle());
-//        if (byTitle.isPresent() && !byTitle.get().getId().equals(id)){
-//            throw new CustomException(HttpStatus.BAD_REQUEST, "Title already exists");
-//        }
-//        Optional<Menu> byAlias = repo.findByAlias(menu.getAlias());
-//        if (byAlias.isPresent() && !byAlias.get().getId().equals(id)){
-//            throw new CustomException(HttpStatus.BAD_REQUEST, "Alias already exists");
-//        }
-        Optional<Menu> byTypeAndPosition = repo.findByTypeAndPosition(menu.getType(), menu.getPosition());
-        if (byTypeAndPosition.isPresent() && !byTypeAndPosition.get().getId().equals(id)){
-            throw new CustomException(HttpStatus.BAD_REQUEST, "There's already a menu in that position");
-        }
-    }
-
-    private Map<String, Object> mapInfo(Integer number, Integer pageSze, Page<?> page){
-        int startCount = (number-1) * pageSze + 1;
-        int endCount = pageSze * number;
-        endCount = (endCount > page.getTotalElements()) ? (int) page.getTotalElements() : endCount;
-        Map<String, Object> pageInfo = new HashMap<>();
-        pageInfo.put("currentPage", number);
-        pageInfo.put("startCount", startCount);
-        pageInfo.put("endCount", endCount);
-        pageInfo.put("totalPages", page.getTotalPages());
-        pageInfo.put("totalElements", page.getTotalElements());
-        pageInfo.put("menus", page.getContent());
-        pageInfo.put("numberPerPage", pageSze);
-        return pageInfo;
     }
 
     private Menu get(Integer id){
