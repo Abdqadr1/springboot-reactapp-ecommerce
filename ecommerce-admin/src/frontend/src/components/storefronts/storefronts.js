@@ -4,7 +4,7 @@ import { Col, Row, Table } from "react-bootstrap";
 import '../../css/users.css';
 import DeleteModal from "../delete_modal";
 import Storefront from "./storefront";
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate, Link } from 'react-router-dom';
 import useAuth from "../custom_hooks/use-auth";
 import { isTokenExpired, SPINNERS_BORDER, hasAnyAuthority } from "../utilities";
 import useThrottle from "../custom_hooks/use-throttle";
@@ -179,16 +179,19 @@ const Storefronts = () => {
                     ? <div className="mx-auto" style={{ height: "40vh", display: "grid" }}>{SPINNERS_BORDER}</div>
                         :<>
                         <Row className="justify-content-between align-items-center p-3 mx-0">
-                            <Col xs={12} md={5} className="my-2">
-                                <h3 className="">Manage Storefronts</h3>
-                                <div>
-                                    <span onClick={()=>setUpdateStorefront(s=> ({...s, type: "New", show: true, id:null, storefront: {}}))} 
-                                        className="text-secondary cursor-pointer">
-                                        <i title="New article" className="bi bi-folder-plus fs-2"></i>
-                                    </span>
+                            <Col xs={12} md={7} className="my-2">
+                                <h3 className="">Home Page Customization (Manage Sections)</h3>
+                                <h6>Manage sections that are displayed on the website's home page. The order of sections matters.</h6>
+                                <div className="d-flex flex-wrap justify-content-start">
+                                    <Link className="fs-6 text-decoration-none" to="#">Add All Categories Section</Link> &nbsp; | &nbsp;
+                                    <Link className="fs-6 text-decoration-none" to="#">Add Product Section</Link> &nbsp; | &nbsp;
+                                    <Link className="fs-6 text-decoration-none" to="#">Add Category Section</Link> &nbsp; | &nbsp;
+                                    <Link className="fs-6 text-decoration-none" to="#">Add Brand Section</Link> &nbsp; | &nbsp;
+                                    <Link className="fs-6 text-decoration-none" to="#">Add Article Section</Link> &nbsp; | &nbsp;
+                                    <Link className="fs-6 text-decoration-none" to="#">Add Text Section</Link>
                                 </div>
                             </Col>
-                            <Col xs={12} md={7} className="my-2">
+                            <Col xs={12} md={5} className="my-2">
                             </Col>
                         </Row>
                         {
