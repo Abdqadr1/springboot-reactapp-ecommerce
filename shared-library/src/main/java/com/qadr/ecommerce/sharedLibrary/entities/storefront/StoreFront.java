@@ -26,8 +26,8 @@ public class StoreFront extends IdBasedEntity {
     @Column(length = 100)
     private String heading;
 
-    @Size(max = 300, message = "description should be between 10-300 characters")
-    @Column(length = 300)
+    @Size(max = 500, message = "description should be between 10-300 characters")
+    @Column(length = 500)
     private String description;
 
     @Enumerated(EnumType.STRING)

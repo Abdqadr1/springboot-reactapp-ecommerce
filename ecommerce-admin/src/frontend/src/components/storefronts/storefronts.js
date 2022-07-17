@@ -12,6 +12,7 @@ import useArray from "../custom_hooks/use-array";
 import useSettings from "../custom_hooks/use-settings";
 import MessageModal from "../message_modal";
 import "../../css/articles.css";
+import AddAll from "./add_all_cat";
 
 const Storefronts = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "storefront/";
@@ -22,6 +23,7 @@ const Storefronts = () => {
     const [isLoading, setLoading] = useState(true);
     const {array:storefronts, setArray:setStorefronts, filterWithId:removeStorefront, updateItemProp} = useArray();
     const [updateStorefront, setUpdateStorefront] = useState({show:false, id: -1, storefront: {}});
+    const [addAll, setAddAll] = useState({show:false, id: -1, storefront: {}, which: ""});
     const [deleteStorefront, setDeleteStorefront] = useState({show:false, id: -1});
     const [message, setMessage] = useState({ show:false, message:"", title: ""});
     const abortController = useRef(new AbortController());
@@ -30,14 +32,22 @@ const Storefronts = () => {
         setUpdateStorefront(s=> ({...s, type, show: true, id, storefront}))
     };
 
+    const showAddAll = (type, which, id) => {
+        if(id){
+            const storefront = storefronts.find(u => u.id === id)
+            setAddAll(s=> ({...s, type, which, show: true, id, storefront}))
+        }else {
+            setAddAll(s=> ({...s, type, which, show: true, storefront: {}}))
+        }
+    };
+
     const sort = (a, b) => {
         return a.position - b.position;
     }
 
     const movePosition = (e, id, dir) => {
-        const storefront = storefronts.find(u => u.id === id);
         const data = {
-            id, moveType: dir.toUpperCase(), menuType: storefront.type
+            id, moveType: dir.toUpperCase()
         }
         const url = serverUrl + "move";
         axios.post(url, data, {
@@ -163,7 +173,7 @@ const Storefronts = () => {
         return (storefronts.length > 0)
             ? storefronts.map(storefront => <Storefront key={storefront.id} type={type} storefront={storefront}
                 showUpdate={showUpdate} setDeleteStorefront={setDeleteStorefront} movePosition={movePosition}
-                updateStatus={updateStorefrontStatus}
+                updateStatus={updateStorefrontStatus} showAddAll={showAddAll}
             />)
             : ((type === 'detailed')
                 ? <tr><td colSpan={8} className="text-center" >No items found</td></tr>
@@ -183,12 +193,12 @@ const Storefronts = () => {
                                 <h3 className="">Home Page Customization (Manage Sections)</h3>
                                 <h6>Manage sections that are displayed on the website's home page. The order of sections matters.</h6>
                                 <div className="d-flex flex-wrap justify-content-start">
-                                    <Link className="fs-6 text-decoration-none" to="#">Add All Categories Section</Link> &nbsp; | &nbsp;
-                                    <Link className="fs-6 text-decoration-none" to="#">Add Product Section</Link> &nbsp; | &nbsp;
-                                    <Link className="fs-6 text-decoration-none" to="#">Add Category Section</Link> &nbsp; | &nbsp;
-                                    <Link className="fs-6 text-decoration-none" to="#">Add Brand Section</Link> &nbsp; | &nbsp;
-                                    <Link className="fs-6 text-decoration-none" to="#">Add Article Section</Link> &nbsp; | &nbsp;
-                                    <Link className="fs-6 text-decoration-none" to="#">Add Text Section</Link>
+                                    <Link onClick={()=>showAddAll("New", "ALL_CATEGORIES")} className="fs-6 text-decoration-none" to="#">Add All Categories Section</Link>{vr}
+                                    <Link className="fs-6 text-decoration-none" to="#">Add Product Section</Link>{vr}
+                                    <Link className="fs-6 text-decoration-none" to="#">Add Category Section</Link>{vr}
+                                    <Link className="fs-6 text-decoration-none" to="#">Add Brand Section</Link>{vr}
+                                    <Link className="fs-6 text-decoration-none" to="#">Add Article Section</Link>{vr}
+                                    <Link onClick={()=>showAddAll("New", "TEXT")} className="fs-6 text-decoration-none" to="#">Add Text Section</Link>
                                 </div>
                             </Col>
                             <Col xs={12} md={5} className="my-2">
@@ -219,6 +229,7 @@ const Storefronts = () => {
                             </div> : ""
                     }
                 {/* <EditStorefront data={updateStorefront} setData={setUpdateStorefront} updateStorefront={updatingStorefront} /> */}
+                <AddAll data={addAll} setData={setAddAll} updateStorefront={updatingStorefront}/>
                 <MessageModal obj={message} setShow={setMessage} />
                 <DeleteModal deleteObject={deleteStorefront} setDeleteObject={setDeleteStorefront} deletingFunc={deletingStorefront} type="storefront" />
             </>
@@ -227,5 +238,7 @@ const Storefronts = () => {
         </>
      );
 }
+
+const vr = <span className="bg-secondary mx-2 d-inline-block" style={{width: '2px', height: '1em'}} />
  
 export default Storefronts;

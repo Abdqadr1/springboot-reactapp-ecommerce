@@ -1,17 +1,22 @@
 package com.qadr.ecommerce.ecommerceadmin.service;
 
 import com.qadr.ecommerce.sharedLibrary.entities.menu.Menu;
+import com.qadr.ecommerce.sharedLibrary.entities.menu.MenuType;
 import com.qadr.ecommerce.sharedLibrary.entities.menu.MoveType;
 import com.qadr.ecommerce.sharedLibrary.entities.storefront.StoreFront;
 import com.qadr.ecommerce.sharedLibrary.entities.storefront.StoreFrontType;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
 import com.qadr.ecommerce.sharedLibrary.repo.StoreFrontRepo;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +24,29 @@ import java.util.Optional;
 @Transactional
 public class StoreFrontService {
     @Autowired private StoreFrontRepo repo;
+
+    public StoreFront saveNewStoreFront(StoreFront storeFront){
+        int maxPosition = repo.findMaxPosition() + 1;
+        validate(storeFront);
+        storeFront.setPosition(maxPosition);
+        return repo.save(storeFront);
+    }
+
+    public StoreFront editStoreFront(StoreFront storeFront){
+        StoreFront storeFrontInDb = get(storeFront.getId());
+        storeFront.setPosition(storeFrontInDb.getPosition());
+        storeFront.setType(storeFrontInDb.getType());
+        return repo.save(storeFront);
+    }
+
+    private void validate(StoreFront storeFront){
+        if(storeFront.getType().equals(StoreFrontType.ALL_CATEGORIES)){
+            List<StoreFront> byType = repo.findByType(storeFront.getType());
+            if(!byType.isEmpty()) throw new CustomException(HttpStatus.BAD_REQUEST, storeFront.getType() + " section can only exist once");
+        }
+    }
+
+
 
     public List<StoreFront> getAll(){
         return repo.findAll(Sort.by("position").descending());
@@ -85,6 +113,16 @@ public class StoreFrontService {
 //        if (byTypeAndPosition.isPresent() && !byTypeAndPosition.get().getId().equals(id)){
 //            throw new CustomException(HttpStatus.BAD_REQUEST, "There's already a menu in that position");
 //        }
+    }
+
+    @RequiredArgsConstructor
+    @AllArgsConstructor
+    @Data
+    public static class MoveDTO {
+        @NotNull(message = "Invalid parameters")
+        private Integer id;
+        @NotNull(message = "Invalid parameters")
+        private MoveType moveType;
     }
 
 }

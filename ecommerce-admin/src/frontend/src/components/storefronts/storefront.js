@@ -1,12 +1,24 @@
 import { Col, Row } from "react-bootstrap";
 import { getShortName } from "../utilities";
 
-const Storefront = ({storefront, showUpdate, setDeleteMenu, updateStatus, type, movePosition }) => {
+const Storefront = ({storefront, showUpdate, setDeleteStorefront, updateStatus, type, movePosition, showAddAll }) => {
 
     function deleteMenu() {
-        setDeleteMenu({
+        setDeleteStorefront({
             show:true, id: storefront.id
         })
+    }
+
+    const update = () => {
+        switch(storefront.type){
+            case "ALL_CATEGORIES":
+                showAddAll("Edit",storefront.type, storefront.id);
+                break;
+            case "TEXT":
+                showAddAll("Edit",storefront.type, storefront.id);
+                break;
+            default: console.log('nothing');
+        }
     }
     
     const enabled = storefront.enabled
@@ -35,7 +47,7 @@ const Storefront = ({storefront, showUpdate, setDeleteMenu, updateStatus, type, 
                 <td>{position}</td>
                 <td>{enabled}</td>
                 <td className="d-flex justify-content-center">
-                    <i className="bi bi-pencil-fill edit" title="edit menu" onClick={()=> showUpdate("Edit",storefront.id)}></i>
+                    <i className="bi bi-pencil-fill edit" title="edit menu" onClick={()=> update()}></i>
                     <i className="bi bi-archive-fill delete" title="delete menu" onClick={deleteMenu}></i>
                 </td>
             </tr>
@@ -57,7 +69,7 @@ const Storefront = ({storefront, showUpdate, setDeleteMenu, updateStatus, type, 
                     </div>
                     <div className="d-flex flex-wrap justify-content-start align-item-center">
                         <span className="d-block mb-3">{enabled}</span>
-                        <i className="bi bi-pencil-fill edit fs-6 mx-3" title="edit menu" onClick={()=> showUpdate("Edit",storefront.id)}></i>
+                        <i className="bi bi-pencil-fill edit fs-6 mx-3" title="edit menu" onClick={()=> update()}></i>
                         <i className="bi bi-archive-fill delete fs-6 mx-3" title="delete menu" onClick={deleteMenu}></i>
                     </div>
                 </Col>
