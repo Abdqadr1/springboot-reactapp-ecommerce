@@ -147,7 +147,6 @@ public class ProductController {
     }
     private static void removeFiles(List<String> filenames, String dir){
         List<String> keys = AmazonS3Util.listFolderKey(dir);
-        filenames.forEach(System.out::println);
         keys.stream()
                 .filter(key -> !filenames.contains(key.substring(key.lastIndexOf("/")+1)))
                 .forEach(AmazonS3Util::deleteFile);

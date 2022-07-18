@@ -1,11 +1,13 @@
 package com.qadr.ecommerce.ecommerceadmin.controllers;
 
+import com.qadr.ecommerce.ecommerceadmin.service.ArticleService;
 import com.qadr.ecommerce.ecommerceadmin.service.BrandService;
 import com.qadr.ecommerce.ecommerceadmin.service.CategoryService;
 import com.qadr.ecommerce.ecommerceadmin.service.StoreFrontService;
 import com.qadr.ecommerce.sharedLibrary.entities.Brand;
 import com.qadr.ecommerce.sharedLibrary.entities.Category;
 import com.qadr.ecommerce.sharedLibrary.entities.IdBasedEntity;
+import com.qadr.ecommerce.sharedLibrary.entities.article.Article;
 import com.qadr.ecommerce.sharedLibrary.entities.storefront.Storefront;
 import com.qadr.ecommerce.sharedLibrary.entities.storefront.StorefrontModel;
 import com.qadr.ecommerce.sharedLibrary.entities.storefront.StorefrontType;
@@ -25,10 +27,16 @@ public class StoreFrontController {
     @Autowired private StoreFrontService storeFrontService;
     @Autowired private CategoryService categoryService;
     @Autowired private BrandService brandService;
+    @Autowired private ArticleService articleService;
 
     @GetMapping("/categories")
     public List<Category> getAllCategories(){
         return categoryService.getAll();
+    }
+
+    @GetMapping("/articles")
+    public List<Article> getAllArticles(){
+        return articleService.getAll();
     }
 
     @GetMapping("/brands")
@@ -65,14 +73,13 @@ public class StoreFrontController {
     }
 
     @PostMapping("/edit/{type}")
-    public Storefront editStorefront(@PathVariable String type, Storefront storeFront, HttpServletRequest request){
+    public Storefront editStorefront(@PathVariable String type, Storefront storeFront, int[] selected){
         StorefrontType storeFrontType = StorefrontType.valueOf(type.toUpperCase());
         storeFront.setType(storeFrontType);
-        return editStoreFront(storeFront, request);
+        return editStoreFront(storeFront, selected);
     }
 
     private Storefront saveStoreFront(Storefront storeFront, int[] selected){
-        System.out.println(Arrays.toString(selected));
         switch (storeFront.getType()){
             case TEXT, ALL_CATEGORIES -> {
                 return storeFrontService.saveNewStoreFront(storeFront);
@@ -84,10 +91,14 @@ public class StoreFrontController {
             default -> throw new CustomException(HttpStatus.BAD_REQUEST, "Parameter not recognized");
         }
     }
-    private Storefront editStoreFront(Storefront storeFront, HttpServletRequest request){
+    private Storefront editStoreFront(Storefront storeFront, int[] selected){
         switch (storeFront.getType()){
             case TEXT, ALL_CATEGORIES -> {
                 return storeFrontService.editStoreFront(storeFront);
+            }
+            case CATEGORY, BRAND, ARTICLE, PRODUCT -> {
+                Storefront front = addSelectedModels(storeFront, selected);
+                return storeFrontService.editStoreFront(front);
             }
             default -> throw new CustomException(HttpStatus.BAD_REQUEST, "Parameter not recognized");
         }

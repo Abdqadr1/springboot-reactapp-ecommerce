@@ -48,7 +48,10 @@ public class Article  extends IdBasedEntity {
 
 
     public String getFormattedUpdatedTime(){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        return dateFormat.format(updatedTime);
+        if(updatedTime != null){
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            return dateFormat.format(updatedTime);
+        }
+        return "";
     }
 }

@@ -1,7 +1,9 @@
 package com.qadr.ecommerce.ecommerceadmin.service;
 
+import com.qadr.ecommerce.sharedLibrary.entities.Category;
 import com.qadr.ecommerce.sharedLibrary.entities.User;
 import com.qadr.ecommerce.sharedLibrary.entities.article.Article;
+import com.qadr.ecommerce.sharedLibrary.entities.article.ArticleType;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
 import com.qadr.ecommerce.sharedLibrary.paging.PagingAndSortingHelper;
 import com.qadr.ecommerce.sharedLibrary.repo.ArticleRepo;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -71,5 +74,9 @@ public class ArticleService {
     public void deleteArticle(Integer id) {
         get(id);
         repo.deleteById(id);
+    }
+
+    public List<Article> getAll() {
+        return repo.findByPublished(true);
     }
 }

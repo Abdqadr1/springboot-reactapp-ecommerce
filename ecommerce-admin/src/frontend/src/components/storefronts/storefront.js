@@ -1,7 +1,8 @@
 import { Col, Row } from "react-bootstrap";
 import { getShortName } from "../utilities";
 
-const Storefront = ({storefront, showUpdate, setDeleteStorefront, updateStatus, type, movePosition, showAddAll, showCategory }) => {
+const Storefront = ({storefront, setDeleteStorefront, updateStatus, 
+    type, movePosition, showAddAll, showCategory, showBrand, showArticle }) => {
 
     function deleteMenu() {
         setDeleteStorefront({
@@ -19,6 +20,12 @@ const Storefront = ({storefront, showUpdate, setDeleteStorefront, updateStatus, 
                 break;
             case "CATEGORY":
                 showCategory("Edit", storefront.id);
+                break;
+            case "BRAND":
+                showBrand("Edit", storefront.id);
+                break;
+            case "ARTICLE":
+                showArticle("Edit", storefront.id);
                 break;
             default: console.log('nothing');
         }

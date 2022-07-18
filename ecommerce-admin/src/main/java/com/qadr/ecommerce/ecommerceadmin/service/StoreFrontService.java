@@ -1,9 +1,18 @@
 package com.qadr.ecommerce.ecommerceadmin.service;
 
+import com.qadr.ecommerce.ecommerceadmin.repo.BrandRepo;
+import com.qadr.ecommerce.ecommerceadmin.repo.CategoryRepo;
+import com.qadr.ecommerce.sharedLibrary.entities.Brand;
+import com.qadr.ecommerce.sharedLibrary.entities.Category;
+import com.qadr.ecommerce.sharedLibrary.entities.article.Article;
 import com.qadr.ecommerce.sharedLibrary.entities.menu.MoveType;
+import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
 import com.qadr.ecommerce.sharedLibrary.entities.storefront.Storefront;
+import com.qadr.ecommerce.sharedLibrary.entities.storefront.StorefrontModel;
 import com.qadr.ecommerce.sharedLibrary.entities.storefront.StorefrontType;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
+import com.qadr.ecommerce.sharedLibrary.repo.ArticleRepo;
+import com.qadr.ecommerce.sharedLibrary.repo.ProductRepo;
 import com.qadr.ecommerce.sharedLibrary.repo.StorefrontRepo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,25 +31,49 @@ import java.util.Optional;
 @Transactional
 public class StoreFrontService {
     @Autowired private StorefrontRepo repo;
+    @Autowired private ProductRepo productRepo;
+    @Autowired private CategoryRepo categoryRepo;
+    @Autowired private ArticleRepo articleRepo;
+    @Autowired private BrandRepo brandRepo;
 
     public Storefront saveNewStoreFront(Storefront storeFront){
         int maxPosition = repo.findMaxPosition() + 1;
         validate(storeFront);
         storeFront.setPosition(maxPosition);
-        return repo.save(storeFront);
+        Storefront save = repo.save(storeFront);
+        save.getModels().forEach(this::add);
+        return save;
     }
 
     public Storefront editStoreFront(Storefront storeFront){
         Storefront storeFrontInDb = get(storeFront.getId());
         storeFront.setPosition(storeFrontInDb.getPosition());
         storeFront.setType(storeFrontInDb.getType());
-        return repo.save(storeFront);
+        Storefront save = repo.save(storeFront);
+        save.getModels().forEach(this::add);
+        return save;
     }
 
     private void validate(Storefront storeFront){
         if(storeFront.getType().equals(StorefrontType.ALL_CATEGORIES)){
             List<Storefront> byType = repo.findByType(storeFront.getType());
             if(!byType.isEmpty()) throw new CustomException(HttpStatus.BAD_REQUEST, storeFront.getType() + " section can only exist once");
+        }
+    }
+
+    private void add(StorefrontModel save){
+        StorefrontType type = save.getType();
+        if(type.equals(StorefrontType.BRAND)){
+            brandRepo.findById(save.getBrand().getId()).ifPresent(save::setBrand);
+        }
+        if(type.equals(StorefrontType.CATEGORY)){
+            categoryRepo.findById(save.getCategory().getId()).ifPresent(save::setCategory);
+        }
+        if(type.equals(StorefrontType.ARTICLE)){
+            articleRepo.findById(save.getArticle().getId()).ifPresent(save::setArticle);
+        }
+        if(type.equals(StorefrontType.PRODUCT)){
+            productRepo.findById(save.getProduct().getId()).ifPresent(save::setProduct);
         }
     }
 

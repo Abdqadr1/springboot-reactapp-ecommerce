@@ -14,6 +14,8 @@ import MessageModal from "../message_modal";
 import "../../css/articles.css";
 import AddAll from "./add_all_cat";
 import CategoryStorefront from "./add_cat";
+import BrandStorefront from "./add_brand";
+import ArticleStorefront from "./add_article";
 
 const Storefronts = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "storefront/";
@@ -23,16 +25,13 @@ const Storefronts = () => {
     const {accessToken} = auth;
     const [isLoading, setLoading] = useState(true);
     const {array:storefronts, setArray:setStorefronts, filterWithId:removeStorefront, updateItemProp} = useArray();
-    const [updateStorefront, setUpdateStorefront] = useState({show:false, id: -1, storefront: {}});
     const [addAll, setAddAll] = useState({show:false, id: -1, storefront: {}, which: ""});
     const [addCategory, setAddCategory] = useState({show:false, id: -1, storefront: {}, type: "", which:"CATEGORY"});
+    const [addBrand, setAddBrand] = useState({show:false, id: -1, storefront: {}, type: "", which:"BRAND"});
+    const [addArticle, setAddArticle] = useState({show:false, id: -1, storefront: {}, type: "", which:"ARTICLE"});
     const [deleteStorefront, setDeleteStorefront] = useState({show:false, id: -1});
     const [message, setMessage] = useState({ show:false, message:"", title: ""});
     const abortController = useRef(new AbortController());
-    const showUpdate = (type, id) => {
-        const storefront = storefronts.find(u => u.id === id)
-        setUpdateStorefront(s=> ({...s, type, show: true, id, storefront}))
-    };
 
     const showAddAll = (type, which, id) => {
         if(id){
@@ -47,6 +46,18 @@ const Storefronts = () => {
         if(id){
             const storefront = storefronts.find(u => u.id === id)
             setAddCategory(s=> ({...s, type, show: true, id, storefront}))
+        }
+    }
+    const showBrand = (type, id) => {
+        if(id){
+            const storefront = storefronts.find(u => u.id === id)
+            setAddBrand(s=> ({...s, type, show: true, id, storefront}))
+        }
+    }
+    const showArticle = (type, id) => {
+        if(id){
+            const storefront = storefronts.find(u => u.id === id)
+            setAddArticle(s=> ({...s, type, show: true, id, storefront}))
         }
     }
 
@@ -181,8 +192,9 @@ const Storefronts = () => {
     function listStorefronts(storefronts, type) {
         return (storefronts.length > 0)
             ? storefronts.map(storefront => <Storefront key={storefront.id} type={type} storefront={storefront}
-                showUpdate={showUpdate} setDeleteStorefront={setDeleteStorefront} movePosition={movePosition}
+                setDeleteStorefront={setDeleteStorefront} movePosition={movePosition}
                 updateStatus={updateStorefrontStatus} showAddAll={showAddAll} showCategory={showCategory}
+                showBrand={showBrand} showArticle={showArticle}
             />)
             : ((type === 'detailed')
                 ? <tr><td colSpan={8} className="text-center" >No items found</td></tr>
@@ -205,8 +217,8 @@ const Storefronts = () => {
                                     <Link onClick={()=>showAddAll("New", "ALL_CATEGORIES")} className="fs-6 text-decoration-none" to="#">Add All Categories Section</Link>{vr}
                                     <Link className="fs-6 text-decoration-none" to="#">Add Product Section</Link>{vr}
                                     <Link onClick={()=>showCategory("New", "CATEGORY")} className="fs-6 text-decoration-none" to="#">Add Category Section</Link>{vr}
-                                    <Link className="fs-6 text-decoration-none" to="#">Add Brand Section</Link>{vr}
-                                    <Link className="fs-6 text-decoration-none" to="#">Add Article Section</Link>{vr}
+                                    <Link onClick={()=>showBrand("New", "BRAND")} className="fs-6 text-decoration-none" to="#">Add Brand Section</Link>{vr}
+                                    <Link onClick={()=>showArticle("New", "ARTICLE")} className="fs-6 text-decoration-none" to="#">Add Article Section</Link>{vr}
                                     <Link onClick={()=>showAddAll("New", "TEXT")} className="fs-6 text-decoration-none" to="#">Add Text Section</Link>
                                 </div>
                             </Col>
@@ -240,6 +252,8 @@ const Storefronts = () => {
                 {/* <EditStorefront data={updateStorefront} setData={setUpdateStorefront} updateStorefront={updatingStorefront} /> */}
                 <AddAll data={addAll} setData={setAddAll} updateStorefront={updatingStorefront}/>
                 <CategoryStorefront data={addCategory} setData={setAddCategory} updateStorefront={updatingStorefront}/>
+                <ArticleStorefront data={addArticle} setData={setAddArticle} updateStorefront={updatingStorefront}/>
+                <BrandStorefront data={addBrand} setData={setAddBrand} updateStorefront={updatingStorefront}/>
                 <MessageModal obj={message} setShow={setMessage} />
                 <DeleteModal deleteObject={deleteStorefront} setDeleteObject={setDeleteStorefront} deletingFunc={deletingStorefront} type="storefront" />
             </>

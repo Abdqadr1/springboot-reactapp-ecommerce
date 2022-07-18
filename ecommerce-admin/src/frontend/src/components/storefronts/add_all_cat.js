@@ -52,7 +52,7 @@ const AddAll = ({data, setData, updateStorefront}) => {
         })
             .then(response => {
                 updateStorefront(response.data, data.type.toLowerCase());
-                setAlert({ show: true, message: "Menu saved!" })
+                setAlert({ show: true, message: "Storefront saved!" })
             })
             .catch(error => { 
                 const response = error.response

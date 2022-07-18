@@ -21,7 +21,7 @@ import java.util.Set;
 @ToString
 @RequiredArgsConstructor
 public class Storefront extends IdBasedEntity {
-    @Size(min = 10, max = 100, message = "heading should be between 10-100 characters")
+    @Size(max = 100, message = "heading should be between 10-100 characters")
     @Column(length = 100)
     private String heading;
 
@@ -34,8 +34,7 @@ public class Storefront extends IdBasedEntity {
     private int position;
     private boolean enabled;
 
-    @OneToMany(mappedBy = "storefront", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
+    @OneToMany(mappedBy = "storefront", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<StorefrontModel> models = new HashSet<>();
 
     public void setModels(Set<StorefrontModel> models) {

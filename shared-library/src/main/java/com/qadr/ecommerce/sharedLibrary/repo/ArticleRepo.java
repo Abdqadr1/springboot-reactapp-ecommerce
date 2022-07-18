@@ -16,6 +16,8 @@ public interface ArticleRepo extends SearchRepository<Article, Integer> {
 
     List<Article> findAllByArticleType(ArticleType type);
 
+    List<Article> findByPublished(boolean b);
+
     @Query("SELECT a FROM Article a WHERE a.title LIKE %?1% OR a.content LIKE %?1%")
     Page<Article> searchKeyword(String keyword, Pageable pageable);
 

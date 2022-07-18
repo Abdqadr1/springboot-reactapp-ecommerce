@@ -5,11 +5,11 @@ import useAuth from "../custom_hooks/use-auth";
 import { isTokenExpired, listFormData, SPINNERS_BORDER_HTML } from "../utilities";
 import axios from "axios";
 
-const CategoryStorefront = ({data, setData, updateStorefront}) => {
+const ArticleStorefront = ({data, setData, updateStorefront}) => {
     const obj = {...data.storefront};
     const [form, setForm] = useState({});
-    const [cats, setCats] = useState([]);
-    const [selectedCats, setSelectedCats] = useState([]);
+    const [articles, setArticles] = useState([]);
+    const [selectedArticles, setSelectedArticles] = useState([]);
     const url = process.env.REACT_APP_SERVER_URL + "storefront/"+data.type?.toLowerCase();
     const [{ accessToken }] = useAuth();
     const navigate = useNavigate();
@@ -25,10 +25,10 @@ const CategoryStorefront = ({data, setData, updateStorefront}) => {
         if(obj.article) obj.article = obj.article.id;
         setForm(obj);
         if(obj?.models){
-            const cats = obj.models.map(m => m.category);
-            setSelectedCats([...cats]);
+            const cats = obj.models.map(m => m.article);
+            setSelectedArticles([...cats]);
         }else{
-            setSelectedCats([])
+            setSelectedArticles([])
         }
         
         setAlert(s => ({ ...s, show: false }));
@@ -40,7 +40,7 @@ const CategoryStorefront = ({data, setData, updateStorefront}) => {
     }, [alert, alertRef]);
 
     useEffect(()=> {
-        const url = process.env.REACT_APP_SERVER_URL + "storefront/categories";
+        const url = process.env.REACT_APP_SERVER_URL + "storefront/articles";
         axios.get(url, {
             headers: {
                 "Authorization": `Bearer ${accessToken}`,
@@ -48,26 +48,26 @@ const CategoryStorefront = ({data, setData, updateStorefront}) => {
             signal: abortController.current.signal
         })
             .then(response => {
-                setCats(response.data);
+                setArticles(response.data);
             })
             .catch(error => { 
                 const response = error.response
                 if(isTokenExpired(response)) navigate("/login/2")
-                else setAlert({show:true, message: "could not fetch categories", variant: "danger"})
+                else setAlert({show:true, message: "could not fetch articles", variant: "danger"})
             })
     },[accessToken, navigate]);
 
     const addToForm = (data) =>{
         data.delete("selected")
-        selectedCats.forEach(v => {
+        selectedArticles.forEach(v => {
             data.append("selected", v.id);
         });
     }
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if(selectedCats.size < 1) {
-            setAlert(s => ({...s, show:true, message: "choose categories"}));
+        if(selectedArticles.size < 1) {
+            setAlert(s => ({...s, show:true, message: "choose articles"}));
             return;
         }
         const target = event.target
@@ -116,20 +116,20 @@ const CategoryStorefront = ({data, setData, updateStorefront}) => {
             const selected = select.selectedOptions;
             for (let i = 0; i < selected.length; i++) {
                 const id = Number(selected[i].value);
-                const category = cats.find(c => c.id === id);
-                if(!selectedCats.some(a => a.id === category.id)){
-                    selectedCats.push(category);
+                const article = articles.find(c => c.id === id);
+                if(!selectedArticles.some(a => a.id === article.id)){
+                    selectedArticles.push(article);
                 }
             }
-            setSelectedCats(s => ([...s]));
+            setSelectedArticles(s => ([...s]));
         }
     }
     const handleDelete = () => {
         const select = selectedRef.current;
         if(select){
             const id = Number(select.value);
-            const s = selectedCats.filter(v => v.id !== id);
-            setSelectedCats([...s]);
+            const s = selectedArticles.filter(v => v.id !== id);
+            setSelectedArticles([...s]);
         }
     }
     
@@ -137,15 +137,15 @@ const CategoryStorefront = ({data, setData, updateStorefront}) => {
         const select = selectedRef.current;
         if(select){
             const id = Number(select.value);
-            const index = selectedCats.findIndex(a => a.id === id);
+            const index = selectedArticles.findIndex(a => a.id === id);
             let newIndex = dir === "up" ? index - 1 : index + 1;
-            if(newIndex < 0 || newIndex >= selectedCats.length) return;
-            const el = selectedCats[index];
-            const el1 = selectedCats[newIndex];
-            selectedCats[index] = el1;
-            selectedCats[newIndex] = el;
+            if(newIndex < 0 || newIndex >= selectedArticles.length) return;
+            const el = selectedArticles[index];
+            const el1 = selectedArticles[newIndex];
+            selectedArticles[index] = el1;
+            selectedArticles[newIndex] = el;
             select.options.selectedIndex = newIndex;
-            setSelectedCats(s=>([...s]));
+            setSelectedArticles(s => ([...s]));
         }
     }
 
@@ -160,8 +160,8 @@ const CategoryStorefront = ({data, setData, updateStorefront}) => {
                 <Modal.Title>
                     {
                         (data.type === "New") 
-                        ? `New Category section` 
-                        :`Edit Category section`
+                        ? `New Article section` 
+                        :`Edit Article section`
                     }
                     
                 </Modal.Title>
@@ -195,20 +195,20 @@ const CategoryStorefront = ({data, setData, updateStorefront}) => {
                         <Form.Check onChange={handleInput} checked={form?.enabled ?? ""} name="enabled" className="form-input ps-0"/>
                     </Form.Group>
                     <Form.Group className="my-4 row justify-content-center mx-0" controlId="heading">
-                        <Form.Label className="form-label">Categories:</Form.Label>
+                        <Form.Label className="form-label">Articles:</Form.Label>
                         <div className="form-input px-0">
                             <select ref={catsRef} className="form-control my-2" size="4" style={{ height: "300px" }} multiple>
-                                <option value="" hidden>Select categories</option>
-                                {cats.map((c, i) => <option key={i} value={c.id}>{c.name}</option>)}
+                                <option value="" hidden>Select articles</option>
+                                {articles.map((c, i) => <option key={i} value={c.id}>{c.title}</option>)}
                             </select>
-                            <Button onClick={handleChoose} variant="secondary" className="fit-content my-2">Choose Category</Button>
+                            <Button onClick={handleChoose} variant="secondary" className="fit-content my-2">Choose Article</Button>
                         </div>
                     </Form.Group>
                     <Form.Group className="my-4 row justify-content-center mx-0" controlId="selectedValue">
-                        <Form.Label className="form-label">Chosen Categories:</Form.Label>
+                        <Form.Label className="form-label">Chosen Articles:</Form.Label>
                         <div className="form-input px-0">
                             <select ref={selectedRef} className="form-control my-2" size="7" style={{ height: "200px" }}>
-                                {selectedCats.map((c, i) => <option key={i} data-index={i} value={c.id}>{c.name}</option>)}
+                                {selectedArticles.map((c, i) => <option key={i} data-index={i} value={c.id}>{c.title}</option>)}
                             </select>
                             <div className="d-flex flex-wrap px-2">
                                 <i onClick={handleDelete} className="bi bi-archive-fill fs-5 me-1"></i>
@@ -229,4 +229,4 @@ const CategoryStorefront = ({data, setData, updateStorefront}) => {
      );
 }
  
-export default CategoryStorefront;
+export default ArticleStorefront;
