@@ -222,7 +222,7 @@ export function listProducts(results, keyword, formatPrice, handler){
                     {
                         results.map((p) => (
                             <Col onClick={e=>handler(p)} key={p.name} xs={6} sm={4} md={3} lg={2} xlg={2} className="cs mx-1 border rounded">
-                                <img loading="lazy" src={p.mainImage} alt={getShortName(p.name, 10)} className="product-image" />
+                                <img loading="lazy" src={p.mainImagePath} alt={getShortName(p.name, 10)} className="product-image" />
                                 <h5 className="my-2 text-primary text-start">{getShortName(p.name)}</h5>
                                 {getPrices(p.discountPrice, p.price, p.realPrice, formatPrice)}
                             </Col>

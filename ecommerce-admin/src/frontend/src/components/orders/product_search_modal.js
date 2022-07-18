@@ -79,7 +79,7 @@ const ProductSearchModal = ({ show, setShow, priceFunction, selectHandler }) => 
                         <Form className="my-2 col-12" onSubmit={handleSubmit}>
                             <Row>
                                 <Col xs={9} md={9}>
-                                    <Form.Control ref={keywordRef} placeholder="keyword" required minLength="3" />
+                                    <Form.Control ref={keywordRef} placeholder="keyword" required minLength="2" />
                                 </Col>
                                 <Col xs={2} md={2}>
                                     <Button ref={submitBtnRef} variant="success" type="submit">Search</Button>

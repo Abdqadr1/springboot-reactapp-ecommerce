@@ -47,6 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 "/customer/export/**","/user-photos/**","/category-photos/**", "/product-images/**",
                 "/product/export/**","/site-logo/**", "/set/get","/countries/list", "/states/get",
                 "/customer/countries").permitAll();
+        http.authorizeRequests().antMatchers("/orders/product_search/page/**")
+                .hasAnyAuthority("Admin", "Editor", "Salesperson");
 
         http.authorizeRequests().antMatchers("/category/get-hierarchy/**")
                 .hasAnyAuthority("Admin", "Editor", "Salesperson", "Shipper");

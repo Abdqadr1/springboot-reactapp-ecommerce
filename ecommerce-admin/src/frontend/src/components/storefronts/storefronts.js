@@ -16,6 +16,7 @@ import AddAll from "./add_all_cat";
 import CategoryStorefront from "./add_cat";
 import BrandStorefront from "./add_brand";
 import ArticleStorefront from "./add_article";
+import ProductStorefront from "./add_product";
 
 const Storefronts = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "storefront/";
@@ -29,6 +30,7 @@ const Storefronts = () => {
     const [addCategory, setAddCategory] = useState({show:false, id: -1, storefront: {}, type: "", which:"CATEGORY"});
     const [addBrand, setAddBrand] = useState({show:false, id: -1, storefront: {}, type: "", which:"BRAND"});
     const [addArticle, setAddArticle] = useState({show:false, id: -1, storefront: {}, type: "", which:"ARTICLE"});
+    const [addProduct, setAddProduct] = useState({show:false, id: -1, storefront: {}, type: "", which:"PRODUCT"});
     const [deleteStorefront, setDeleteStorefront] = useState({show:false, id: -1});
     const [message, setMessage] = useState({ show:false, message:"", title: ""});
     const abortController = useRef(new AbortController());
@@ -58,6 +60,12 @@ const Storefronts = () => {
         if(id){
             const storefront = storefronts.find(u => u.id === id)
             setAddArticle(s=> ({...s, type, show: true, id, storefront}))
+        }
+    }
+    const showProduct = (type, id) => {
+        if(id){
+            const storefront = storefronts.find(u => u.id === id)
+            setAddProduct(s=> ({...s, type, show: true, id, storefront}))
         }
     }
 
@@ -194,7 +202,7 @@ const Storefronts = () => {
             ? storefronts.map(storefront => <Storefront key={storefront.id} type={type} storefront={storefront}
                 setDeleteStorefront={setDeleteStorefront} movePosition={movePosition}
                 updateStatus={updateStorefrontStatus} showAddAll={showAddAll} showCategory={showCategory}
-                showBrand={showBrand} showArticle={showArticle}
+                showBrand={showBrand} showArticle={showArticle} showProduct={showProduct}
             />)
             : ((type === 'detailed')
                 ? <tr><td colSpan={8} className="text-center" >No items found</td></tr>
@@ -215,7 +223,7 @@ const Storefronts = () => {
                                 <h6>Manage sections that are displayed on the website's home page. The order of sections matters.</h6>
                                 <div className="d-flex flex-wrap justify-content-start">
                                     <Link onClick={()=>showAddAll("New", "ALL_CATEGORIES")} className="fs-6 text-decoration-none" to="#">Add All Categories Section</Link>{vr}
-                                    <Link className="fs-6 text-decoration-none" to="#">Add Product Section</Link>{vr}
+                                    <Link onClick={()=>showProduct("New", "PRODUCT")} className="fs-6 text-decoration-none" to="#">Add Product Section</Link>{vr}
                                     <Link onClick={()=>showCategory("New", "CATEGORY")} className="fs-6 text-decoration-none" to="#">Add Category Section</Link>{vr}
                                     <Link onClick={()=>showBrand("New", "BRAND")} className="fs-6 text-decoration-none" to="#">Add Brand Section</Link>{vr}
                                     <Link onClick={()=>showArticle("New", "ARTICLE")} className="fs-6 text-decoration-none" to="#">Add Article Section</Link>{vr}
@@ -254,6 +262,7 @@ const Storefronts = () => {
                 <CategoryStorefront data={addCategory} setData={setAddCategory} updateStorefront={updatingStorefront}/>
                 <ArticleStorefront data={addArticle} setData={setAddArticle} updateStorefront={updatingStorefront}/>
                 <BrandStorefront data={addBrand} setData={setAddBrand} updateStorefront={updatingStorefront}/>
+                <ProductStorefront data={addProduct} setData={setAddProduct} updateStorefront={updatingStorefront} />
                 <MessageModal obj={message} setShow={setMessage} />
                 <DeleteModal deleteObject={deleteStorefront} setDeleteObject={setDeleteStorefront} deletingFunc={deletingStorefront} type="storefront" />
             </>
