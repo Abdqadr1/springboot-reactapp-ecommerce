@@ -78,6 +78,8 @@ public class ProductController {
                                @RequestParam(value = "saved_image", required = false) String[] saveImages,
                                @RequestParam(value = "extra_image", required = false) MultipartFile[] extraImages) throws IOException {
 
+        System.out.println(id);
+        product.setId(id);
         addProductDetails(names, values, product);
         Optional.ofNullable(mainImage).ifPresent(file -> addMainImage(file,product));
 

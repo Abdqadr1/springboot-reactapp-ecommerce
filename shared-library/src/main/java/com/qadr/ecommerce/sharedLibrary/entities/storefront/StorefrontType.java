@@ -1,5 +1,5 @@
 package com.qadr.ecommerce.sharedLibrary.entities.storefront;
 
-public enum StoreFrontType {
+public enum StorefrontType {
     TEXT, PRODUCT, CATEGORY, BRAND, ARTICLE, ALL_CATEGORIES
 }

@@ -11,7 +11,6 @@ import org.hibernate.Hibernate;
 import javax.persistence.*;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -21,36 +20,38 @@ import java.util.Set;
 @Setter
 @ToString
 @RequiredArgsConstructor
-public class StoreFront extends IdBasedEntity {
+public class Storefront extends IdBasedEntity {
     @Size(min = 10, max = 100, message = "heading should be between 10-100 characters")
     @Column(length = 100)
     private String heading;
 
-    @Size(max = 500, message = "description should be between 10-300 characters")
+    @Size(max = 500, message = "description should be between 10-500 characters")
     @Column(length = 500)
     private String description;
 
     @Enumerated(EnumType.STRING)
-    private StoreFrontType type;
+    private StorefrontType type;
     private int position;
     private boolean enabled;
 
-    @OneToMany(mappedBy = "storeFront", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "storefront", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private Set<Article> articlesList = new HashSet<>();
+    private Set<StorefrontModel> models = new HashSet<>();
 
-    @OneToMany(mappedBy = "storeFront", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @ToString.Exclude
-    private Set<Brand> brandsList = new HashSet<>();
+    public void setModels(Set<StorefrontModel> models) {
+        this.models.clear();
+        this.models.addAll(models);
+    }
 
-    @OneToMany(mappedBy = "storeFront", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @ToString.Exclude
-    private Set<Category> categoryList = new HashSet<>();
+    public Storefront(Integer id){
+        this.id = id;
+    }
 
-    @OneToMany(mappedBy = "storeFront", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @ToString.Exclude
-    private Set<Product> productList = new HashSet<>();
 
+    public void addModel(StorefrontModel model){
+        model.setStorefront(this);
+        models.add(model);
+    }
 
     public void moveUp(){
         position--;
@@ -63,7 +64,7 @@ public class StoreFront extends IdBasedEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        StoreFront that = (StoreFront) o;
+        Storefront that = (Storefront) o;
         return id != null && Objects.equals(id, that.id);
     }
 

@@ -13,6 +13,7 @@ import useSettings from "../custom_hooks/use-settings";
 import MessageModal from "../message_modal";
 import "../../css/articles.css";
 import AddAll from "./add_all_cat";
+import CategoryStorefront from "./add_cat";
 
 const Storefronts = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL + "storefront/";
@@ -24,6 +25,7 @@ const Storefronts = () => {
     const {array:storefronts, setArray:setStorefronts, filterWithId:removeStorefront, updateItemProp} = useArray();
     const [updateStorefront, setUpdateStorefront] = useState({show:false, id: -1, storefront: {}});
     const [addAll, setAddAll] = useState({show:false, id: -1, storefront: {}, which: ""});
+    const [addCategory, setAddCategory] = useState({show:false, id: -1, storefront: {}, type: "", which:"CATEGORY"});
     const [deleteStorefront, setDeleteStorefront] = useState({show:false, id: -1});
     const [message, setMessage] = useState({ show:false, message:"", title: ""});
     const abortController = useRef(new AbortController());
@@ -40,6 +42,13 @@ const Storefronts = () => {
             setAddAll(s=> ({...s, type, which, show: true, storefront: {}}))
         }
     };
+
+    const showCategory = (type, id) => {
+        if(id){
+            const storefront = storefronts.find(u => u.id === id)
+            setAddCategory(s=> ({...s, type, show: true, id, storefront}))
+        }
+    }
 
     const sort = (a, b) => {
         return a.position - b.position;
@@ -173,7 +182,7 @@ const Storefronts = () => {
         return (storefronts.length > 0)
             ? storefronts.map(storefront => <Storefront key={storefront.id} type={type} storefront={storefront}
                 showUpdate={showUpdate} setDeleteStorefront={setDeleteStorefront} movePosition={movePosition}
-                updateStatus={updateStorefrontStatus} showAddAll={showAddAll}
+                updateStatus={updateStorefrontStatus} showAddAll={showAddAll} showCategory={showCategory}
             />)
             : ((type === 'detailed')
                 ? <tr><td colSpan={8} className="text-center" >No items found</td></tr>
@@ -195,7 +204,7 @@ const Storefronts = () => {
                                 <div className="d-flex flex-wrap justify-content-start">
                                     <Link onClick={()=>showAddAll("New", "ALL_CATEGORIES")} className="fs-6 text-decoration-none" to="#">Add All Categories Section</Link>{vr}
                                     <Link className="fs-6 text-decoration-none" to="#">Add Product Section</Link>{vr}
-                                    <Link className="fs-6 text-decoration-none" to="#">Add Category Section</Link>{vr}
+                                    <Link onClick={()=>showCategory("New", "CATEGORY")} className="fs-6 text-decoration-none" to="#">Add Category Section</Link>{vr}
                                     <Link className="fs-6 text-decoration-none" to="#">Add Brand Section</Link>{vr}
                                     <Link className="fs-6 text-decoration-none" to="#">Add Article Section</Link>{vr}
                                     <Link onClick={()=>showAddAll("New", "TEXT")} className="fs-6 text-decoration-none" to="#">Add Text Section</Link>
@@ -230,6 +239,7 @@ const Storefronts = () => {
                     }
                 {/* <EditStorefront data={updateStorefront} setData={setUpdateStorefront} updateStorefront={updatingStorefront} /> */}
                 <AddAll data={addAll} setData={setAddAll} updateStorefront={updatingStorefront}/>
+                <CategoryStorefront data={addCategory} setData={setAddCategory} updateStorefront={updatingStorefront}/>
                 <MessageModal obj={message} setShow={setMessage} />
                 <DeleteModal deleteObject={deleteStorefront} setDeleteObject={setDeleteStorefront} deletingFunc={deletingStorefront} type="storefront" />
             </>

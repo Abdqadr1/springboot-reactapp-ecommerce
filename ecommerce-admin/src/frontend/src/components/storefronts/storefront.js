@@ -1,7 +1,7 @@
 import { Col, Row } from "react-bootstrap";
 import { getShortName } from "../utilities";
 
-const Storefront = ({storefront, showUpdate, setDeleteStorefront, updateStatus, type, movePosition, showAddAll }) => {
+const Storefront = ({storefront, showUpdate, setDeleteStorefront, updateStatus, type, movePosition, showAddAll, showCategory }) => {
 
     function deleteMenu() {
         setDeleteStorefront({
@@ -16,6 +16,9 @@ const Storefront = ({storefront, showUpdate, setDeleteStorefront, updateStatus, 
                 break;
             case "TEXT":
                 showAddAll("Edit",storefront.type, storefront.id);
+                break;
+            case "CATEGORY":
+                showCategory("Edit", storefront.id);
                 break;
             default: console.log('nothing');
         }
@@ -32,10 +35,10 @@ const Storefront = ({storefront, showUpdate, setDeleteStorefront, updateStatus, 
     const position = <div className="d-flex flex-wrap justify-content-start ps-2">
         {
             (storefront.position > 1) && 
-                <i onClick={e=>movePosition(e, storefront.id, 'up')} className="bi bi-arrow-up-circle-fill text-primary fs-5 me-3" title="move up"></i>
+                <i onClick={e=>movePosition(e, storefront.id, 'up')} className="bi bi-chevron-up text-secondary fs-4 me-3" title="move up"></i>
         }
         <span>{storefront.position}</span>
-        <i onClick={e=>movePosition(e, storefront.id, 'down')} className="ms-3 bi bi-arrow-down-circle-fill text-primary fs-5" title="move down"></i>
+        <i onClick={e=>movePosition(e, storefront.id, 'down')} className="ms-3 bi bi-chevron-down text-secondary fs-4" title="move down"></i>
     </div>
 
     function tableItem() {

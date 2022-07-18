@@ -1,6 +1,5 @@
 package com.qadr.ecommerce.sharedLibrary.entities;
 
-import com.qadr.ecommerce.sharedLibrary.entities.storefront.StoreFront;
 import lombok.Getter;
 import lombok.Setter;
 

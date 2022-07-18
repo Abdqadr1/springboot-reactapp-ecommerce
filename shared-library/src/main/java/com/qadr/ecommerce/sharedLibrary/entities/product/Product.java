@@ -5,7 +5,7 @@ import com.qadr.ecommerce.sharedLibrary.entities.Brand;
 import com.qadr.ecommerce.sharedLibrary.entities.Category;
 import com.qadr.ecommerce.sharedLibrary.entities.Constants;
 import com.qadr.ecommerce.sharedLibrary.entities.IdBasedEntity;
-import com.qadr.ecommerce.sharedLibrary.entities.storefront.StoreFront;
+import com.qadr.ecommerce.sharedLibrary.entities.storefront.Storefront;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -63,11 +63,6 @@ public class Product extends IdBasedEntity {
     @ManyToOne
     @JoinColumn(name = "brand_id")
     private Brand brand;
-
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "store_front_id")
-    private StoreFront storeFront;
 
     private int reviewCount;
     private int questionCount;

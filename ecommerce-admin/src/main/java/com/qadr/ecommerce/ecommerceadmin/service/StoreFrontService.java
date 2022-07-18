@@ -1,12 +1,10 @@
 package com.qadr.ecommerce.ecommerceadmin.service;
 
-import com.qadr.ecommerce.sharedLibrary.entities.menu.Menu;
-import com.qadr.ecommerce.sharedLibrary.entities.menu.MenuType;
 import com.qadr.ecommerce.sharedLibrary.entities.menu.MoveType;
-import com.qadr.ecommerce.sharedLibrary.entities.storefront.StoreFront;
-import com.qadr.ecommerce.sharedLibrary.entities.storefront.StoreFrontType;
+import com.qadr.ecommerce.sharedLibrary.entities.storefront.Storefront;
+import com.qadr.ecommerce.sharedLibrary.entities.storefront.StorefrontType;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
-import com.qadr.ecommerce.sharedLibrary.repo.StoreFrontRepo;
+import com.qadr.ecommerce.sharedLibrary.repo.StorefrontRepo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -23,56 +21,56 @@ import java.util.Optional;
 @Service
 @Transactional
 public class StoreFrontService {
-    @Autowired private StoreFrontRepo repo;
+    @Autowired private StorefrontRepo repo;
 
-    public StoreFront saveNewStoreFront(StoreFront storeFront){
+    public Storefront saveNewStoreFront(Storefront storeFront){
         int maxPosition = repo.findMaxPosition() + 1;
         validate(storeFront);
         storeFront.setPosition(maxPosition);
         return repo.save(storeFront);
     }
 
-    public StoreFront editStoreFront(StoreFront storeFront){
-        StoreFront storeFrontInDb = get(storeFront.getId());
+    public Storefront editStoreFront(Storefront storeFront){
+        Storefront storeFrontInDb = get(storeFront.getId());
         storeFront.setPosition(storeFrontInDb.getPosition());
         storeFront.setType(storeFrontInDb.getType());
         return repo.save(storeFront);
     }
 
-    private void validate(StoreFront storeFront){
-        if(storeFront.getType().equals(StoreFrontType.ALL_CATEGORIES)){
-            List<StoreFront> byType = repo.findByType(storeFront.getType());
+    private void validate(Storefront storeFront){
+        if(storeFront.getType().equals(StorefrontType.ALL_CATEGORIES)){
+            List<Storefront> byType = repo.findByType(storeFront.getType());
             if(!byType.isEmpty()) throw new CustomException(HttpStatus.BAD_REQUEST, storeFront.getType() + " section can only exist once");
         }
     }
 
 
 
-    public List<StoreFront> getAll(){
+    public List<Storefront> getAll(){
         return repo.findAll(Sort.by("position").descending());
     }
-    public List<StoreFront> movePosition(Integer id, MoveType moveType){
-        StoreFront storeFront = get(id);
+    public List<Storefront> movePosition(Integer id, MoveType moveType){
+        Storefront storeFront = get(id);
         int oldPosition = storeFront.getPosition();
         int newPosition = (moveType.equals(MoveType.DOWN))
                 ? storeFront.getPosition() + 1 : storeFront.getPosition() - 1;
         if(newPosition < 1){
             throw new CustomException(HttpStatus.BAD_REQUEST, "You can not move below position 1");
         }
-        Optional<StoreFront> byTypeAndPosition = repo.findByPosition(newPosition);
+        Optional<Storefront> byTypeAndPosition = repo.findByPosition(newPosition);
         if(byTypeAndPosition.isPresent()){
             move(storeFront, moveType, newPosition);
-            StoreFront storeFront1 = byTypeAndPosition.get();
+            Storefront storeFront1 = byTypeAndPosition.get();
             storeFront1.setPosition(oldPosition);
             return repo.saveAll(List.of(storeFront, storeFront1));
         }else {
             move(storeFront, moveType, newPosition);
-            StoreFront save = repo.save(storeFront);
+            Storefront save = repo.save(storeFront);
             return List.of(save);
         }
     }
 
-    private void move(StoreFront storeFront, MoveType moveType, int newPosition){
+    private void move(Storefront storeFront, MoveType moveType, int newPosition){
         if (moveType.equals(MoveType.DOWN)) {
             storeFront.moveDown();
         } else if(moveType.equals(MoveType.UP)) {
@@ -95,12 +93,12 @@ public class StoreFrontService {
         repo.updateEnabled(id, status);
     }
 
-    private StoreFront get(Integer id){
+    private Storefront get(Integer id){
         return  repo.findById(id)
                 .orElseThrow(()-> new CustomException(HttpStatus.BAD_REQUEST, "Could not find storefront"));
     }
 
-    public void validateMenuUniqueProps(StoreFront front, Integer id){
+    public void validateMenuUniqueProps(Storefront front, Integer id){
 //        Optional<Menu> byTitle = repo.findByTitle(menu.getTitle());
 //        if (byTitle.isPresent() && !byTitle.get().getId().equals(id)){
 //            throw new CustomException(HttpStatus.BAD_REQUEST, "Title already exists");

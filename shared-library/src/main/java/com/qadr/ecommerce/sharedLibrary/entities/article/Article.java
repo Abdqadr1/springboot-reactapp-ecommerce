@@ -3,14 +3,13 @@ package com.qadr.ecommerce.sharedLibrary.entities.article;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qadr.ecommerce.sharedLibrary.entities.IdBasedEntity;
 import com.qadr.ecommerce.sharedLibrary.entities.User;
-import com.qadr.ecommerce.sharedLibrary.entities.storefront.StoreFront;
+import com.qadr.ecommerce.sharedLibrary.entities.storefront.Storefront;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -42,11 +41,6 @@ public class Article  extends IdBasedEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-    @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "store_front_id")
-    private StoreFront storeFront;
 
     public Article (Integer id){
         this.id = id;
