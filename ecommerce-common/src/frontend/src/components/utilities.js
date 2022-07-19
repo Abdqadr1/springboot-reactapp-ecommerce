@@ -53,8 +53,8 @@ export function listProducts(results, keyword, type="category", formatPrice){
     let key = "";
     if(results.length > 0){
         if(type){
-            key = (type === "category") 
-                    ? <h4 className="py-3">Products  in Category {keyword}</h4>
+            key = (type === "category" || type === "brand") 
+                    ? <h4 className="py-3">Products  in {type} "{keyword}"</h4>
                     : <h3 className="mt-4 mb-2"> Search Results for "{keyword}"</h3>
         }
         return (

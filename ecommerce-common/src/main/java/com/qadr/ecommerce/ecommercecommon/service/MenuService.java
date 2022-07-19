@@ -1,8 +1,10 @@
 package com.qadr.ecommerce.ecommercecommon.service;
 
+import com.qadr.ecommerce.sharedLibrary.entities.article.Article;
 import com.qadr.ecommerce.sharedLibrary.entities.menu.Menu;
 import com.qadr.ecommerce.sharedLibrary.entities.menu.MenuType;
 import com.qadr.ecommerce.sharedLibrary.errors.CustomException;
+import com.qadr.ecommerce.sharedLibrary.repo.ArticleRepo;
 import com.qadr.ecommerce.sharedLibrary.repo.MenuRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -16,6 +18,7 @@ import java.util.Map;
 @Service
 public class MenuService {
     @Autowired private MenuRepo repo;
+    @Autowired private ArticleRepo articleRepo;
 
     public Map<String, Object> getMenus(){
         Map<String, Object> map = new HashMap<>();
@@ -27,5 +30,10 @@ public class MenuService {
     public Menu getByAlias(String alias) {
         return repo.findByAliasAndEnabled(alias, true)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Could not find menu"));
+    }
+
+    public Article getArticleByAlias(String alias) {
+        return articleRepo.findByAlias(alias)
+                .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Could not find article"));
     }
 }

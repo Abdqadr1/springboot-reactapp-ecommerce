@@ -4,7 +4,7 @@ const Footer = ({menus}) => {
   const { COPYRIGHT } = useSettings();
 const listMenus = () => {
   if(menus && menus.length > 0){
-    return menus.map(m => <Link key={m.id} className="nav-link text-light" to={`/m/`+m.alias}>{m.title}</Link>)
+    return menus.map(m => <Link key={m.id} className="nav-link text-light" to={`/m/`+m.article.alias}>{m.title}</Link>)
   }
 }
 

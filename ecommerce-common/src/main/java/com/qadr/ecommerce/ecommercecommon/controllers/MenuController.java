@@ -1,6 +1,7 @@
 package com.qadr.ecommerce.ecommercecommon.controllers;
 
 import com.qadr.ecommerce.ecommercecommon.service.MenuService;
+import com.qadr.ecommerce.sharedLibrary.entities.article.Article;
 import com.qadr.ecommerce.sharedLibrary.entities.menu.Menu;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +22,8 @@ public class MenuController {
     }
 
     @GetMapping("/alias/{alias}")
-    public Menu getMenu(@PathVariable String alias){
-        return menuService.getByAlias(alias);
+    public Article getMenu(@PathVariable String alias){
+        return menuService.getArticleByAlias(alias);
     }
 
 }

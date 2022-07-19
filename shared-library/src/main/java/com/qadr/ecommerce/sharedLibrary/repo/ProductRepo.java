@@ -33,6 +33,10 @@ public interface ProductRepo extends SearchRepository<Product, Integer> {
             "p.category.id = ?1 OR p.category.allParentIds LIKE %?2%)")
     Page<Product> getCategoryProducts(Integer id, String ids, Pageable pageable);
 
+
+    @Query("SELECT p FROM Product p WHERE p.enabled = true AND p.brand.id=?1")
+    Page<Product> getBrandProducts(Integer id, Pageable pageable);
+
     @Query("SELECT p FROM Product p WHERE p.alias = ?1 AND p.enabled = true")
     Optional<Product> findByAlias(String alias);
 

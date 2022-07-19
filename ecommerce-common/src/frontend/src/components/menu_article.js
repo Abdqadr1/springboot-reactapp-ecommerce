@@ -15,8 +15,7 @@ const MenuArticle = () => {
         const url = process.env.REACT_APP_SERVER_URL + "menu";
         axios.get(`${url}/alias/${encodeURIComponent(alias)}`, {signal: abortController.signal})
         .then(response => {
-            const data = response.data;
-            setArticle(data.article);
+            setArticle(response.data);
         })
         .catch(error => {setArticle(null)
         }).finally(()=> {setLoading(false)});

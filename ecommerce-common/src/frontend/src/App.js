@@ -28,6 +28,7 @@ import Footer from "./components/footer";
 import axios from "axios";
 import MenuArticle from "./components/menu_article";
 import Storefront from "./components/storefront";
+import Brand from "./components/brand";
 function App() {
   
   // if ("serviceWorker" in window.navigator) {
@@ -66,6 +67,7 @@ function App() {
                 <Route path="/register-success" element={<RegisterSuccess />} />
                 <Route path="/c" element={<ListCategories />} />
                 <Route path="/c/:alias" element={<Category />} />
+                <Route path="/b/:id" element={<Brand />} />
                 <Route path="/p" element={<Category />} />
                 <Route path="/p/:alias" element={<Product />} />
                 <Route path="/p/search/:keyword" element={<ProductSearch />} />

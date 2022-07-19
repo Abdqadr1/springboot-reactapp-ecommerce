@@ -34,6 +34,19 @@ public class ProductController {
             @RequestParam("cat") int catId){
 
         Page<Product> page = productService.getCategoryProducts(pageNumber, catId);
+        return mapInfo(page, pageNumber);
+    }
+
+    @GetMapping("/brand")
+    public Map<String, Object> getBrandProducts(
+            @RequestParam("page-number") int pageNumber,
+            @RequestParam("brand") int brandId){
+
+        Page<Product> page = productService.getBrandProducts(pageNumber, brandId);
+        return mapInfo(page, pageNumber);
+    }
+
+    private Map<String, Object> mapInfo(Page<Product> page, int pageNumber){
         int startCount = (pageNumber-1) * PRODUCTS_PER_PAGE + 1;
         int endCount = PRODUCTS_PER_PAGE * pageNumber;
         endCount = (endCount > page.getTotalElements()) ? (int) page.getTotalElements() : endCount;

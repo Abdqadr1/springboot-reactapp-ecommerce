@@ -1,13 +1,12 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useLayoutEffect } from "react";
 import useSettings from "./use-settings";
 import axios from "axios";
 import { Col, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Search from "./search";
-import { listProducts, SPINNERS_BORDER, formatPrice } from "./utilities";
+import { listProducts, formatPrice } from "./utilities";
 import CustomToast from "./custom_toast";
 const Storefront = () => {
-    const [isLoading, setLoading] = useState(true);
     const [storefront, setStorefront ] = useState([]);
     const [categories, setCategories ] = useState([]);
     const [toast, setToast] = useState({ show: false, message: "" });
@@ -26,7 +25,6 @@ const Storefront = () => {
     useEffect(()=>{document.title = "Home - " + SITE_NAME},[SITE_NAME])
 
      const loadCategories = useCallback((url, abortController, fronts) => {
-       setLoading(true);
         axios.get(url, {
             signal: abortController.signal
         })
@@ -36,11 +34,11 @@ const Storefront = () => {
             })
             .catch(res => {
                 setToast(s => ({ ...s, show: true, message: "An error occurred" }))
-            }).finally(() => setLoading(false))
+            })
       },[],
     )
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const url = process.env.REACT_APP_SERVER_URL + "storefront";
         const cUrl = process.env.REACT_APP_SERVER_URL + "c";
         abortController.current = new AbortController();
@@ -74,10 +72,10 @@ const Storefront = () => {
                 map = models.map(m => display(m.category.imagePath, m.category.name, m.category.alias, 'c'));
                 break;
             case "BRAND":
-                map = models.map(m => display(m.brand.imagePath, m.brand.name, m.brand.alias, 'b'));
+                map = models.map(m => display(m.brand.imagePath, m.brand.name, m.brand.id, 'b'));
                 break;
             case "ARTICLE":
-                map = models.map(m => <Link key={m.id} to="#" className="mx-2">{m.article.title}</Link>);
+                map = models.map(m => <Link key={m.id} to={"/m/"+m.article.alias} className="mx-2">{m.article.title}</Link>);
                 break;
             case "PRODUCT":
                 const products = models.map(m =>m.product);
@@ -90,7 +88,7 @@ const Storefront = () => {
         return <div key={alias+name} className="px-0 my-1 mx-3">
                 <img src={image} alt={name}style={{width: '150px', aspectRatio: 1}} />
                 <div style={{maxWidth:'150px'}} className="mt-2">
-                    <Link to={`/${which}/${encodeURIComponent(alias)}`}>{name}</Link>
+                    <Link to={`/${which}/${encodeURIComponent(alias)}?name=${name}`}>{name}</Link>
                 </div>
         </div>
     }
@@ -116,16 +114,10 @@ const Storefront = () => {
     return (
         
          <>
-            {
-                (isLoading)
-                    ? <div className="mx-auto" style={{ height: "30vh", display: "grid" }}>{SPINNERS_BORDER}</div>
-                        : <>
-                            <Search />
-                            <div>
-                                {listStorefront()}
-                            </div> 
-                        </>
-            }
+            <Search />
+            <div>
+                {listStorefront()}
+            </div> 
             <CustomToast {...toast} setToast={setToast} position="middle-center" />
         </>
         

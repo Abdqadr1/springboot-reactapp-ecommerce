@@ -1,22 +1,22 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Breadcrumb, Col, Row } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
-import { formatPrice, listProducts } from "./utilities";
+import { formatPrice, listProducts, SPINNERS_BORDER } from "./utilities";
 import useSettings from "./use-settings";
 import Search from "./search";
+import CustomToast from "./custom_toast";
+import MyPagination from "./orders/paging";
 
 const Category = () => {
-
+    const abortController = useRef(new AbortController());
     const [cat, setCat] = useState(null);
-    const [products, setProducts] = useState([])
+    const [toast, setToast] = useState({ show: false, message: "" });
+    const [isLoading, setLoading] = useState(true);
+    const [products, setProducts] = useState([]);
     const [pageInfo, setPageInfo] = useState({
-        currentPage: 1,
-        endCount: 1,
-        numberPerPage: 1,
-        startCount: 1,
-        totalPages: 1,
-        totalElements: 1
+        number: 1, totalPages: 1, startCount: 1,
+        endCount: null, totalElements: null,numberPerPage: 1
     })
 
     const { alias } = useParams();
@@ -30,46 +30,52 @@ const Category = () => {
         return (price) =>
             formatPrice(price, CURRENCY_SYMBOL, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, CURRENCY_SYMBOL_POSITION)
     }
-
-    useEffect(() => {
-        const abortController = new AbortController();
-        const url = process.env.REACT_APP_SERVER_URL + "c/" + alias;
+    const loadProducts = useCallback((abortController, number) => {
+        const url = `${process.env.REACT_APP_SERVER_URL}p/cat?page-number=${number}&cat=${cat.id}`;
+        setLoading(true);
         axios.get(url, {
             signal: abortController.signal
         })
             .then(res => {
-                setCat(res.data)
-            }).catch(err => {
-                console.log(err)
-                console.log("not found")
+                const data = res.data
+                setProducts(data.products)
+                setPageInfo(state => (
+                    {
+                        ...state,
+                        endCount: data.endCount,
+                        startCount: data.startCount,
+                        totalPages: data.totalPages,
+                        totalElements: data.totalElements,
+                        numberPerPage: data.numberPerPage
+                    }
+                ))
+            }).catch(err =>  setToast(s => ({ ...s, show: true, message: "An error occurred" })))
+            .finally(()=>{
+                setLoading(false);
             })
-            // return () => abortController.abort();
-    }, [alias])
+    }, [cat?.id])
 
-      useEffect(() => {
-        const abortController = new AbortController();
-        if(cat != null){
-            const url = `${process.env.REACT_APP_SERVER_URL}p/cat?page-number=1&cat=${cat.id}`;
-            axios.get(url, {
-                signal: abortController.signal
-            })
-                .then(res => {
-                    const data = res.data
-                    setProducts(data.products)
-                    setPageInfo({
-                    currentPage: data.currentPage,
-                    endCount: data.endCount,
-                    numberPerPage: data.numberPerPage,
-                    startCount: data.startCount,
-                    totalPages: data.totalPages,
-                    totalElements: data.totalElements,
-                    });
-                }).catch(err => {
-                    setProducts([])
-                })
-            }
-            return () => abortController.abort();
-    }, [cat])
+    useEffect(() => {
+        const url = process.env.REACT_APP_SERVER_URL + "c/" + alias;
+        abortController.current = new AbortController();
+        setLoading(true);
+        axios.get(url, {
+            signal: abortController.current.signal
+        })
+        .then(res => {
+            setCat(res.data);
+        }).catch(err => setToast(s => ({ ...s, show: true, message: "An error occurred" })))
+        return () => abortController.current.abort();
+    }, [alias, loadProducts])
+
+    useEffect(() => {
+        if(cat){
+            loadProducts(abortController.current, pageInfo.number)
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [loadProducts, pageInfo?.number, cat])
+
+    
 
     function listParents() {
         if(cat !== null && cat){
@@ -129,13 +135,22 @@ const Category = () => {
 
     return ( 
         <>
-            <Search />
-            {listParents()}
-            {listChildren()}
-            <div className="my-4">
-                {listProducts(products, cat?.name, "category", priceFormatter())}
-            </div>
+            {
+                (isLoading)
+                    ? <div className="mx-auto" style={{ height: "30vh", display: "grid" }}>{SPINNERS_BORDER}</div>
+                    : <>
+                        <Search />
+                        {listParents()}
+                        {listChildren()}
+                        <div className="my-4">
+                            {listProducts(products, cat?.name, "category", priceFormatter())}
+                            {(products.length > 0) ? <MyPagination pageInfo={pageInfo} setPageInfo={setPageInfo} /> : ""} 
+                        </div>
+                    </>
+            }
+            <CustomToast {...toast} setToast={setToast} position="middle-center" />
         </>
+        
      );
 }
  

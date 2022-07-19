@@ -27,6 +27,11 @@ public class ProductService {
         return productRepository.getCategoryProducts(categoryId, ids, pageable);
     }
 
+    public Page<Product> getBrandProducts(int pageNumber, int brandId) {
+        Pageable pageable = PageRequest.of(pageNumber-1, PRODUCTS_PER_PAGE);
+        return productRepository.getBrandProducts(brandId, pageable);
+    }
+
     public Page<Product> searchKeyword(int pageNumber, String keyword){
         Pageable pageable = PageRequest.of(pageNumber -1, SEARCH_PRODUCTS_PER_PAGE);
         return productRepository.searchKeyword(keyword, pageable);
@@ -40,4 +45,5 @@ public class ProductService {
         return productRepository.findById(id)
                 .orElseThrow(() -> new CustomException(HttpStatus.BAD_REQUEST, "Product not found with id " + id));
     }
+
 }
