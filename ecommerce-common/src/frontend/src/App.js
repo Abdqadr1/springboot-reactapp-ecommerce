@@ -27,6 +27,7 @@ import ProductQuestions from "./components/products/product_questions";
 import Footer from "./components/footer";
 import axios from "axios";
 import MenuArticle from "./components/menu_article";
+import Storefront from "./components/storefront";
 function App() {
   
   // if ("serviceWorker" in window.navigator) {
@@ -57,8 +58,8 @@ function App() {
             <NavBar menus={menus?.header} />
             <div className="content">
             <Routes>
-                <Route path="/" element={<ListCategories />} />
-                <Route path="/shop" element={<ListCategories />} />
+                <Route path="/" element={<Storefront />} />
+                {/* <Route path="/shop" element={<ListCategories />} /> */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/register" element={<Register />} />

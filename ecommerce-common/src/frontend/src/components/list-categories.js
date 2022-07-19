@@ -18,12 +18,11 @@ const ListCategories = () => {
         axios.get(url, {})
         .then(res => {
             setCategories(res.data)
-        }).catch(err => {
-            console.warn(err)
-        }).finally()
+        })
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    
     function listCategories(){
         return categories.map(cat => {
             const photo = cat.photo && cat.photo !== "null"

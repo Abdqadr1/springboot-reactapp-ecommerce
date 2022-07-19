@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
@@ -124,7 +125,7 @@ public class StorefrontRepoTest {
 
     @Test
     void testFindByEnabled(){
-        List<Storefront> byType = repo.findByEnabled(true);
+        List<Storefront> byType = repo.findByEnabled(true, Sort.by("position").ascending());
         assertThat(byType.size()).isGreaterThan(0);
         System.out.println(byType);
     }

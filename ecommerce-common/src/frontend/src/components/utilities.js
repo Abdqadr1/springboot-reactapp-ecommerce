@@ -50,14 +50,16 @@ export const formatPrice = (price, s, m, t, pos) => {
 }
 
 export function listProducts(results, keyword, type="category", formatPrice){
+    let key = "";
     if(results.length > 0){
-        return (
-            <>
-                {
-                    (type === "category") 
+        if(type){
+            key = (type === "category") 
                     ? <h4 className="py-3">Products  in Category {keyword}</h4>
                     : <h3 className="mt-4 mb-2"> Search Results for "{keyword}"</h3>
-                }
+        }
+        return (
+            <>
+                {key}
                 <Row className="justify-content-start p-4 mx-0">
                     {
                         results.map((p) => (
