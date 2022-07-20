@@ -46,3 +46,57 @@ code {
  .big-height{
      height: 350px !important;
  }
+ .oauth-a {
+     padding: 0;
+     width: 40px;
+     height: 40px;
+     border-radius: 50%;
+     border: 1px solid darkgray;
+     display: flex;
+     place-content: center;
+     align-items: center;
+ }
+
+ .oauth-icon {
+     width: 20px;
+     aspect-ratio: 1;
+ }
+
+ .hr {
+     height: .07em;
+     width: 29%;
+ }
+
+ .with-email {
+     width: calc(100% - (2* 29%));
+     padding-inline: 8px;
+     box-sizing: border-box;
+ }
+
+ .input {
+     outline: none;
+     padding-left: 0;
+     border-radius: 0%;
+     border-top: none;
+     border-right: none;
+     border-left: none;
+     border-bottom: .1em solid rgb(206, 212, 218);
+ }
+
+ .input:focus {
+     -webkit-box-shadow: none;
+     box-shadow: none;
+     border-radius: 0%;
+     border-top: none;
+     border-right: none;
+     border-left: none;
+     border-bottom: .1em solid rgb(121, 170, 219);
+ }
+ .btn-gradient{
+    background-image: linear-gradient(to right, rgb(236, 64, 64), rgb(50, 50, 246));
+    border: none;
+    transition: opacity 1s;
+ }
+ .btn-gradient:hover{
+    filter: opacity(.8);
+ }
