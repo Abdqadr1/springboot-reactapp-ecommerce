@@ -3,7 +3,7 @@ import { Col, Form, Modal, Row, Tab, Tabs, Table, Button } from "react-bootstrap
 import { formatDate, getShort } from "../utilities"
 import useThrottle from "../custom_hooks/use-throttle";
 import { Link } from "react-router-dom";
-import ReviewForm from "../review_form";
+import ReviewForm from "../review_s.js/review_form";
 
 const ViewOrder = ({ viewOrder, setViewOrder, priceFunction }) => {
     const order = viewOrder?.order;

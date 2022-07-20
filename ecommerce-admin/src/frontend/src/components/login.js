@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import "../css/login.css";
 import useAuth from './custom_hooks/use-auth';
 import { getFormData, SPINNERS_BORDER_HTML } from './utilities';
-import login from "../images/login.png";
+import settings from "../images/settings.png";
 
 const Login = () => {
     const loginUrl = process.env.REACT_APP_SERVER_URL+"login";
@@ -60,15 +60,16 @@ const Login = () => {
     }, [out])
 
     return (
-        <>
-            
-            <Row className="mx-0 px-md-5 justify-content-center align-items-center bg-light" style={{'height': '100vh'}}>
-                <Col md="6" className="p-0 d-none d-sm-none d-md-flex">
-                    {/* <img style={{width: '100%', height: '100%'}} src={login} alt="login" /> */}
+        <> 
+            <Row className="mx-0 px-md-5 justify-content-center align-items-center bg-light position-relative" style={{'height': '100vh'}}>
+                <div className="ring bottom-left"><div className="inner bg-light"></div></div>
+                <div className="ring top-right"><div className="inner bg-light"></div></div>
+                <Col md="5" lg="7" className="p-0 d-none d-sm-none d-md-flex col">
+                    <img className="mx-auto img-fluid" src={settings} alt="login" />
                 </Col>
-                <Col md="6" sm={12} className="text-center px-auto" style={{'height': '80%'}}>
-                    <Form className="mx-auto shadow rounded px-5 bg-light py-md-5" onSubmit={handleSubmit} style={{'height': '100%'}}>
-                        <h1 className="mt-2">ADMIN LOGIN</h1>
+                <Col md="7" lg={5} sm={12} className="text-center px-auto col" style={{'height': '80%'}}>
+                    <Form className="mx-auto shadow rounded px-5 bg-light py-5" onSubmit={handleSubmit} style={{'height': '100%'}}>
+                        <h2 className="mt-2 mb-4">ADMIN LOGIN</h2>
                         <h4 className={`text-center py-3` + param.show}>{param.message}</h4>
                         <Alert ref={alertRef} className="text-center" tabIndex={-1} variant="danger" show={alert.show}
                             dismissible onClose={toggleAlert}>

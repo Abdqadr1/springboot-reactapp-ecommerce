@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import { Form, Row, Col, Button, Alert } from "react-bootstrap";
-import useArray from "./custom_hooks/use-array";
-import { listFormData, SPINNERS_BORDER_HTML } from "./utilities";
+import useArray from "../custom_hooks/use-array";
+import { listFormData, SPINNERS_BORDER_HTML } from "../utilities";
 import { useNavigate } from "react-router";
 
 const Register = () => {

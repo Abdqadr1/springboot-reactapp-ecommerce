@@ -3,22 +3,22 @@ import './App.css';
 import { Routes, Route, HashRouter} from "react-router-dom";
 import NavBar from "./components/navbar";
 import Login from "./components/login";
-import Register from "./components/register";
+import Register from "./components/register/register";
 import ListCategories from "./components/list-categories";
 import Category from "./components/category";
 import Product from "./components/products/product";
 import ProductSearch from "./components/products/product-search";
-import RegisterSuccess from "./components/register-success";
+import RegisterSuccess from "./components/register/register-success";
 import "./css/home.css";
 import Logout from "./components/logout";
 import OAuth2Redirect from "./components/oauth_redirect";
-import ForgotPassword from "./components/forgot-password";
-import ResetPassword from "./components/reset-password";
-import ShoppingCart from "./components/shopping-cart";
+import ForgotPassword from "./components/register/forgot-password";
+import ResetPassword from "./components/register/reset-password";
+import ShoppingCart from "./components/cart/shopping-cart";
 import { AuthContext, getAuthFromLocalStorage, setAuthToLocalStorage } from "./components/custom_hooks/use-auth";
 import { useLayoutEffect, useState } from "react";
-import Addresses from "./components/addresses";
-import Checkout from "./components/checkout";
+import Addresses from "./components/addresses/addresses";
+import Checkout from "./components/cart/checkout";
 import Orders from "./components/orders/orders";
 import Reviews from "./components/review_s.js/reviews";
 import ProductReviews from "./components/products/product_reviews";
@@ -60,7 +60,7 @@ function App() {
             <div className="content">
             <Routes>
                 <Route path="/" element={<Storefront />} />
-                {/* <Route path="/shop" element={<ListCategories />} /> */}
+                <Route path="/shop" element={<ListCategories />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/register" element={<Register />} />

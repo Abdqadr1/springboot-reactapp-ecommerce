@@ -6,10 +6,10 @@ import MyCarousel from "./image-carousel";
 import { getShortName, formatPrice, listReviews, isTokenExpired, SPINNERS_BORDER,SPINNERS_BORDER_HTML, listQuestions } from "../utilities";
 import useSettings from "../use-settings";
 import Search from "../search";
-import { Stock } from '../stock';
+import { Stock } from '../cart/stock';
 import StarRatings from 'react-star-ratings';
 import { AuthContext } from "../custom_hooks/use-auth";
-import ReviewForm from "../review_form";
+import ReviewForm from "../review_s.js/review_form";
 import useArray from "../custom_hooks/use-array";
 import MessageModal from "../message_modal";
 

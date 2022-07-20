@@ -1,15 +1,15 @@
 import { useEffect, useContext, useState, useRef } from "react";
-import useSettings from "./use-settings";
-import {AuthContext} from "./custom_hooks/use-auth";
-import { formatPrice, isTokenExpired, formatDate, getShortName } from "./utilities";
+import useSettings from "../use-settings";
+import {AuthContext} from "../custom_hooks/use-auth";
+import { formatPrice, isTokenExpired, formatDate, getShortName } from "../utilities";
 import { useNavigate } from "react-router";
-import CustomToast from "./custom_toast";
+import CustomToast from "../custom_toast";
 import axios from "axios";
 import { Row, Col, Button, Card, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import Paypal from "./paypal";
-import LoaderScreen from "./fullscreen-loader";
+import LoaderScreen from "../products/fullscreen-loader";
 
 const Checkout = () => {
     const {auth, setAuth} = useContext(AuthContext);
@@ -41,7 +41,9 @@ const Checkout = () => {
             })
             .then(res => {
                 const data = res.data;
-                setInfo(data);
+                if (data.items.length < 1) {
+                    navigate("/shop");
+                }else setInfo(data);
             })
             .catch(res => {
                 const response = res.response;
@@ -67,7 +69,7 @@ const Checkout = () => {
                 <h5>A confirmation email has been sent to you.</h5>
                 <h5>Kindly check your email for details.</h5>
                 <h4>
-                    <a href={url} className="text-primary">Click here</a>
+                    <Link to="/orders" className="text-primary">Click here</Link>
                      &nbsp; to manage and track your order.</h4>
             </>
         )

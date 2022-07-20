@@ -1,7 +1,7 @@
 import { Row, Col, Form, Alert, Button } from "react-bootstrap";
 import { useRef, useState } from "react";
 import axios from "axios";
-import { SPINNERS_BORDER_HTML } from "./utilities";
+import { SPINNERS_BORDER_HTML } from "../utilities";
 const ForgotPassword = () => {
     const url = `${process.env.REACT_APP_SERVER_URL}forgot-password`;
     const [alertRef, btnRef] = [useRef(), useRef()];

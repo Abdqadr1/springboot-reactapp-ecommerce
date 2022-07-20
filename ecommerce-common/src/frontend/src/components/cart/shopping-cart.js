@@ -1,15 +1,15 @@
-import useArray from "./custom_hooks/use-array";
-import {AuthContext} from "./custom_hooks/use-auth";
+import useArray from "../custom_hooks/use-array";
+import {AuthContext} from "../custom_hooks/use-auth";
 import { useEffect, useState,useContext, useMemo, useCallback,useRef } from "react";
 import { useNavigate } from "react-router";
 import axios from "axios";
-import { getShortName, isTokenExpired,formatPrice,SPINNERS_BORDER } from "./utilities";
-import Search from "./search";
+import { getShortName, isTokenExpired,formatPrice,SPINNERS_BORDER } from "../utilities";
+import Search from "../search";
 import { Row, Col} from "react-bootstrap";
 import {CartItemQuantity} from "./stock";
-import useSettings from "./use-settings";
-import DeleteModal from "./delete_modal";
-import CustomToast from "./custom_toast";
+import useSettings from "../use-settings";
+import DeleteModal from "../delete_modal";
+import CustomToast from "../custom_toast";
 import { Link } from "react-router-dom";
 
 const ShoppingCart = () => {
@@ -169,10 +169,10 @@ const ShoppingCart = () => {
                             ? listCartItems()
                             : <div className="mt-5">
                                 <h4 className="my-3 px-3">You have not chosen any product yet</h4>
-                                <a href="/" className="d-block mx-auto my-3 fs-3">
+                                <Link to="/shop" className="d-block mx-auto my-3 fs-3">
                                     <i className="bi bi-cart-plus-fill text-secondary" style={{fontSize: "5em"}}></i><br/>
                                     Go shopping
-                                </a>
+                                </Link>
                             </div>
                         }
                         <DeleteModal deleteObject={showDelete} setDeleteObject={setShowDelete} deletingFunc={handleDelete} type="Item" />

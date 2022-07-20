@@ -100,3 +100,31 @@ code {
  .btn-gradient:hover{
     filter: opacity(.8);
  }
+ .ring{
+    position: absolute;
+    width: 12rem;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    padding: 2rem;
+    background: linear-gradient(to right, rgb(236, 64, 64),
+        rgb(50, 50, 246));
+    z-index: 10;
+ }
+ .col{
+    z-index: 12;
+ }
+ .ring>.inner{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+ }
+ .bottom-left{
+    bottom: -4rem;
+    left: -4rem;
+}
+.top-right{
+    top:-8rem;
+    right: -20rem;
+    width: 50rem;
+    padding: 6rem;
+}

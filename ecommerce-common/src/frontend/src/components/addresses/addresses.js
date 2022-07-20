@@ -1,17 +1,17 @@
 import { useContext, useEffect, useState, useRef, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
-import { AuthContext } from "./custom_hooks/use-auth";
-import useArray from "./custom_hooks/use-array";
-import CustomToast from "./custom_toast";
-import { isTokenExpired, SPINNERS_BORDER } from "./utilities";
-import Search from "./search";
-import DeleteModal from "./delete_modal";
+import { AuthContext } from "../custom_hooks/use-auth";
+import useArray from "../custom_hooks/use-array";
+import CustomToast from "../custom_toast";
+import { isTokenExpired, SPINNERS_BORDER } from "../utilities";
+import Search from "../search";
+import DeleteModal from "../delete_modal";
 import { Row, Col, Card } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import AddAddressModal from "./add_address";
 import EditAddressModal from "./edit_address";
-import useSettings from "./use-settings";
+import useSettings from "../use-settings";
 const Addresses = () => {
     const navigate = useNavigate();
     const [searchParams,] = useSearchParams();

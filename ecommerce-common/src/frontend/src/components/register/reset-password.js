@@ -2,7 +2,7 @@ import { Row, Col, Form, Alert, Button } from "react-bootstrap";
 import { useRef, useState } from "react";
 import axios from "axios";
 import { Navigate, useSearchParams } from "react-router-dom";
-import { listFormData, SPINNERS_BORDER_HTML } from "./utilities";
+import { listFormData, SPINNERS_BORDER_HTML } from "../utilities";
 const ResetPassword = () => {
     
     const [searchParams,] = useSearchParams();

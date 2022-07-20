@@ -1,16 +1,16 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { listProducts, formatPrice, SPINNERS_BORDER } from "../utilities";
 import useSettings from "../use-settings";
 import Search from "../search";
+import MyPagination from "../orders/paging";
 
 const ProductSearch = () => {
     const {keyword} = useParams();
     const [results, setResults] = useState([]);
     const [isLoading, setLoading] = useState(true);
-    const [pageInfo, setPageInfo] = useState({ currentPage: 1 })
-    // TODO: DO PAGING FOR THIS PAGE
+    const [pageInfo, setPageInfo] = useState({ number: 1 });
 
     
     const { CURRENCY_SYMBOL, CURRENCY_SYMBOL_POSITION, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, SITE_NAME } = useSettings();
@@ -21,11 +21,9 @@ const ProductSearch = () => {
         return (price) =>
             formatPrice(price, CURRENCY_SYMBOL, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, CURRENCY_SYMBOL_POSITION)
     }
-
-    useEffect(() => {
-        const abortController = new AbortController();
-        setLoading(true);
-        const url = `${process.env.REACT_APP_SERVER_URL}p/search/${keyword}?page-number=${pageInfo.currentPage}`;
+    const fetchProducts = useCallback((abortController, keyword, number) => {
+         setLoading(true);
+        const url = `${process.env.REACT_APP_SERVER_URL}p/search/${keyword}?page-number=${number}`;
         axios.get(url, {
             signal: abortController.signal
         })
@@ -34,7 +32,7 @@ const ProductSearch = () => {
                 setResults(data.products)
                 setPageInfo((state) => ({
                     ...state,
-                  currentPage: data.currentPage,
+                  number: data.currentPage,
                   endCount: data.endCount,
                   numberPerPage: data.numberPerPage,
                   startCount: data.startCount,
@@ -43,7 +41,13 @@ const ProductSearch = () => {
                 }));
             }).catch(err => {
             }).finally(()=>setLoading(false))
-    }, [keyword, pageInfo.currentPage])
+    },[])
+
+    useEffect(() => {
+        const abortController = new AbortController();
+        fetchProducts(abortController, keyword, pageInfo.number);
+        return () => abortController.abort();
+    }, [fetchProducts, keyword, pageInfo.number])
 
    
 
@@ -55,7 +59,8 @@ const ProductSearch = () => {
                     :  
                     <>
                         <Search />
-                    {listProducts(results, keyword, "search", priceFormatter())}  
+                        {listProducts(results, keyword, "search", priceFormatter())}
+                        {(results.length > 0) ? <MyPagination pageInfo={pageInfo} setPageInfo={setPageInfo} /> : ""}  
                     </>
             }
         </>

@@ -56,11 +56,11 @@ const Login = () => {
 
     return ( 
         <>
-            <Row className="mx-0 justify-content-center bg-light content">
+            <Row className="mx-0 justify-content-between bg-light content">
                 <Col md="6" className="p-0 d-none d-sm-none d-md-flex">
                     <img style={{width: '100%', height: '100%'}} src={login} alt="login" />
                 </Col>
-                <Col md="6" sm={12} className="text-center px-auto py-3">
+                <Col md="6" xl="5" sm={12} className="text-center px-auto py-3">
                     <Form className="mx-auto" style={{ width: "80%" }} onSubmit={handleSubmit}>
                         <h1 className="fw-bold text-primary mt-2">Log in</h1>
                         <div className="d-flex flex-wrap justify-content-center mt-4">
@@ -77,10 +77,9 @@ const Login = () => {
                             <img className="oauth-icon" src={facebook} alt="facebook" />  
                             </a>
                         </div>
-                        <div className="d-flex flex-wrap justify-content-center align-items-center mt-3 text-secondary">
-                            <span className="hr bg-secondary"></span>
-                            <span className="with-email">Or Log in with Email</span>
-                            <span className="hr bg-secondary"></span>
+                        <div className="mt-5 text-secondary position-relative">
+                            <div className="hr bg-secondary"></div>
+                            <div className="with-email">Or Log in with Email</div>
                         </div>
                         <Alert ref={alertRef} tabIndex={-1} variant={alert.variant} show={alert.show} dismissible
                             onClose={() => setAlert(s => ({ ...s, show: false }))} className="my-3">
@@ -88,16 +87,16 @@ const Login = () => {
                         </Alert>
                         <Form.Group className="my-3" controlId="email">
                             <Form.Label className="text-start w-100 fw-bold">Email:</Form.Label>
-                            <Form.Control className="input" name="email" type="email" placeholder="Enter email" required maxLength="64"/>
+                            <Form.Control className="input bg-light" name="email" type="email" placeholder="Enter email" required maxLength="64"/>
                         </Form.Group>
                         <Form.Group className="mt-3 mb-4" controlId="password">
                             <Form.Label className="text-start w-100 fw-bold">Password:</Form.Label>
-                            <Form.Control className="input" name="password" type="password" placeholder="Enter password" minLength="5" required/>
+                            <Form.Control className="input bg-light" name="password" type="password" placeholder="Enter password" minLength="5" required/>
                         </Form.Group>
                         <div className="text-end mt-2 fw-bold">
                             <Link style={{color: '#d63384'}} to="/forgot-password">Forgot Password?</Link>
                         </div>
-                        <Button ref={btnRef} variant="primary" className="mt-3 mb-2 py-2 rounded-pill" style={{ width: "100%" }} type="submit">Log in</Button>
+                        <Button ref={btnRef} variant="primary" className="mt-3 mb-2 py-3 rounded-pill" style={{ width: "100%" }} type="submit">Log in</Button>
                         <br />
                         <hr className="my-3" />
                         <div className="mt-4">Don't have an account yet?

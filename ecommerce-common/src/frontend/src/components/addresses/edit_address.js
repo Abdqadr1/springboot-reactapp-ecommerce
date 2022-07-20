@@ -1,10 +1,10 @@
 import { Modal, Form, Alert, Button, Row } from "react-bootstrap";
 import { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
-import { AuthContext } from "./custom_hooks/use-auth";
-import { SPINNERS_BORDER_HTML, isTokenExpired } from "./utilities";
+import { AuthContext } from "../custom_hooks/use-auth";
+import { SPINNERS_BORDER_HTML, isTokenExpired } from "../utilities";
 
-import useArray from "./custom_hooks/use-array";
+import useArray from "../custom_hooks/use-array";
 import { useNavigate } from "react-router";
 
 const EditAddressModal = ({ countries, showEdit, setShowEdit, updateAddresses, redirect }) => {
@@ -44,6 +44,7 @@ const EditAddressModal = ({ countries, showEdit, setShowEdit, updateAddresses, r
         }
         return () => abortController.abort();
         
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [country])
 
     useEffect(() => {

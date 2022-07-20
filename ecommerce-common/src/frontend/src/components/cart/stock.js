@@ -1,9 +1,9 @@
 import { InputGroup, FormControl, Button, Form, ToastContainer, Toast } from "react-bootstrap";
 import { useState, useRef,useEffect, useContext } from "react";
-import {AuthContext} from "./custom_hooks/use-auth";
+import {AuthContext} from "../custom_hooks/use-auth";
 import axios from "axios";
 import { useNavigate } from "react-router";
-import { isTokenExpired, SPINNERS_BORDER_HTML } from "./utilities";
+import { isTokenExpired, SPINNERS_BORDER_HTML } from "../utilities";
 
 const Stock = ({ id, quantity }) => {
     const url = `${process.env.REACT_APP_SERVER_URL}cart/add`;
