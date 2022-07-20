@@ -56,7 +56,6 @@ const Product = () => {
                 setQuestions(data.questions);
                 setShowReviewForm(s => ({ ...s, product: data.product }));
             }).catch(err => {
-                console.log(err)
                 if (isTokenExpired(err?.response)) setAuth(null);
             }).finally(()=>setLoading(false))
         return () => abortController.current.abort();
@@ -94,7 +93,6 @@ const Product = () => {
                 show: true, title: "Question", message: "Your question has been posted and waiting for approval"
             }))
         }).catch(err => {
-            console.log(err);
             if (isTokenExpired(err?.response)) setAuth(null);
             setMessage(s => ({
                 ...s,

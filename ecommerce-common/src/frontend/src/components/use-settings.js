@@ -17,9 +17,8 @@ const useSettings = () => {
             setSettings({...settings})
             sessionStorage.setItem("settings", JSON.stringify(settings))
         })
-        .catch(error => {
-            const response = error.response;
-            console.log(response)
+        .catch(() => {
+            console.log("Could not fetch settings");
          })
     }
 

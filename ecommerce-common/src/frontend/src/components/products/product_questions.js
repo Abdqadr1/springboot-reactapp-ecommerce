@@ -52,8 +52,6 @@ const ProductQuestions = () => {
             ))
         })
         .catch(error => {
-            const response = error?.response; 
-            console.log(response);
             if (isTokenExpired(error?.response)) setAuth(null);
         })
         .finally(() => {

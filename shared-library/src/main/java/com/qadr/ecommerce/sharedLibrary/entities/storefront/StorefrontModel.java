@@ -1,17 +1,16 @@
 package com.qadr.ecommerce.sharedLibrary.entities.storefront;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.qadr.ecommerce.sharedLibrary.entities.Brand;
 import com.qadr.ecommerce.sharedLibrary.entities.Category;
 import com.qadr.ecommerce.sharedLibrary.entities.IdBasedEntity;
 import com.qadr.ecommerce.sharedLibrary.entities.article.Article;
 import com.qadr.ecommerce.sharedLibrary.entities.product.Product;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -51,6 +50,7 @@ public class StorefrontModel extends IdBasedEntity {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @Transient
     public void setModel(int id){
         if(type.equals(StorefrontType.BRAND)){
             setBrand(new Brand(id));

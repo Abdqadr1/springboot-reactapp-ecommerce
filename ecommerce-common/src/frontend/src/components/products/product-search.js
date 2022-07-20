@@ -1,14 +1,16 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { listProducts, formatPrice } from "../utilities";
+import { listProducts, formatPrice, SPINNERS_BORDER } from "../utilities";
 import useSettings from "../use-settings";
 import Search from "../search";
 
 const ProductSearch = () => {
     const {keyword} = useParams();
     const [results, setResults] = useState([]);
+    const [isLoading, setLoading] = useState(true);
     const [pageInfo, setPageInfo] = useState({ currentPage: 1 })
+    // TODO: DO PAGING FOR THIS PAGE
 
     
     const { CURRENCY_SYMBOL, CURRENCY_SYMBOL_POSITION, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, SITE_NAME } = useSettings();
@@ -22,6 +24,7 @@ const ProductSearch = () => {
 
     useEffect(() => {
         const abortController = new AbortController();
+        setLoading(true);
         const url = `${process.env.REACT_APP_SERVER_URL}p/search/${keyword}?page-number=${pageInfo.currentPage}`;
         axios.get(url, {
             signal: abortController.signal
@@ -39,17 +42,22 @@ const ProductSearch = () => {
                   totalElements: data.totalElements,
                 }));
             }).catch(err => {
-                console.log(err)
-                console.log("not found")
-            })
+            }).finally(()=>setLoading(false))
     }, [keyword, pageInfo.currentPage])
 
    
 
     return ( 
         <>
-            <Search />
-          {listProducts(results, keyword, "search", priceFormatter())}  
+            {
+                (isLoading)
+                    ? <div className="mx-auto" style={{ height: "30vh", display: "grid" }}>{SPINNERS_BORDER}</div>
+                    :  
+                    <>
+                        <Search />
+                    {listProducts(results, keyword, "search", priceFormatter())}  
+                    </>
+            }
         </>
      );
 }

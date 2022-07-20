@@ -22,9 +22,7 @@ const Register = () => {
                 const data = response.data;
                 setCountries(data)
             })
-            .catch(err => {
-                console.error(err)
-            })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
@@ -34,17 +32,14 @@ const Register = () => {
                 const data = response.data;
                 setStates(data)
             })
-            .catch(err => {
-                console.error(err)
-            })
          }
-        
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [country])
 
     useEffect(() => {
         if (!alert.show) return;
         alertRef.current && alertRef.current.focus()
-    }, [alert])
+    }, [alert, alertRef])
 
     const handleSelect = (e, which) => {
         if (which === "c") {
@@ -79,7 +74,6 @@ const Register = () => {
                 const data = err.response.data;
                 const msg = data?.message;
                 setAlert({show:true, message : msg ?? "Something went wrong, try again", variant: "danger"})
-                console.error(err)
             })
             .finally(() => {
                 btn.textContent = "Submit";

@@ -44,9 +44,6 @@ const NavBar = ({menus}) => {
               const data = response.data;
               setStates(data)
           })
-          .catch(err => {
-              console.error(err)
-          })
         }
       
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -62,9 +59,6 @@ const NavBar = ({menus}) => {
               const data = response.data;
               setCountries(data)
           })
-          .catch(err => {
-              console.error(err)
-          })
       }
 
        axios.get(`${url}/details`, {
@@ -79,7 +73,6 @@ const NavBar = ({menus}) => {
           setCountry(data.country)
         })
         .catch(res => {
-          console.error(res)
           if (isTokenExpired(res.response)) {
             setAuth(null);
             navigate("/login");

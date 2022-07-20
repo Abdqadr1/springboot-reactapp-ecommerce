@@ -2,7 +2,7 @@ import { Modal, Form, Alert, Button, Row } from "react-bootstrap";
 import { useEffect, useState, useRef, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "./custom_hooks/use-auth";
-import { listFormData,SPINNERS_BORDER_HTML, isTokenExpired } from "./utilities";
+import { SPINNERS_BORDER_HTML, isTokenExpired } from "./utilities";
 
 import useArray from "./custom_hooks/use-array";
 import { useNavigate } from "react-router";
@@ -32,13 +32,11 @@ const AddAddressModal = ({ countries, show, setShow,setAdd }) => {
                 const data = response.data;
                 setStates(data)
             })
-            .catch(err => {
-                console.error(err)
-            })
          }
           return () => {
             abortController.abort();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [country])
 
     

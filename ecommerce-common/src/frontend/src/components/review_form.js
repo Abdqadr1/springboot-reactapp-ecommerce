@@ -42,7 +42,6 @@ const ReviewForm = ({ show, setShow }) => {
                 product.reviewedByCustomer = true;
                 setReadOnly(true);
             }).catch(err => {
-                console.log(err);
                 if (isTokenExpired(err?.response)) setAuth(null);
                 setToast({show: true, message: "Could not submit review"})
             }).finally(() => {

@@ -45,7 +45,6 @@ const ShoppingCart = () => {
                 setVariables({ addressSupported, usePrimaryAddress })
             })
             .catch(res => {
-                console.error(res)
                 if (isTokenExpired(res?.response)) {
                     setAuth(null); navigate("/login");
                 }
@@ -88,7 +87,6 @@ const ShoppingCart = () => {
                 setToast(s=> ({...s, show:true, message: data}))
             })
             .catch(res => {
-                console.error(res)
                 if (isTokenExpired(res.response)) {
                     setAuth(null); navigate("/login");
                 }

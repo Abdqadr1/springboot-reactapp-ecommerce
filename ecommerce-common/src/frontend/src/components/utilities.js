@@ -116,7 +116,6 @@ export function listProducts(results, keyword, type="category", formatPrice){
                 updateReviews(r, data.message);
             }
         }).catch(err => {
-            console.log(err)
             if (isTokenExpired(err?.response)) {
                 setAuth(null); window.open('/login');
             }
@@ -177,7 +176,6 @@ export const voteQuestion = (str, r, updateQuestion, ctx) => {
                 updateQuestion(r, data.message);
             }
         }).catch(err => {
-            console.log(err)
             if (isTokenExpired(err?.response)) {
                 setAuth(null); window.open('/login');
             }

@@ -44,7 +44,6 @@ const Checkout = () => {
                 setInfo(data);
             })
             .catch(res => {
-                console.error(res)
                 const response = res.response;
                 if (isTokenExpired(response)) {
                     setAuth(null); navigate("/login");

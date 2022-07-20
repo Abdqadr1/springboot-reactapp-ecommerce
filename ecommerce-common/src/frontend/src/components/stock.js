@@ -35,7 +35,6 @@ const Stock = ({ id, quantity }) => {
             setShowToast(s => ({ ...s, show: true, message: "items added to shopping cart" }))
         })
         .catch(res => {
-            console.error(res)
             if (isTokenExpired(res.response)) {
               setAuth(null); navigate("/login");
               return;
@@ -133,7 +132,6 @@ const CartItemQuantity = ({ item, format, updateItem }) => {
             setNumber(val);
         })
         .catch(res => {
-            console.error(res)
             setNumber(oldNumber)
             if (isTokenExpired(res.response)) {
               setAuth(null); navigate("/login");

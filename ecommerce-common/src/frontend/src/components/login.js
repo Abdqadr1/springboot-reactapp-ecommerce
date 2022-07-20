@@ -4,6 +4,9 @@ import { AuthContext } from "./custom_hooks/use-auth";
 import { SPINNERS_BORDER_HTML } from "./utilities";
 import axios from "axios";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import google from "../images/google.png";
+import facebook from "../images/facebook.png";
+import login from "../images/login.png";
 
 const Login = () => {
     const url = `${process.env.REACT_APP_SERVER_URL}customer/login`;
@@ -44,7 +47,6 @@ const Login = () => {
                 const data = err.response.data;
                 const msg = data?.message;
                 setAlert({show:true, message : msg ?? "Something went wrong, try again", variant: "danger"})
-                console.error(err)
             })
             .finally(() => {
                 btn.textContent = "Submit";
@@ -54,37 +56,54 @@ const Login = () => {
 
     return ( 
         <>
-            <Row className="mx-0 justify-content-center mt-5">
-                <Col xs="11" md="5" className="p-4 my-4 border rounded">
-                    <Form onSubmit={handleSubmit}>
-                        <h3>Customer Login</h3>
+            <Row className="mx-0 justify-content-center bg-light content">
+                <Col md="6" className="p-0 d-none d-sm-none d-md-flex">
+                    <img style={{width: '100%', height: '100%'}} src={login} alt="login" />
+                </Col>
+                <Col md="6" sm={12} className="text-center px-auto py-3">
+                    <Form className="mx-auto" style={{ width: "80%" }} onSubmit={handleSubmit}>
+                        <h1 className="fw-bold text-primary mt-2">Log in</h1>
+                        <div className="d-flex flex-wrap justify-content-center mt-4">
+                            <a
+                            href={`${oauthURL}/google?redirect_uri=${redirectUri}`}
+                            className="oauth-a btn btn-light"
+                            >
+                                <img className="oauth-icon" src={google} alt="google" />
+                            </a>&nbsp; &nbsp;
+                            <a
+                            href={`${oauthURL}/facebook?redirect_uri=${redirectUri}`}
+                            className="oauth-a btn btn-light"
+                            >
+                            <img className="oauth-icon" src={facebook} alt="facebook" />  
+                            </a>
+                        </div>
+                        <div className="d-flex flex-wrap justify-content-center align-items-center mt-3 text-secondary">
+                            <span className="hr bg-secondary"></span>
+                            <span className="with-email">Or Log in with Email</span>
+                            <span className="hr bg-secondary"></span>
+                        </div>
                         <Alert ref={alertRef} tabIndex={-1} variant={alert.variant} show={alert.show} dismissible
                             onClose={() => setAlert(s => ({ ...s, show: false }))} className="my-3">
                             {alert.message}
                         </Alert>
-                        <Form.Group className="mb-3" controlId="email">
-                            <Form.Label className="text-start w-100">Email:</Form.Label>
-                            <Form.Control name="email" type="email" placeholder="Enter email" required maxLength="64"/>
+                        <Form.Group className="my-3" controlId="email">
+                            <Form.Label className="text-start w-100 fw-bold">Email:</Form.Label>
+                            <Form.Control className="input" name="email" type="email" placeholder="Enter email" required maxLength="64"/>
                         </Form.Group>
-                        <Form.Group className="mb-3" controlId="password">
-                            <Form.Label className="text-start w-100">Password:</Form.Label>
-                            <Form.Control name="password" type="password" placeholder="Enter password" minLength="5" required/>
+                        <Form.Group className="mt-3 mb-4" controlId="password">
+                            <Form.Label className="text-start w-100 fw-bold">Password:</Form.Label>
+                            <Form.Control className="input" name="password" type="password" placeholder="Enter password" minLength="5" required/>
                         </Form.Group>
-                        <Button ref={btnRef} variant="success" className="py-2" style={{ width: "100%" }} type="submit">Login</Button>
+                        <div className="text-end mt-2 fw-bold">
+                            <Link style={{color: '#d63384'}} to="/forgot-password">Forgot Password?</Link>
+                        </div>
+                        <Button ref={btnRef} variant="primary" className="mt-3 mb-2 py-2 rounded-pill" style={{ width: "100%" }} type="submit">Log in</Button>
+                        <br />
+                        <hr className="my-3" />
+                        <div className="mt-4">Don't have an account yet?
+                            <Link style={{ color: '#d63384' }} to="/register" className="ps-3 fw-bold">Sign up</Link>
+                        </div>
                     </Form>
-                    <h6 className="my-3">Or</h6>
-                    <a
-                        href={`${oauthURL}/google?redirect_uri=${redirectUri}`}
-                        className="py-2 btn  border-secondary"
-                        style={{ width: "100%" }}
-                    ><i className="bi bi-google text-warning"></i> &nbsp; Log In with Google</a>
-                        <a
-                        href={`${oauthURL}/facebook?redirect_uri=${redirectUri}`}
-                        className="py-2 my-2 btn btn-primary"
-                        style={{ width: "100%" }}
-                    ><i className="bi bi-facebook"></i> &nbsp; Log In with Facebook</a>
-                    <div className="text-end my-2"><a href="/forgot-password">Forgot Password ?</a></div>
-                    <div className="mt-2">Don't have an account yet? <Link to="/register" className="fw-bold">Sign UP</Link></div>
                 </Col>
             </Row>
         </>

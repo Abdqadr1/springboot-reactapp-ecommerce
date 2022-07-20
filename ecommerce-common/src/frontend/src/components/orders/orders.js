@@ -141,7 +141,6 @@ const Orders = () => {
             message = "Return request submitted";
         })
         .catch(error => {
-            console.log(error)
             const response = error?.response
             if (response && isTokenExpired(response)) {
                 setAuth(null); navigate("/login");

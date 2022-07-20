@@ -3,7 +3,6 @@ package com.qadr.ecommerce.sharedLibrary.entities.article;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.qadr.ecommerce.sharedLibrary.entities.IdBasedEntity;
 import com.qadr.ecommerce.sharedLibrary.entities.User;
-import com.qadr.ecommerce.sharedLibrary.entities.storefront.Storefront;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

@@ -52,7 +52,6 @@ const Addresses = () => {
                 setArray(response.data);
             })
             .catch(res => {
-                console.error(res)
                 if (isTokenExpired(res?.response)) {
                     setAuth(null); navigate("/login");
                 }
@@ -83,7 +82,6 @@ const Addresses = () => {
                 setCountries(data)
             })
             .catch(err => {
-                console.error(err)
                 if (isTokenExpired(err?.response)) {
                     setAuth(null); navigate("/login");
                 }
@@ -110,7 +108,6 @@ const Addresses = () => {
                 setToast(s=> ({...s, show:true, message: data}))
             })
             .catch(res => {
-                console.error(res)
                 if (isTokenExpired(res.response)) {
                     setAuth(null); navigate("/login");
                 }
@@ -133,7 +130,6 @@ const Addresses = () => {
             if (redirectURL) navigate(redirectURL);
         })
         .catch(err => {
-            console.error(err)
             if (isTokenExpired(err?.response)) {
                 setAuth(null); navigate("/login");
             }

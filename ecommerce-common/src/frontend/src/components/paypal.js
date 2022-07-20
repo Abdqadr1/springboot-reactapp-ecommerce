@@ -70,7 +70,6 @@ const Paypal = ({ info:object, setToast, successHandler }) => {
                 }}
 
                 onError={(error) => {
-                    console.log("An error occurred", error);
                     setToast(s => ({ ...s, show: true, message: "An error occurred" }))
                 }}
 
