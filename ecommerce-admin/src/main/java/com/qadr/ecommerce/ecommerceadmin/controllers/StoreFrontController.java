@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 @RequestMapping("/storefront")
@@ -85,6 +86,9 @@ public class StoreFrontController {
                 return storeFrontService.saveNewStoreFront(storeFront);
             }
             case CATEGORY, BRAND, ARTICLE, PRODUCT -> {
+                if(selected.length < 1)
+                    throw new CustomException(HttpStatus.BAD_REQUEST,
+                            "choose one or more " + storeFront.getType().toString().toLowerCase(Locale.ROOT) +"s");
                 Storefront front = addSelectedModels(storeFront, selected);
                 return storeFrontService.saveNewStoreFront(front);
             }

@@ -54,7 +54,7 @@ a:hover{
 }
 .category-listing, .product-in-listing{
     box-sizing: border-box;
-    word-break: break-all;
+    word-break: break-word;
     box-sizing: border-box;
     transition: box-shadow 250ms;
     transition: border-radius 500ms;

@@ -39,7 +39,7 @@ const AddAll = ({data, setData, updateStorefront}) => {
         listFormData(formData);
 
         setAlert((state) => ({ ...state, show: false }));
-        const button = target.querySelector("button");
+        const button = target.querySelector("button#submit");
         button.disabled = true
         const text = button.textContent;
         button.innerHTML = SPINNERS_BORDER_HTML;
@@ -115,7 +115,7 @@ const AddAll = ({data, setData, updateStorefront}) => {
                         <Form.Check onChange={handleInput} checked={form?.enabled ?? ""} name="enabled" className="form-input ps-0"/>
                     </Form.Group>
                     <div className="d-flex flex-wrap justify-content-center">
-                        <Button className="fit-content mx-auto" variant="primary" type="submit">
+                        <Button id="submit" className="fit-content mx-auto" variant="primary" type="submit">
                             Save
                         </Button>
                     </div>

@@ -5,6 +5,7 @@ import { formatPrice, listProducts, SPINNERS_BORDER } from "../utilities";
 import useSettings from "../use-settings";
 import Search from "../search";
 import CustomToast from "../custom_toast";
+import MyPagination from "../orders/paging";
 
 const Brand = () => {
     const abortController = useRef(new AbortController());
@@ -71,6 +72,7 @@ const Brand = () => {
                         <Search />
                         <div className="my-4">
                             {listProducts(products, name, "brand", priceFormatter())}
+                            {(products.length > 0) ? <MyPagination pageInfo={pageInfo} setPageInfo={setPageInfo} /> : ""} 
                         </div>
                     </>
             }

@@ -1,6 +1,9 @@
 /* *{
     border: 2px solid red;
 } */
+body{
+    scroll-behavior: smooth;
+}
 .cs {cursor: pointer;}
 .overlay{
     width: 100vw;

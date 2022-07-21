@@ -4,12 +4,13 @@ import axios from "axios";
 import { Col, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Search from "./search";
-import { listProducts, formatPrice } from "./utilities";
+import { listProducts, formatPrice,SPINNERS_BORDER } from "./utilities";
 import CustomToast from "./custom_toast";
 const Storefront = () => {
     const [storefront, setStorefront ] = useState([]);
     const [categories, setCategories ] = useState([]);
     const [toast, setToast] = useState({ show: false, message: "" });
+    const [isLoading, setLoading] = useState(true);
     const abortController = useRef(new AbortController());
 
     const sort = (a, b) => {
@@ -42,13 +43,15 @@ const Storefront = () => {
         const url = process.env.REACT_APP_SERVER_URL + "storefront";
         const cUrl = process.env.REACT_APP_SERVER_URL + "c";
         abortController.current = new AbortController();
+        setLoading(true);
         axios.get(url, {
             signal: abortController.current.signal
         })
         .then(res => {
             loadCategories(cUrl, abortController.current, res.data);
         })
-        .catch(()=>  setToast(s => ({ ...s, show: true, message: "An error occurred" })))
+        .catch(() => setToast(s => ({ ...s, show: true, message: "An error occurred" })))
+        .finally(()=> setLoading(false))
         return () => {
             abortController.current.abort();
         }
@@ -112,13 +115,19 @@ const Storefront = () => {
     }
 
     return (
-        
          <>
-            <Search />
-            <div>
-                {listStorefront()}
-            </div> 
-            <CustomToast {...toast} setToast={setToast} position="middle-center" />
+            {
+                (isLoading)
+                    ? <div className="mx-auto" style={{ height: "30vh", display: "grid" }}>{SPINNERS_BORDER}</div>
+                    :
+                        <>
+                            <Search />
+                            <div>
+                                {listStorefront()}
+                            </div> 
+                            <CustomToast {...toast} setToast={setToast} position="middle-center" />
+                        </>
+            }
         </>
         
         

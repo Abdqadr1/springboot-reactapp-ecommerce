@@ -56,7 +56,7 @@ const ProductStorefront = ({data, setData, updateStorefront}) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if(selectedProducts.size < 1) {
+        if(selectedProducts.length < 1) {
             setAlert(s => ({...s, show:true, message: "choose products"}));
             return;
         }

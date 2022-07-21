@@ -66,7 +66,7 @@ const CategoryStorefront = ({data, setData, updateStorefront}) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if(selectedCats.size < 1) {
+        if(selectedCats.length < 1) {
             setAlert(s => ({...s, show:true, message: "choose categories"}));
             return;
         }
