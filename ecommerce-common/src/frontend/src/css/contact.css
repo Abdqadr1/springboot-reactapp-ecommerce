@@ -1,0 +1,55 @@
+.header{
+    padding-block: 12vh;
+    box-sizing: border-box;
+    padding-left: 3rem;
+    text-align: left;
+}
+.header h1{
+    text-transform: uppercase;
+}
+li a {
+    color: white;
+}
+li a:hover {
+    filter: opacity(.8);
+    color: white;
+}
+.field {
+    margin-top: 1em;
+    outline: none;
+    padding: 1em;
+    border-radius: 0%;
+    border: none;
+    background-color: #dee2e6;
+    color: #343a40;
+}
+
+.field:focus {
+    background-color: #ced4da;
+}
+textarea.field{
+    width: 100%;
+    resize: none;
+    height: 200px;
+}
+form > button{
+    margin-top: 1em;
+    width: 100%;
+    display: flex;
+    place-content: center;
+    align-items: center;
+    padding-block: .8em !important;
+}
+div.center{
+    transform: translateY(50%);
+    word-break: break-all;
+    font-size: 1rem;
+    text-align: start;
+}
+div.contact{
+    position: absolute;
+    z-index: 12;
+    top: 24vh;
+    width: 100%;
+    left:0;
+}

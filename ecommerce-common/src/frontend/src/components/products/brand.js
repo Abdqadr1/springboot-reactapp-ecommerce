@@ -1,10 +1,10 @@
 import axios from "axios";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import { formatPrice, listProducts, SPINNERS_BORDER } from "./utilities";
-import useSettings from "./use-settings";
-import Search from "./search";
-import CustomToast from "./custom_toast";
+import { formatPrice, listProducts, SPINNERS_BORDER } from "../utilities";
+import useSettings from "../use-settings";
+import Search from "../search";
+import CustomToast from "../custom_toast";
 
 const Brand = () => {
     const abortController = useRef(new AbortController());

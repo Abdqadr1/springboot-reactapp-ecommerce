@@ -2,11 +2,11 @@ import axios from "axios";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { Breadcrumb, Col, Row } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
-import { formatPrice, listProducts, SPINNERS_BORDER } from "./utilities";
-import useSettings from "./use-settings";
-import Search from "./search";
-import CustomToast from "./custom_toast";
-import MyPagination from "./orders/paging";
+import { formatPrice, listProducts, SPINNERS_BORDER } from "../utilities";
+import useSettings from "../use-settings";
+import Search from "../search";
+import CustomToast from "../custom_toast";
+import MyPagination from "../orders/paging";
 
 const Category = () => {
     const abortController = useRef(new AbortController());

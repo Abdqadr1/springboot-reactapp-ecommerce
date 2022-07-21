@@ -5,7 +5,7 @@ import NavBar from "./components/navbar";
 import Login from "./components/login";
 import Register from "./components/register/register";
 import ListCategories from "./components/list-categories";
-import Category from "./components/category";
+import Category from "./components/products/category";
 import Product from "./components/products/product";
 import ProductSearch from "./components/products/product-search";
 import RegisterSuccess from "./components/register/register-success";
@@ -28,7 +28,8 @@ import Footer from "./components/footer";
 import axios from "axios";
 import MenuArticle from "./components/menu_article";
 import Storefront from "./components/storefront";
-import Brand from "./components/brand";
+import Brand from "./components/products/brand";
+import Contact from "./components/contact";
 function App() {
   
   // if ("serviceWorker" in window.navigator) {
@@ -83,6 +84,7 @@ function App() {
                 <Route path="/questions" element={<Questions />} />
                 <Route path="/product_questions/:id" element={<ProductQuestions/>} />
                 <Route path="/m/:alias" element={<MenuArticle/>} />
+                <Route path="/contact" element={<Contact/>} />
                 <Route path="*" element={<div className="my-4">Not found</div>} />
             </Routes>
             </div>

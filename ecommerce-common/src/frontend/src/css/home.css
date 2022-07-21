@@ -42,7 +42,8 @@ a:hover{
     margin: 0 auto;
 }
 .content{
-    min-height: calc(100vh - 110px);
+    min-height: calc(100vh + 110px);
+    width: auto;
 }
 .form-label{
     width: 25%;
