@@ -20,10 +20,10 @@ import java.util.Set;
 @NoArgsConstructor @Getter @Setter
 public class Product extends IdBasedEntity {
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, length = 255)
     private String name;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, length = 255)
     private String alias;
 
     @Column(nullable = false, length = 512)
