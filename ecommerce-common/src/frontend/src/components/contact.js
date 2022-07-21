@@ -49,7 +49,7 @@ const Contact = () => {
             <header className="header bg-dark">
                 <div className="d-flex flex-column justify-content-start">
                     <h1 className="fw-bold text-light">Contact Us</h1>
-                    <Breadcrumb className="">
+                    <Breadcrumb className="bread">
                         <Breadcrumb.Item className="fs-4 text-light" linkAs={Link} linkProps={{to: "/"}}>Home</Breadcrumb.Item>
                         <Breadcrumb.Item className="fs-4 text-light" linkAs={Link} linkProps={{to: "/contact"}}>Contact</Breadcrumb.Item>
                     </Breadcrumb>

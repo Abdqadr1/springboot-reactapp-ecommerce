@@ -7,10 +7,10 @@
 .header h1{
     text-transform: uppercase;
 }
-li a {
+.bread li a {
     color: white;
 }
-li a:hover {
+.bread li a:hover {
     filter: opacity(.8);
     color: white;
 }
