@@ -33,7 +33,7 @@ const SettingsPage = () => {
     const [sC, setSC] = useState(null);
     const [stateC, setStateC] = useState(null)
     const [sS, setSS] = useState(null);
-    const [countriesRef, newCRef, newSRef, sFormRef, cFormRef] = [useRef(), useRef(), useRef(), useRef(), useRef()];
+    const [newCRef, newSRef, sFormRef, cFormRef] = [useRef(), useRef(), useRef(), useRef(), useRef()];
     const toggleAlert = () => {
         setAlert({...alert, show: !alert.show})
     }
@@ -85,7 +85,7 @@ const SettingsPage = () => {
             .then(response => {
                 const data = response.data;
                 setStates(data)
-                setToast(s=> ({...s, show:true, message: "Stated Loaded"}))
+                setToast(s=> ({...s, show:true, message: "States Loaded"}))
             })
             .catch(error => {
                 const response = error.response
@@ -107,7 +107,7 @@ const SettingsPage = () => {
         listFormData(data);
 
         setAlert((state) => ({ ...state, show: false }));
-        const button = form.querySelector("button");
+        const button = form.querySelector("button#submit");
         button.disabled = true
         const text = button.textContent;
         button.innerHTML = SPINNERS_BORDER_HTML
@@ -162,15 +162,15 @@ const SettingsPage = () => {
         }
     }
 
-    const getCountries = () => {
-        const btn = countriesRef.current;
+    const getCountries = (event) => {
+        const btn = event.target;
         btn.disabled = true;
         btn.innerHTML = SPINNERS_BORDER_HTML;
          axios.get(`${countriesUrl}/list`,{
                     headers: {
                         "Authorization": `Bearer ${accessToken}`
                     },
-                                  signal: abortController.current.signal
+                    signal: abortController.current.signal
                 })
              .then(response => {
                  const data = response.data
@@ -368,7 +368,7 @@ const SettingsPage = () => {
                             <Row className="justify-content-center">
                                 <div className="w-25"></div>
                                 <div className="form-input ps-0 my-3">
-                                    <Button className="fit-content mx-1" variant="primary" type="submit">
+                                    <Button  id="submit" className="fit-content mx-1" variant="primary" type="submit">
                                         Save
                                     </Button>
                                 </div>
@@ -378,7 +378,7 @@ const SettingsPage = () => {
                     <Tab eventKey="countries" title="Countries">
                         <p>Use this page to manage countries which will be displayed in the customer registration form.
                             Click Button to load country list first</p>
-                        <Button ref={countriesRef} variant="success" className="my-2" onClick={getCountries} title="load countries">Load Country List</Button>
+                        <Button variant="success" className="my-2" onClick={getCountries} title="load countries">Load Country List</Button>
                         <select onChange={handlesC} value={sC?.id ?? ""} className="form-control my-2" size="4" style={{ height: "300px" }}>
                             <option value="" hidden>Select country</option>
                             {countries.map((c, i) => <option key={i} value={c.id}>{c.name}</option>)}
@@ -410,7 +410,7 @@ const SettingsPage = () => {
                     <Tab eventKey="states" title="States">
                         <p>Use this page to manage countries' states which will be displayed in the customer registration form.
                             Click Button to load country list first</p>
-                        <Button ref={countriesRef} variant="success" className="my-2" onClick={getCountries} title="load countries">Load Country List</Button>
+                        <Button variant="success" className="my-2" onClick={getCountries} title="load countries">Load Country List</Button>
                         <Form.Select onChange={e=>handlesC(e, "state")} value={stateC?.id ?? ""}>
                             <option value="" hidden>Select country</option>
                             {countries.map((c, i) => <option key={i} value={c.id}>{c.name}</option>)}
@@ -479,7 +479,7 @@ const SettingsPage = () => {
                             <Row className="justify-content-center">
                                 <div className="w-25"></div>
                                 <div className="form-input ps-0 my-3">
-                                    <Button className="fit-content mx-1" variant="primary" type="submit">
+                                    <Button  id="submit" className="fit-content mx-1" variant="primary" type="submit">
                                         Save Mail Settings
                                     </Button>
                                 </div>
@@ -502,7 +502,7 @@ const SettingsPage = () => {
                                     <Row className="justify-content-center">
                                         <div className="w-25"></div>
                                         <div className="form-input ps-0 my-3">
-                                            <Button className="fit-content mx-1" variant="primary" type="submit">
+                                            <Button id="submit" className="fit-content mx-1" variant="primary" type="submit">
                                                 Save
                                             </Button>
                                         </div>
@@ -523,7 +523,7 @@ const SettingsPage = () => {
                                     <Row className="justify-content-center">
                                         <div className="w-25"></div>
                                         <div className="form-input ps-0 my-3">
-                                            <Button className="fit-content mx-1" variant="primary" type="submit">
+                                            <Button  id="submit" className="fit-content mx-1" variant="primary" type="submit">
                                                 Save
                                             </Button>
                                         </div>
@@ -549,7 +549,7 @@ const SettingsPage = () => {
                             <Row className="justify-content-center">
                                 <div className="w-25"></div>
                                 <div className="form-input ps-0 my-3">
-                                    <Button className="fit-content mx-1" variant="primary" type="submit">
+                                    <Button id="submit" className="fit-content mx-1" variant="primary" type="submit">
                                         Save
                                     </Button>
                                 </div>
