@@ -16,6 +16,10 @@ const Register = () => {
 
     const navigate = useNavigate();
 
+     useEffect(() => {
+        document.title = "Register";
+    }, [])
+
     useEffect(() => {
         axios.get(`${url}/countries`)
             .then(response => {

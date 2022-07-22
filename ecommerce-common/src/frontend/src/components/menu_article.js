@@ -3,12 +3,16 @@ import { useLayoutEffect, useState, useRef, useEffect } from "react";
 import { useParams } from "react-router";
 import { SPINNERS_BORDER } from "./utilities";
 import "../css/menu.css";
+import useSettings from "./use-settings";
 
 const MenuArticle = () => {
     const {alias} = useParams();
     const [isLoading, setLoading] = useState(true);
     const [article, setArticle] = useState(null);
     const divRef = useRef();
+    
+    const {SITE_NAME} = useSettings();
+    useEffect(()=>{document.title = `${alias} - ${SITE_NAME}`},[SITE_NAME, alias]);
 
     useLayoutEffect(()=>{
         const abortController = new AbortController();

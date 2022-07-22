@@ -8,11 +8,17 @@ const Contact = () => {
     const [alert, setAlert] = useState({ show: false, message: "", variant: "danger" });
     const [alertRef] = [useRef()];
 
+     useEffect(() => {
+        document.title = "Contact";
+    }, [])
+
     useEffect(() => {
         if (!alert.show) return;
         alertRef.current && alertRef.current.focus()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [alert]);
+
+
     const SPINNERS_BORDER_HTML = `<div class="spinner-border spinner-border-sm text-light" role="status">
                                         <span class="visually-hidden">Loading...</span>
                                     </div>`
