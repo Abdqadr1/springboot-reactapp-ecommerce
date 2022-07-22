@@ -61,7 +61,7 @@ const Login = () => {
 
     return (
         <> 
-            <Row className="mx-0 px-md-5 justify-content-center align-items-center bg-light position-relative" style={{'height': '100vh'}}>
+            <Row className="mx-0 px-md-5 bg-light parent">
                 <div className="ring bottom-left"><div className="inner bg-light"></div></div>
                 <div className="ring top-right"><div className="inner bg-light"></div></div>
                 <Col md="5" lg="7" className="p-0 d-none d-sm-none d-md-flex col">

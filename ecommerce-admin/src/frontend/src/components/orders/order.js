@@ -67,14 +67,14 @@ const Order = ({ order, setDeleted, type, showView, showEdit, showCustomer, pric
   function rowItem() {
       return (
         <Row className="mt-2 justify-content-between">
-          <Col xs="5" className="fw-bold text-center">{order.id}</Col>
-          <Col xs="7">
+          <Col xs="3" className="fw-bold text-center">{order.id}</Col>
+          <Col xs="9">
             <span className="d-block my-1">{order.firstName} {order.lastName}, {order.country}</span>
             <span className="d-block my-1">{formatDate(order.orderTime)} - {order.orderStatus}</span>
             <span className="d-block my-1">{priceFunction(order.total)} - {order.paymentMethod}</span>
             <div className="d-flex justify-content-start">
                     <i 
-                      className="bi bi-journal-text view mx-2"
+                      className="bi bi-journal-text view ms-0 me-2 fs-4"
                       title="view details"
                       onClick={() => showView(order.id)}
                     ></i>

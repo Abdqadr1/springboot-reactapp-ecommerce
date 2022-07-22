@@ -385,7 +385,7 @@ const SettingsPage = () => {
                         </select>
                         <Form ref={cFormRef}>
                             <Form.Group className="row my-2">
-                                <Col md={6} className="mt-2">
+                                <Col md={5} className="mt-2">
                                     <Form.Group className="mb-3 row justify-content-center" controlId="name">
                                         <Form.Label className="form-label">Country Name</Form.Label>
                                         <Form.Control onChange={(e)=>handleChange(e,"c")} value={sC?.name ?? ""} className="form-input" minLength="3" maxLength="50" required />
@@ -398,7 +398,7 @@ const SettingsPage = () => {
                                         <Form.Control onChange={(e)=>handleChange(e,"c")} value={sC?.code ?? ""} className="form-input"  minLength="2" maxLength="5" required/>
                                     </Form.Group>
                                 </Col>
-                                <Col md={3} className="mt-2">
+                                <Col md={4} className="mt-2">
                                     <Button onClick={handleNewC} ref={newCRef} type="button" variant="secondary" >Add</Button>
                                     <Button onClick={handleUpdateC} type="button" variant="secondary" disabled={sC?.id === undefined} className="ms-2">Update</Button>
                                     <Button onClick={handleDeleteC} type="button" variant="secondary" disabled={sC?.id === undefined} className="ms-2">Delete</Button>
@@ -427,7 +427,7 @@ const SettingsPage = () => {
                                         <Form.Control onChange={(e)=>handleChange(e,"state")} value={sS?.name ?? ""} className="form-input" maxLength="50" minLength="3" required/>
                                     </Form.Group>
                                 </Col>
-                                <Col md={3} className="mt-2">
+                                <Col md={5} className="mt-2">
                                     <Button onClick={e => handleNewC(e,"state")} ref={newSRef} type="button" variant="secondary" >Add</Button>
                                     <Button onClick={e=>handleUpdateC(e, "state")} type="button" variant="secondary" disabled={sS?.id === undefined} className="ms-2">Update</Button>
                                     <Button onClick={e=>handleDeleteC(e, "state")} type="button" variant="secondary" disabled={sS?.id === undefined} className="ms-2">Delete</Button>

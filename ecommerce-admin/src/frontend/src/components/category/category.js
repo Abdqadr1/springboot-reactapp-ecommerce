@@ -40,7 +40,7 @@ const Category = ({ category, showUpdate, setDeleted, toggleEnable, type }) => {
 
     function rowItem() {
         return (
-          <Row className="mt-2 justify-content-between mx-0">
+          <Row className="my-2 py-2 justify-content-between mx-0">
             <Col xs="5">{photo}</Col>
             <Col xs="7">
               <span className="d-block mb-3">{category.name}</span>

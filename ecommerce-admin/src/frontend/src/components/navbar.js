@@ -128,7 +128,7 @@ const MyNavbar = () => {
                                                Settings
                                             </Dropdown.Toggle>
                                             <Dropdown.Menu variant="dark">
-                                                <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="/account/storefronts">General</Link>
+                                                <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="settings/general">General</Link>
                                                 <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="settings/countries">Countries</Link>
                                                 <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="settings/states">States</Link>
                                                 <Link data-rr-ui-dropdown-item="" className="dropdown-item" to="settings/mail-server">Mail Server</Link>

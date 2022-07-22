@@ -125,9 +125,9 @@ const Storefront = () => {
                             <div>
                                 {listStorefront()}
                             </div> 
-                            <CustomToast {...toast} setToast={setToast} position="middle-center" />
                         </>
             }
+            <CustomToast {...toast} setToast={setToast} position="middle-center" />
         </>
         
         

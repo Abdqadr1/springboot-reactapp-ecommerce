@@ -40,22 +40,22 @@ const Review = ({ review, showUpdate, setDeleteReview, showCustomer, type, showP
     function rowItem() {
         return (
             <Row className="mt-2 justify-content-between">
-                <Col xs="5" className="text-center fw-bold">
+                <Col xs="3" className="text-center fw-bold">
                     <div>
                         <span>{review.id}</span>
                     </div>
                 </Col>
-                <Col xs="7">
+                <Col xs="9">
                         <div
                             onClick={() => showProduct(review.id)}
                             className="text-primary text-start action cursor-pointer mb-3 d-inline-block">
                         {getShortName(review.product.name, 60)}
                         </div>
-                    <div className="d-flex justify-content-start align-item-center">
-                        <span className="d-block mb-3">{review.rating} &nbsp; <i className="bi bi-star"></i></span>
-                        <i className="bi bi-journal-text view fs-2 ms-4 me-2" title="view details" onClick={() => showReview(review.id)}></i>
+                    <div className="d-flex justify-content-start">
+                        <span className="d-block mb-3 me-2">{review.rating} &nbsp; <i className="bi bi-star"></i></span>
+                        <i className="bi bi-journal-text view fs-4 ms-2 me-3" title="view details" onClick={() => showReview(review.id)}></i>
                         <i className="bi bi-pencil-fill edit fs-6 mx-3" title="edit review" onClick={()=> showUpdate("Edit",review.id)}></i>
-                        <i className="bi bi-archive-fill delete fs-6 mx-3" title="delete review" onClick={deleteReview}></i>
+                        <i className="bi bi-archive-fill delete fs-6 ms-3 me-2" title="delete review" onClick={deleteReview}></i>
                     </div>
                 </Col>
             </Row>

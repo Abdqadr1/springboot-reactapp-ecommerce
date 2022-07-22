@@ -19,7 +19,7 @@ import java.util.*;
 public class ProductService {
 
     public static final int PRODUCTS_PER_PAGE = 10;
-    public static final int PRODUCTS_PER_SEARCH_PAGE = 5;
+    public static final int PRODUCTS_PER_SEARCH_PAGE = 10;
     @Autowired
     private ProductRepo productRepo;
     @Autowired

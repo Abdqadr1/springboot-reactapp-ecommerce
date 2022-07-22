@@ -1,11 +1,13 @@
 import { Modal, Alert, Row, Col, Form, Button } from "react-bootstrap";
 import { useRef, useState, useEffect } from "react";
-import { listProducts, SPINNERS_BORDER_HTML } from "../utilities";
+import { listProducts, SPINNERS_BORDER_HTML, isTokenExpired } from "../utilities";
 import axios from "axios";
 import useAuth from "../custom_hooks/use-auth";
 import "../../css/products.css";
 import MyPagination from "../paging";
+import { useNavigate } from "react-router";
 const ProductSearchModal = ({ show, setShow, priceFunction, selectHandler }) => {
+    const navigate = useNavigate();
     const [{ accessToken }] = useAuth();
     const [alertRef, keywordRef, submitBtnRef] = [useRef(), useRef(), useRef()];
     const [products, setProducts] = useState([]);
@@ -45,8 +47,9 @@ const ProductSearchModal = ({ show, setShow, priceFunction, selectHandler }) => 
                 }
             ))
         }).catch(err => {
-            console.log(err);
-            const message = err.response.data.message;
+            const response = err?.response
+            if (response && isTokenExpired(response)) navigate("/login/2")
+            const message = response.data.message;
             setAlert(s=>({...s, show:true, message}))
         }).finally(() => {
             btn.disabled = false;
@@ -68,20 +71,20 @@ const ProductSearchModal = ({ show, setShow, priceFunction, selectHandler }) => 
     return ( 
         <Modal show={show} fullscreen={true} onHide={()=>setShow(false)}>
             <Modal.Header closeButton>
-                <Modal.Title>Add Product</Modal.Title>
+                <Modal.Title>Product Search</Modal.Title>
             </Modal.Header>
             <Modal.Body className="border product_search_modal">
                 <Alert ref={alertRef} tabIndex={-1} variant={alert.variant} show={alert.show} dismissible onClose={()=>setAlert({...alert, show: false})}>
                     {alert.message}
                 </Alert>
                 <Row className="justify-content-start px-3 mx-0 bg-light">
-                    <Col md={4}>
+                    <Col sm="11" md={8}>
                         <Form className="my-2 col-12" onSubmit={handleSubmit}>
                             <Row>
-                                <Col xs={9} md={9}>
+                                <Col xs={12} sm={9} className="mt-2">
                                     <Form.Control ref={keywordRef} placeholder="keyword" required minLength="2" />
                                 </Col>
-                                <Col xs={2} md={2}>
+                                <Col xs={12} sm={2} className="mt-2">
                                     <Button ref={submitBtnRef} variant="success" type="submit">Search</Button>
                                 </Col>
                             </Row>

@@ -252,12 +252,12 @@ const UpdateProduct = ({ updateProduct, setUpdateProduct, updatingProduct, brand
 
     const listDetails = () => {
         return form.details.map((detail, i) => (
-                <Row key={i} className="mt-3">
-                    <Form.Group className="col-5 row justify-content-center" controlId="name">
+                <Row key={i} className="mt-3 justify-content-between">
+                    <Form.Group className="col-11 col-md-5 row justify-content-center" controlId="name">
                         <Form.Label className="form-label fw-bold">Name:</Form.Label>
                         <Form.Control name="detail_name" value={detail?.name} onChange={e=>handleDetail(e, i)} required className="form-input" maxLength={255} />
                     </Form.Group>
-                    <Form.Group className="col-6 row justify-content-center" controlId="value">
+                    <Form.Group className="col-10 col-md-5 row justify-content-center mt-2 mt-md-0" controlId="value">
                         <Form.Label className="form-label fw-bold">Value:</Form.Label>
                         <Form.Control name="detail_value" value={detail?.value} onChange={e=>handleDetail(e, i)} required className="form-input" maxLength={255} />
                     </Form.Group>
@@ -362,16 +362,16 @@ const UpdateProduct = ({ updateProduct, setUpdateProduct, updatingProduct, brand
                             {listDetails()}
                             
                              <Row className="mt-5">
-                                <Form.Group className="col-5 row justify-content-center" controlId="name">
+                                <Form.Group className="col-12 col-md-6 row justify-content-center" controlId="name">
                                     <Form.Label className="form-label fw-bold">Name:</Form.Label>
                                     <Form.Control name="detail_name" ref={nameRef}  className="form-input" />
                                 </Form.Group>
-                                <Form.Group className="col-6 row justify-content-center" controlId="value">
+                                <Form.Group className="col-12 col-md-6 row justify-content-center" controlId="value">
                                     <Form.Label className="form-label fw-bold">Value:</Form.Label>
                                     <Form.Control name="detail_value" ref={valueRef} className="form-input" />
                                 </Form.Group>
                             </Row>
-                            <button type="button" className="btn btn-secondary mt-3" onClick={handleAddDetail} >Add Product detail</button>
+                            <button type="button" className="btn btn-secondary my-3" onClick={handleAddDetail} >Add Product detail</button>
                         </Tab>
                         <Tab eventKey="shipping" title="Shipping">
                             <h5 className="mb-5">
@@ -396,7 +396,7 @@ const UpdateProduct = ({ updateProduct, setUpdateProduct, updatingProduct, brand
                             </Form.Group>
                         </Tab>
                     </Tabs>
-                    <div className="d-flex flex-wrap justify-content-center">
+                    <div className="d-flex flex-wrap justify-content-center mt-5">
                         <Button ref={submitBtnRef} className="fit-content mx-1" variant="primary" type="submit">
                             Save
                         </Button>

@@ -2,7 +2,7 @@ import { Pagination } from "react-bootstrap";
 
 const MyPagination = ({ pageInfo, setPageInfo }) => {
     let currentPage = pageInfo.number;
-    const maxPageShown = pageInfo.totalPages > 15 ? 15 : pageInfo.totalPages;
+    const maxPageShown = pageInfo.totalPages > 25 ? 25 : pageInfo.totalPages;
     const isPrev = currentPage <= 1
     const isNext = currentPage >= pageInfo.totalPages;
 

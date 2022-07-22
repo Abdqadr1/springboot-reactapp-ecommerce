@@ -387,7 +387,7 @@ const EditOrder = ({ updateOrder, setUpdateOrder, updatingOrder, priceFunction, 
                                 </Tab>
                                 <Tab eventKey="products" title="Products">
                                     {listProducts()}
-                                    <Button onClick={e=>setShowAddProduct(true)} variant="success" className="p-3">Add Product</Button>
+                                    <Button onClick={e=>setShowAddProduct(true)} variant="success">Add Product</Button>
                                 </Tab>
                                 <Tab eventKey="shipping" title="Shipping">
                                     <fieldset>
@@ -446,7 +446,7 @@ const EditOrder = ({ updateOrder, setUpdateOrder, updatingOrder, priceFunction, 
                                 </Tab>
                                 <Tab eventKey="track" title="Track">
                                     {listOrderTracks()}
-                                    <Button onClick={addOrderTrack} variant="success" className="p-3">Add Track Record</Button>
+                                    <Button onClick={addOrderTrack} variant="success">Add Track Record</Button>
                                 </Tab>
                             </Tabs>
                             <Row className="justify-content-center">

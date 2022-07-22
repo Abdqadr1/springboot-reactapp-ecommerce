@@ -49,7 +49,7 @@ const Menu = ({ menu, showUpdate, setDeleteMenu, updateStatus, type, showArticle
 
     function rowItem() {
         return (
-            <Row className="mt-2 justify-content-between">
+            <Row className="my-2 py-2 justify-content-between">
                 <Col xs="4" className="text-center fw-bold">
                     <div>
                         <span>{menu.id}</span>
@@ -60,10 +60,10 @@ const Menu = ({ menu, showUpdate, setDeleteMenu, updateStatus, type, showArticle
                             className="text-start mb-2 d-inline-block">
                         {getShortName(menu.title)}
                     </div>
-                    <div className="d-flex flex-wrap justify-content-start align-item-center">
-                        <span className="d-block mb-3">{enabled}</span>
-                        <i className="bi bi-pencil-fill edit fs-6 mx-3" title="edit menu" onClick={()=> showUpdate("Edit",menu.id)}></i>
-                        <i className="bi bi-archive-fill delete fs-6 mx-3" title="delete menu" onClick={deleteMenu}></i>
+                    <div className="d-flex flex-wrap justify-content-start align-item-center mt-2">
+                        <span className="d-block me-3">{enabled}</span>
+                        <i className="bi bi-pencil-fill edit fs-6 me-3" title="edit menu" onClick={()=> showUpdate("Edit",menu.id)}></i>
+                        <i className="bi bi-archive-fill delete fs-6 me-3" title="delete menu" onClick={deleteMenu}></i>
                     </div>
                 </Col>
             </Row>

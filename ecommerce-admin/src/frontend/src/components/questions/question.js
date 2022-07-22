@@ -51,12 +51,12 @@ const Question = ({ question, showUpdate, setDeleteQuestion, showCustomer, type,
     function rowItem() {
         return (
             <Row className="mt-2 justify-content-between">
-                <Col xs="5" className="text-center fw-bold">
+                <Col xs="3" className="text-center fw-bold">
                     <div>
                         <span>{question.id}</span>
                     </div>
                 </Col>
-                <Col xs="7">
+                <Col xs="9">
                     <div
                             className="text-start mb-2 d-inline-block">
                         {getShortName(question.product.name, 60)}
@@ -66,9 +66,9 @@ const Question = ({ question, showUpdate, setDeleteQuestion, showCustomer, type,
                         {getShortName(question.questionContent, 60)}
                     </div>
                     <div className="ms-2">{question.formattedAskTime}</div>
-                    <div className="d-flex justify-content-start align-item-center">
-                        <i className="bi bi-journal-text view fs-2 ms-4 me-2" title="view details" onClick={() => showQuestion(question.id)}></i>
-                        <span className="d-block mb-3">{approved}</span>
+                    <div className="d-flex justify-content-start align-item-center mt-2">
+                        <i className="bi bi-journal-text view fs-2 me-2" title="view details" onClick={() => showQuestion(question.id)}></i>
+                        <span className="d-block mx-2">{approved}</span>
                         <i className="bi bi-pencil-fill edit fs-6 mx-3" title="edit question" onClick={()=> showUpdate("Edit",question.id)}></i>
                         <i className="bi bi-archive-fill delete fs-6 mx-3" title="delete question" onClick={deleteQuestion}></i>
                     </div>

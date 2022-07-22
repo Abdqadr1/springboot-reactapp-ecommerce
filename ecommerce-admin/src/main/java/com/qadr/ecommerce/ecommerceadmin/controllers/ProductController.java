@@ -48,7 +48,7 @@ public class ProductController {
     public Map<String, Object> listByPage(@PathVariable("number") Integer number,
                                           @PagingAndSortingParam("products")PagingAndSortingHelper helper){
 
-        Map<String, Object> pageInfo= productService.searchProducts(number, helper);
+        Map<String, Object> pageInfo= productService.getPage(number, helper);
         pageInfo.put("brands", brandService.getAll());
         return pageInfo;
     }

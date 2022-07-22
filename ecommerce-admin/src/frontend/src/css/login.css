@@ -64,6 +64,13 @@
 .btn-gradient:hover {
     filter: opacity(.8);
 }
+.parent{
+    position: relative;
+    justify-content: center;
+    place-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
 
 .ring {
     position: absolute;

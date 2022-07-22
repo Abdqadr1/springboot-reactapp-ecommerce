@@ -191,7 +191,7 @@ const SalesReport = () => {
     const listButtons = (uri, type) => {
         return (
             <>
-            <div className="d-flex justify-content-start align-items-center p-3 gap">
+            <div className="d-flex flex-wrap justify-content-start align-items-center p-3 gap">
                 <Button ref={firstBtn} data-uri ={uri} data-divisor="7" className="filter" 
                         onClick={handleToggle} id="last_7_days" 
                         variant={(filter[type] === 'last_7_days') ? "primary" : "light"}>
@@ -271,7 +271,7 @@ const SalesReport = () => {
                                         />
                                     </div>
                                 }
-                                <div className="d-flex justify-content-center align-items-center p-3">
+                                <div className="d-flex flex-wrap flex-column flex-sm-row justify-content-center align-items-center p-3">
                                     {
                                         headers.map((h, i) => <Card key={h} className="text-start my-2">
                                                         <Card.Header className="p-2 fw-bold">{i!==4 ? h : 'Total Orders'}</Card.Header>
@@ -307,7 +307,7 @@ const SalesReport = () => {
                                         />
                                     </div>
                                 }
-                                <div className="d-flex justify-content-center align-items-center p-3">
+                                <div className="d-flex flex-wrap flex-column flex-sm-row justify-content-center align-items-center p-3">
                                     {
                                         headers.map((h, i) => <Card key={h} className="text-start my-2">
                                                         <Card.Header className="p-2 fw-bold">{h}</Card.Header>
@@ -347,7 +347,7 @@ const SalesReport = () => {
                                         />
                                     </div>
                                 }
-                                <div className="d-flex justify-content-center align-items-center p-3">
+                                <div className="d-flex flex-wrap flex-column flex-sm-row justify-content-center align-items-center p-3">
                                     {
                                         headers.map((h, i) => <Card key={h} className="text-start my-2">
                                                         <Card.Header className="p-2 fw-bold">{h}</Card.Header>

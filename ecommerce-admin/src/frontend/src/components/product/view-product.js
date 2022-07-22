@@ -32,11 +32,11 @@ const ViewProduct = ({ viewProduct, setViewProduct }) => {
     const listDetails = () => {
         return product?.details.map((detail, i) => (
                 <Row key={i} className="mt-3">
-                    <Form.Group className="col-6 row justify-content-center" controlId="name">
+                    <Form.Group className="col-12 col-md-6 row justify-content-center" controlId="name">
                         <Form.Label className="form-label fw-bold">Name:</Form.Label>
                         <Form.Control disabled value={detail?.name} onChange={null} className="form-input"/>
                     </Form.Group>
-                    <Form.Group className="col-6 row justify-content-center" controlId="value">
+                    <Form.Group className="col-12 col-md-6 row justify-content-center mt-2 mt-md-0" controlId="value">
                         <Form.Label className="form-label fw-bold">Value:</Form.Label>
                         <Form.Control disabled value={detail?.value} onChange={null} className="form-input"/>
                     </Form.Group>

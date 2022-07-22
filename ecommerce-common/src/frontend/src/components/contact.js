@@ -35,7 +35,8 @@ const Contact = () => {
             .catch(err => {
                 const data = err.response.data;
                 const msg = data?.message;
-                setAlert({show:true, message : msg ?? "Something went wrong, try again", variant: "danger"})
+                setAlert({ show: true, message: msg ?? "Something went wrong, try again", variant: "danger" });
+                target.reset();
             })
             .finally(() => {
                 button.disabled = false; 

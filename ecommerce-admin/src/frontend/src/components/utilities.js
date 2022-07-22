@@ -221,9 +221,9 @@ export function listProducts(results, keyword, formatPrice, handler){
                 <Row className="justify-content-around p-4 mx-0">
                     {
                         results.map((p) => (
-                            <Col onClick={e=>handler(p)} key={p.name} xs={6} sm={4} md={3} lg={2} xlg={2} className="cs mx-1 border rounded">
+                            <Col onClick={e=>handler(p)} key={p.name} xs={5} sm={4} md={3} lg={2} xlg={2} className="cs mx-1 border rounded mt-2">
                                 <img loading="lazy" src={p.mainImagePath} alt={getShortName(p.name, 10)} className="product-image" />
-                                <h5 className="my-2 text-primary text-start">{getShortName(p.name)}</h5>
+                                <h6 className="my-2 text-primary text-start">{getShortName(p.name)}</h6>
                                 {getPrices(p.discountPrice, p.price, p.realPrice, formatPrice)}
                             </Col>
                         ))
@@ -232,6 +232,7 @@ export function listProducts(results, keyword, formatPrice, handler){
             </>
         );
     } else {
-        return <h4 className="text-center"> No products </h4>
+        if (keyword && keyword.length > 1) return <h4 className="text-center mt-3"> No products found "{keyword}"</h4>
+        return <h4 className="text-center mt-3"> No products </h4>
     }
 }

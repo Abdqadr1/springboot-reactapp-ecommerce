@@ -33,7 +33,7 @@ const Brand = ({ brand, showUpdate, setDeleted, type }) => {
 
     function rowItem() {
         return (
-          <Row className="mt-2 justify-content-between">
+          <Row className="my-2 py-2 justify-content-between">
             <Col xs="5">{photo}</Col>
             <Col xs="7">
               <span className="d-block mb-3">{brand.name}</span>

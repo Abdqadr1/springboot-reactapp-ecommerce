@@ -38,7 +38,7 @@ const Article = ({ article, showUpdate, setDeleteArticle, updateStatus, type, sh
     function rowItem() {
         return (
             <Row className="mt-2 justify-content-between">
-                <Col xs="4" className="text-center fw-bold">
+                <Col xs="3" className="text-center fw-bold">
                     <div>
                         <span>{article.user.fullName}</span>
                     </div>
@@ -49,11 +49,11 @@ const Article = ({ article, showUpdate, setDeleteArticle, updateStatus, type, sh
                         {getShortName(article.title)}
                     </div>
                     <div className="ms-2">{article.formattedUpdatedTime}</div>
-                    <div className="d-flex flex-wrap justify-content-start align-item-center">
-                        <i className="bi bi-journal-text view fs-2 ms-4 me-2" title="view details" onClick={() => showArticle(article.id)}></i>
-                        <span className="d-block mb-3">{published}</span>
-                        <i className="bi bi-pencil-fill edit fs-6 mx-3" title="edit article" onClick={()=> showUpdate("Edit",article.id)}></i>
-                        <i className="bi bi-archive-fill delete fs-6 mx-3" title="delete article" onClick={deleteArticle}></i>
+                    <div className="d-flex flex-wrap mt-2 justify-content-start align-item-center">
+                        <i className="bi bi-journal-text view fs-2 ms-2 me-2" title="view details" onClick={() => showArticle(article.id)}></i>
+                        <span className="d-block me-2 fs-6 me-2">{published}</span>
+                        <i className="bi bi-pencil-fill edit fs-6 me-3" title="edit article" onClick={()=> showUpdate("Edit",article.id)}></i>
+                        <i className="bi bi-archive-fill delete fs-6 me-3" title="delete article" onClick={deleteArticle}></i>
                     </div>
                 </Col>
             </Row>

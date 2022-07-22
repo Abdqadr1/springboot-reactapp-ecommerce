@@ -39,10 +39,10 @@ code {
      display: none !important;
  }
  .text-editor{
-     height: 200px;
+     min-height: 200px;
      max-height: 600px;
  }
 
  .big-height{
-     height: 350px !important;
+     min-height: 350px !important;
  }
