@@ -18,7 +18,7 @@ import java.util.List;
 public class SchedulerConfig {
     public static final Logger LOGGER = LoggerFactory.getLogger(SchedulerConfig.class);
 
-    @Scheduled(fixedDelay = 5000, initialDelay = 2000, zone = "Africa/Lagos")
+    @Scheduled(fixedDelay = 300000, initialDelay = 5000, zone = "Africa/Lagos")
     public void pingSelf(){
         String url = """
                 %s/customer/countries

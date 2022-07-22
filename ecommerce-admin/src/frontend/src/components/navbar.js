@@ -31,7 +31,7 @@ const MyNavbar = () => {
     if(!auth || !auth?.accessToken) return <Navigate to="/login" />
     return (
         <>
-            <Navbar sticky="top" bg="dark" className="navbar-dark" expand="lg" onToggle={expandNav} expanded={expand}>
+            <Navbar sticky="top" bg="dark" className="navbar-dark" expand="md" onToggle={expandNav} expanded={expand}>
             <Container>
                 <Navbar.Brand as={Link} to="/account">
                     <img

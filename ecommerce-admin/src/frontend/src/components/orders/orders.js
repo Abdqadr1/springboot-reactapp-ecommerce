@@ -202,8 +202,8 @@ const Orders = () => {
 
     function isSort(name) {
         if (name === sort.field) {
-           if(sort.dir === "asc") return (<i className="bi bi-caret-up-fill text-light"></i> )
-           else return (<i className="bi bi-caret-down-fill text-light"></i> )
+           if(sort.dir === "asc") return (<i className="bi bi-caret-up-fill text-dark"></i> )
+           else return (<i className="bi bi-caret-down-fill text-dark"></i> )
         }
         return ""
     }

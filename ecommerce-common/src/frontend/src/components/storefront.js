@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import Search from "./search";
 import { listProducts, formatPrice,SPINNERS_BORDER, listCategories } from "./utilities";
 import CustomToast from "./custom_toast";
+import { Row, Col } from "react-bootstrap";
 const Storefront = () => {
     const [storefront, setStorefront ] = useState([]);
     const [categories, setCategories ] = useState([]);
@@ -72,9 +73,11 @@ const Storefront = () => {
                 return listCategories(categories);
             case "CATEGORY":
                 map = models.map(m => display(m.category.imagePath, m.category.name, m.category.alias, 'c'));
+                map = <Row className="justify-content-start p-4 mx-0">{map}</Row>
                 break;
             case "BRAND":
                 map = models.map(m => display(m.brand.imagePath, m.brand.name, m.brand.id, 'b'));
+                map = <Row className="justify-content-start p-4 mx-0">{map}</Row>
                 break;
             case "ARTICLE":
                 map = models.map(m => <Link key={m.id} to={"/m/"+m.article.alias} className="mx-2">{m.article.title}</Link>);
@@ -87,12 +90,11 @@ const Storefront = () => {
         return <div className="d-flex flex-wrap mt-2 px-0">{map}</div>
     }
     const display = (image, name, alias, which) => {
-        return <div key={alias+name} className="px-0 my-1 mx-3">
-                <img src={image} alt={name}style={{width: '150px', aspectRatio: 1}} />
-                <div style={{maxWidth:'150px'}} className="mt-2">
-                    <Link to={`/${which}/${encodeURIComponent(alias)}?name=${name}`}>{name}</Link>
-                </div>
-        </div>
+        return <Col key={alias + name} xs={6} sm={4} md={3} lg={2} xlg={2} className="product-in-listing my-2"
+                    as={Link} to={`/${which}/${encodeURIComponent(alias)}?name=${name}`}>
+                <img src={image} alt={name} className="cat-dp" />
+                <h6 className="mt-2">{name}</h6>
+        </Col>
     }
 
     return (

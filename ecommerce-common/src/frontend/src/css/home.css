@@ -53,6 +53,7 @@ a:hover{
     width: 75%;
 }
 .category-listing, .product-in-listing{
+    padding-block: .6rem;
     box-sizing: border-box;
     word-break: break-word;
     box-sizing: border-box;

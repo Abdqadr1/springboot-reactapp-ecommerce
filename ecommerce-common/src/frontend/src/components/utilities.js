@@ -81,7 +81,7 @@ export function listProducts(results, keyword, type="category", formatPrice){
                 <Row className="justify-content-start p-4 mx-0">
                     {
                         results.map((p) => (
-                            <Col key={p.name} xs={6} sm={4} md={3} lg={2} xlg={2} className="product-in-listing my-2"
+                            <Col key={p.name} xs={6} sm={4} md={3} lg={2} xlg={2} className="product-in-listing my-2 py-2"
                                 as={Link} to={"/p/" + encodeURIComponent(p.alias)}>
                                 <img loading="lazy" src={p.mainImagePath} alt={getShortName(p.name, 10)} className="cat-dp" />
                                 <h6 className="my-2 text-primary text-start">{getShortName(p.name)}</h6>

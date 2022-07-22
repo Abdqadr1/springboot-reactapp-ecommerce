@@ -117,18 +117,22 @@ const Category = () => {
     }
     function listChildren(){
         if(cat && cat.children.length > 0){
-            return  (
-            <Row className="justify-content-start p-4 mx-0">
-                {
-                    cat.children.map((p) => (
-                        <Col key={p.name} xs={6} sm={4} md={3} lg={2} xlg={2} as={Link} to={"/c/"+p.alias} className="product-in-listing my-2">
-                            <img loading="lazy" src={p.imagePath} alt={p.name} className="cat-dp" />
-                            <h5 className="mt-2 text-primary text-start">{p.name}</h5>
-                        </Col>
-                        ))
-                }
-            </Row>
-                    )
+            return (
+                <>
+                    <h4 className="text-center fw-bold my-2">Sub categories</h4>
+                    <Row className="justify-content-start p-4 mx-0">
+                        {
+                            cat.children.map((p) => (
+                                <Col key={p.name} xs={6} sm={4} md={3} lg={2} xlg={2} as={Link} to={"/c/"+p.alias} className="product-in-listing my-2">
+                                    <img loading="lazy" src={p.imagePath} alt={p.name} className="cat-dp" />
+                                    <h6 className="mt-2 text-primary text-start">{p.name}</h6>
+                                </Col>
+                                ))
+                        }
+                    </Row>  
+                </>
+                
+            )
         }
     }
 

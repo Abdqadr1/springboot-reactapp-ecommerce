@@ -163,7 +163,7 @@ const ShoppingCart = () => {
                     :  
                     <>
                         <Search />
-                        <h3 className="my-2">Your Shopping Cart</h3>
+                        <h3 className="fw-bold my-3">Your Shopping Cart</h3>
                         {
                             (array.length > 0)
                             ? listCartItems()
