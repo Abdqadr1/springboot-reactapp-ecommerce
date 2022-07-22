@@ -1,10 +1,9 @@
-package com.qadr.ecommerce.ecommerceadmin.config;
+package com.qadr.ecommerce.ecommercecommon.config;
 
 import com.qadr.ecommerce.sharedLibrary.entities.Constants;
 import com.qadr.ecommerce.sharedLibrary.entities.Country;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -22,7 +21,7 @@ public class SchedulerConfig {
     @Scheduled(fixedDelay = 5000, initialDelay = 2000, zone = "Africa/Lagos")
     public void pingSelf(){
         String url = """
-                %s/countries/list
+                %s/customer/countries
                 """.formatted(Constants.ECOMMERCE_URL);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(List.of(MediaType.APPLICATION_JSON));
