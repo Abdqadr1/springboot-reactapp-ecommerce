@@ -30,12 +30,12 @@ const Review = ({ review, type, showReview }) => {
     function rowItem() {
         return (
             <Row className="mt-2 justify-content-between">
-                <Col xs="5" className="text-center fw-bold">
+                <Col xs="3" className="text-center fw-bold">
                     <div>
                         <span>{review.id}</span>
                     </div>
                 </Col>
-                <Col xs="7">
+                <Col xs="9">
                         <div
                             onClick={showProduct}
                             className="text-primary text-start action cursor-pointer mb-3 d-inline-block">

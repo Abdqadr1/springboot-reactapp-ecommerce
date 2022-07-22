@@ -181,7 +181,7 @@ const Product = () => {
         return (
             <div className="d-flex justify-content-start my-2" style={{flexWrap: "wrap"}}>
                 {images.map((img,i) => {
-                    return (<div key={i} className="mx-2 border border-secondary rounded p-1" onClick={()=>showImage(i)}>
+                    return (<div key={i} className="mx-2 border border-secondary rounded p-1 mt-2" onClick={()=>showImage(i)}>
                         <img src={img} alt="product" className="small-img" />
                     </div>)
                     }

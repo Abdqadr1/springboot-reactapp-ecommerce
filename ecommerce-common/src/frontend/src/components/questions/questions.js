@@ -159,7 +159,7 @@ const Questions = () => {
                                     <Form.Control value={keyword} onChange={e=>setKeyword(e.target.value)}  type="text" placeholder="keyword" required />
                                 </Col>
                                 <Col sm="12" md="4">
-                                <div className="mt-md-0 mt-2">
+                                <div className="mt-md-0 mt-2 d-flex flex-wrap">
                                     <Button ref={searchBtnRef} variant="primary" className="mx-1" type="submit">
                                         <i title="search keyword" className="bi bi-search"></i>   
                                     </Button>

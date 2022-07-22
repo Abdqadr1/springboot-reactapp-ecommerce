@@ -1,5 +1,5 @@
 .header{
-    padding-block: 12vh;
+    padding-block: 11vh;
     box-sizing: border-box;
     padding-left: 3rem;
     text-align: left;
@@ -49,7 +49,7 @@ div.center{
 div.contact{
     position: absolute;
     z-index: 12;
-    top: 24vh;
+    top: 26vh;
     width: 100%;
     left:0;
 }

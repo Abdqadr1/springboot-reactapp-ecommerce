@@ -40,18 +40,14 @@ const Question = ({ question, type, showQuestion }) => {
     function rowItem() {
         return (
             <Row className="mt-2 justify-content-between">
-                <Col xs="5" className="text-center fw-bold">
+                <Col xs="3" className="text-center fw-bold">
                     <div>
                         <span>{question.id}</span>
                     </div>
                 </Col>
-                <Col xs="7">
+                <Col xs="9">
                     <div
                         onClick={showProduct}
-                            className="text-start mb-3 d-inline-block">
-                        {getShortName(question.questionContent, 60)}
-                    </div>
-                    <div
                             className="text-start mb-3 d-inline-block">
                         {getShortName(question.questionContent, 60)}
                     </div>

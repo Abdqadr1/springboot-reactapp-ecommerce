@@ -15,7 +15,8 @@ const NavBar = ({menus}) => {
   const [submitBtnRef, alertRef, passRef, rPassRef] = [useRef(), useRef(), useRef(), useRef()];
 
   const {auth, setAuth} = useContext(AuthContext)
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
+  const [expand, setExpand] = useState(false);
   const [alert, setAlert] = useState({ show: false, message: "", variant: "danger" })
   const [customer, setCustomer] = useState({});
   const { array: countries, setArray: setCountries } = useArray();
@@ -26,6 +27,9 @@ const NavBar = ({menus}) => {
   const [searchParams,] = useSearchParams();
   let redirectURL = searchParams.get("r");
   redirectURL = redirectURL ? "/" + redirectURL : redirectURL;
+
+  const expandNav = e => setExpand(e);
+  const closeNav = e => setExpand(false);
   
   const toggleAlert = e => {
     setAlert(s => ({...s, show: false}))
@@ -81,8 +85,6 @@ const NavBar = ({menus}) => {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auth?.accessToken])
-
-  
 
   const handleSelect = (e, which) => {
       if (which === "c") {
@@ -140,6 +142,12 @@ const NavBar = ({menus}) => {
         })
   }
 
+  const showModalFunc = e => {
+    e.stopPropagation();
+    setShowModal(true);
+    closeNav();
+  }
+
 const listMenus = () => {
   if(menus && menus.length > 0){
     return menus.map(m => <Link key={m.id} className="nav-link" to={`/m/`+m.article.alias}>{m.title}</Link>)
@@ -150,71 +158,72 @@ const listMenus = () => {
       <AuthContext.Consumer>
         {({ auth }) => (
             <>
-                  <Navbar sticky="top" bg="dark" className="navbar-dark" expand="lg">
-                    <Container>
-                      <Navbar.Brand href="/">
-                        <img
-                          src={SITE_LOGO}
-                          width="30"
-                          height="30"
-                          className="d-inline-block align-top"
-                          alt="QShop"
-                        />
-                      </Navbar.Brand>
-                      <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                      <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="ms-auto text-end">
-                          {listMenus()}
-                          <Link className="nav-link" to="/contact">
-                            Contact
-                          </Link>
+              <Navbar sticky="top" bg="dark" className="navbar-dark" expand="lg"
+                onToggle={expandNav} expanded={expand}>
+                <Container>
+                  <Navbar.Brand href="/">
+                    <img
+                      src={SITE_LOGO}
+                      width="30"
+                      height="30"
+                      className="d-inline-block align-top"
+                      alt="QShop"
+                    />
+                  </Navbar.Brand>
+                  <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                  <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="ms-auto text-end" onClick={closeNav}>
+                      {listMenus()}
+                      <Link className="nav-link" to="/contact">
+                        Contact
+                      </Link>
 
-                        {
-                            (!auth)
-                            ? <>
-                                <Link className="nav-link" to="/register">
-                                  Register
-                                </Link>
-                                <Link className="nav-link" to="/login">
-                                  Login
-                                </Link>
-                              </>
-                              : <>
-                                  <Dropdown>
-                                    <Dropdown.Toggle as={NavLink} className="border-0" split variant="dark" id="dropdown-split-basic">
-                                      <i className="bi bi-person-fill"></i>&nbsp;
-                                      {customer?.firstName ?? auth?.firstName}
-                                      &nbsp;
-                                      {customer?.lastName ?? auth?.lastName}
-                                      &nbsp;
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu variant="dark">
-                                        <span className="dropdown-item ps-4" data-rr-ui-dropdown-item="" to="#" onClick={()=>setShowModal(true)}>Account Info</span>
-                                        <Link className="dropdown-item ps-4" data-rr-ui-dropdown-item="" to="/orders">Orders</Link>
-                                        <Link className="dropdown-item ps-4" data-rr-ui-dropdown-item="" to="/addresses">Addresses</Link>
-                                        <Link className="dropdown-item ps-4" data-rr-ui-dropdown-item="" to="/reviews">Reviews</Link>
-                                        <Link className="dropdown-item ps-4" data-rr-ui-dropdown-item="" to="/questions">Questions</Link>
-                                        <Link className="dropdown-item ps-4 text-danger" to="/logout">Logout</Link>
-                                    </Dropdown.Menu>
-                                  </Dropdown>
-                                  <Link className="nav-link" to="/shopping_cart" title="Shopping cart">
-                                    <i className="bi bi-cart4 fs-5 text-warning position-relative">
-                                    {
-                                      (Number(auth?.cart) > 0) &&
-                                        <span style={{ fontSize: "x-small" }}
-                                            className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
-                                        </span>
-                                    } 
-                                    </i>
-                                  </Link>
-                              </>
-                            
-                          }
-                          
-                        </Nav>
-                      </Navbar.Collapse>
-                    </Container>
-                  </Navbar>
+                    {
+                        (!auth)
+                        ? <>
+                            <Link className="nav-link" to="/register">
+                              Register
+                            </Link>
+                            <Link className="nav-link" to="/login">
+                              Login
+                            </Link>
+                          </>
+                          : <>
+                              <Dropdown onClick={e=> e.stopPropagation()} autoClose="true">
+                                <Dropdown.Toggle as={NavLink} className="border-0" variant="dark" id="dropdown-split-basic">
+                                  <i className="bi bi-person-fill"></i>&nbsp;
+                                  {customer?.firstName ?? auth?.firstName}
+                                  &nbsp;
+                                  {customer?.lastName ?? auth?.lastName}
+                                  &nbsp;
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu variant="dark">
+                                    <span className="dropdown-item ps-4" data-rr-ui-dropdown-item="" to="#" onClick={showModalFunc}>Account Info</span>
+                                    <Dropdown.Item as={Link} onClick={closeNav} className="dropdown-item ps-4" to="/orders">Orders</Dropdown.Item>
+                                    <Dropdown.Item as={Link} onClick={closeNav} className="dropdown-item ps-4" to="/addresses">Addresses</Dropdown.Item>
+                                    <Dropdown.Item as={Link} onClick={closeNav} className="dropdown-item ps-4" to="/reviews">Reviews</Dropdown.Item>
+                                    <Dropdown.Item as={Link} onClick={closeNav} className="dropdown-item ps-4" to="/questions">Questions</Dropdown.Item>
+                                    <Dropdown.Item as={Link} onClick={closeNav} className="dropdown-item ps-4 text-danger" to="/logout">Logout</Dropdown.Item>
+                                </Dropdown.Menu>
+                              </Dropdown>
+                              <Link className="nav-link" to="/shopping_cart" title="Shopping cart">
+                                <i className="bi bi-cart4 fs-5 text-warning position-relative">
+                                {
+                                  (Number(auth?.cart) > 0) &&
+                                    <span style={{ fontSize: "x-small" }}
+                                        className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                                    </span>
+                                } 
+                                </i>
+                              </Link>
+                          </>
+                        
+                      }
+                      
+                    </Nav>
+                  </Navbar.Collapse>
+                </Container>
+              </Navbar>
               
 
               {

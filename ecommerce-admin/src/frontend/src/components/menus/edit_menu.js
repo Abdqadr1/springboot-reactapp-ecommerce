@@ -30,8 +30,8 @@ const EditMenu = ({ data, setData, updateMenu }) => {
         .then(response => setArticles(response.data))
         .catch(error => { 
             const response = error.response
-            if(isTokenExpired(response)) navigate("/login/2")
-            else setAlert({show:true, message: response.data.message, variant: "danger"})
+            if (isTokenExpired(response)) navigate("/login/2")
+            else setAlert({ show: true, message: response.data.message, variant: "danger" });
         })
         return () => abortController.current.abort();
     },[accessToken, navigate])

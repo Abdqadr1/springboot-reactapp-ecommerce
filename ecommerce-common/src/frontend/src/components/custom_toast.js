@@ -1,7 +1,12 @@
 import { ToastContainer, Toast } from "react-bootstrap";
-const CustomToast = ({show, position, setToast, message}) => {
+import { useRef, useEffect } from "react";
+const CustomToast = ({ show, position, setToast, message }) => {
+  const toastRef = useRef();
+  useEffect(() => {
+    if (show && toastRef.current) toastRef.current.focus();
+  }, [show]);
     return ( 
-        <ToastContainer className="p-3" position={position ?? "middle-center"}>
+        <ToastContainer tabIndex="-24" ref={toastRef} className="p-3" position={position ?? "middle-center"}>
           <Toast bg="dark" onClose={() => setToast(s=>({...s, show:false}))} show={show} delay={3000} autohide>
             {/* <Toast.Header closeButton={false}>
               <img

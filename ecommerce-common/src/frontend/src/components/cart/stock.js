@@ -60,11 +60,13 @@ const Stock = ({ id, quantity }) => {
 
 const QuantityNumber = ({ number, w, show, fn }) => {
     const [quantity, setQuantity] = useState(number ?? 1);
-    const [toast, setToast] = useState({ show: false, message: "" })
+    const [toast, setToast] = useState({ show: false, message: "" });
+    const toastRef = useRef();
 
     useEffect(() => {
         setToast(s => ({ ...s, ...show }))
-        if(number) setQuantity(number)
+        if (number) setQuantity(number);
+        if (show && toastRef.current) toastRef.current.focus();
     }, [show, number])
 
     const add = (e, val) => {
@@ -84,7 +86,7 @@ const QuantityNumber = ({ number, w, show, fn }) => {
                 <InputGroup.Text onClick={e=>add(e,1)}>+</InputGroup.Text>
             </InputGroup>
             
-            <ToastContainer className="p-3" position="middle-center" style={{"zIndex": "5000"}}>
+            <ToastContainer tabIndex="-24" ref={toastRef} className="p-3" position="middle-center" style={{"zIndex": "5000"}}>
                 <Toast animation={true} bg="dark" show={toast.show} onClose={()=>setToast(s => ({...s,show:false}))} delay={3000} autohide>
                     <Toast.Body className="text-light fw-bold">{toast.message}</Toast.Body>
                 </Toast>

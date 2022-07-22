@@ -236,6 +236,9 @@ const Orders = () => {
                     :      <>
             <CustomToast show={toast.show} setToast={setToast} message={toast.message} variant={toast.variant} />
             <Row className="justify-content-start align-items-center p-3 mx-0">
+                <Col xs={12} md={5} className="my-2">
+                    <h3 className="">Manage Orders</h3>
+                </Col>
                 <Col xs={12} md={7} className="my-2">
                     <Form className="row justify-content-between" onSubmit={handleFilter}>
                         <Form.Group as={Row} className="mb-3" controlId="keyword">

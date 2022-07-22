@@ -1,10 +1,9 @@
 import { useEffect, useState, useRef, useCallback, useLayoutEffect } from "react";
 import useSettings from "./use-settings";
 import axios from "axios";
-import { Col, Row } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Search from "./search";
-import { listProducts, formatPrice,SPINNERS_BORDER } from "./utilities";
+import { listProducts, formatPrice,SPINNERS_BORDER, listCategories } from "./utilities";
 import CustomToast from "./custom_toast";
 const Storefront = () => {
     const [storefront, setStorefront ] = useState([]);
@@ -70,7 +69,7 @@ const Storefront = () => {
         let map = "";
         switch(type){
             case "ALL_CATEGORIES":
-                return listCategories();
+                return listCategories(categories);
             case "CATEGORY":
                 map = models.map(m => display(m.category.imagePath, m.category.name, m.category.alias, 'c'));
                 break;
@@ -94,24 +93,6 @@ const Storefront = () => {
                     <Link to={`/${which}/${encodeURIComponent(alias)}?name=${name}`}>{name}</Link>
                 </div>
         </div>
-    }
-
-    function listCategories(){
-        const map = categories.map(cat => {
-            const photo = cat.photo && cat.photo !== "null"
-            ? <img loading="lazy" src={cat.imagePath} alt={cat.name} className="cat-dp" />
-            :<span className="avatar">
-                <i className="bi bi-image-fill"></i>
-            </span>
-            return (
-                <Col className="my-3 category-listing" key={cat.name + cat.id} xs={4} md={2} lg={2}
-                    as={Link} to={"/c/" + encodeURIComponent(cat.alias)}>
-                        {photo}
-                        <h5 className="my-2">{cat.name}</h5>
-                </Col>
-            )
-        })
-        return <Row className="mt-5 px-2 mx-0 justify-content-start">{map}</Row>;
     }
 
     return (

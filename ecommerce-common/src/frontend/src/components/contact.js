@@ -57,7 +57,7 @@ const Contact = () => {
                 </div>
             </header>
             <Row className="mx-0 justify-content-md-start justify-content-center contact ps-md-5">
-                <Col sm="12" md="2" xl="2" className="p-0">
+                <Col sm="12" md="2" className="p-0">
                     <div className="d-flex flex-wrap mt-2 mb-4 mb-md-0 justify-content-center justify-content-md-start">
                         <a className="text-white my-2" href="https://www.linkedin.com/in/abolarinwa-quadri-a08b39144" target="blank"><i className="bi bi-linkedin me-3 fs-6"></i></a>
                         <a className="text-white my-2" href="https://twitter.com/olaleyone" target="blank"><i className="bi bi-twitter me-3 fs-6"></i></a>
@@ -65,7 +65,7 @@ const Contact = () => {
                         <a className="text-white my-2" href="https://wa.me/2348115213342" target="blank"><i className="bi bi-whatsapp me-3 fs-6"></i></a>
                     </div>
                 </Col>
-                <Col sm="12" md="9" xl="9" className="bg-white px-0 shadow-lg rounded">
+                <Col sm="12" md="9" className="bg-white px-0 shadow-lg rounded">
                     <Row className="mx-0 justify-content-center p-5 px-4">
                         <Col sm="12" md="7">
                             <Form method="post" onSubmit={handleSubmit}>

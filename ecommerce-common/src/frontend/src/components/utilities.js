@@ -18,16 +18,16 @@ export const getShort = (name, len = 30) => {
 export const getPrices = (discount, price, realPrice, formatPrice) => {
     if(discount > 0){
         return (
-          <h5 className="text-dark text-start fw-bold fs-6">
+          <h6 className="text-dark text-start fw-bold" style={{fontSize: '.8em'}}>
             <span>{formatPrice(realPrice)}</span>
             <del className="text-danger mx-2">{formatPrice(price)}</del>
-          </h5>
+          </h6>
         );
     }
     return (
-      <h5 className="text-dark text-start fw-bold">
+      <h6 className="text-dark text-start fw-bold" style={{fontSize: '.8em'}}>
         <span>{formatPrice(price)}</span>
-      </h5>
+      </h6>
     );
 }
 // export const getDiscountPrice = (discount, price) => {
@@ -49,6 +49,24 @@ export const formatPrice = (price, s, m, t, pos) => {
     
 }
 
+export function listCategories(categories){
+    const map = categories.map(cat => {
+        const photo = cat.photo && cat.photo !== "null"
+        ? <img loading="lazy" src={cat.imagePath} alt={cat.name} className="cat-dp" />
+        :<span className="avatar">
+            <i className="bi bi-image-fill"></i>
+        </span>
+        return (
+            <Col className="my-3 category-listing" key={cat.name + cat.id} xs={6} sm={4} md={2} lg={2}
+                as={Link} to={"/c/" + encodeURIComponent(cat.alias)}>
+                    {photo}
+                    <h6 className="my-2">{cat.name}</h6>
+            </Col>
+        )
+    })
+    return <Row className="mt-5 px-2 mx-0 justify-content-center justify-content-md-start">{map}</Row>;
+}
+
 export function listProducts(results, keyword, type="category", formatPrice){
     let key = "";
     if(results.length > 0){
@@ -66,15 +84,15 @@ export function listProducts(results, keyword, type="category", formatPrice){
                             <Col key={p.name} xs={6} sm={4} md={3} lg={2} xlg={2} className="product-in-listing my-2"
                                 as={Link} to={"/p/" + encodeURIComponent(p.alias)}>
                                 <img loading="lazy" src={p.mainImagePath} alt={getShortName(p.name, 10)} className="cat-dp" />
-                                <h5 className="my-2 text-primary text-start">{getShortName(p.name)}</h5>
+                                <h6 className="my-2 text-primary text-start">{getShortName(p.name)}</h6>
                                 <div className = "d-flex justify-content-start align-items-center">
                                     <StarRatings 
-                                        starDimension="15px"
-                                        starSpacing="5px"
+                                        starDimension=".6rem"
+                                        starSpacing=".3em"
                                         rating={p.averageRating}
                                         starRatedColor="yellow"
                                         name='product rating' />
-                                    <span className="ms-2">{p.reviewCount}</span>
+                                    <span className="ms-2" style={{fontSize: ".8em"}} >{p.reviewCount}</span>
                                 </div>
                                 {getPrices(p.discountPrice, p.price, p.realPrice, formatPrice)}
                             </Col>
