@@ -4,6 +4,15 @@
 body{
     scroll-behavior: smooth;
 }
+.loadRef{
+    position: absolute;
+    top: -58px
+}
+div:focus{
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
 .cs {cursor: pointer;}
 .overlay{
     width: 100vw;

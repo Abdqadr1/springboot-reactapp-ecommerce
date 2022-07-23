@@ -85,7 +85,7 @@ function App() {
                 <Route path="/product_questions/:id" element={<ProductQuestions/>} />
                 <Route path="/m/:alias" element={<MenuArticle/>} />
                 <Route path="/contact" element={<Contact/>} />
-                <Route path="*" element={<div className="my-4">Not found</div>} />
+                <Route path="*" element={<h3 className="my-4 fw-bold">Not found</h3>} />
             </Routes>
             </div>
             <Footer menus={menus?.footer}/>

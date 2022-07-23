@@ -23,10 +23,15 @@ const ShoppingCart = () => {
     const [variables, setVariables] = useState({usePrimaryAddress: false, addressSupported: false})
     const [showDelete, setShowDelete] = useState({show:false, id:-1})
     const [toast, setToast] = useState({ show: false, message: "" })
-    let abortController = useRef(new AbortController()); 
+    const [abortController, loadRef] = [useRef(new AbortController()), useRef()];
     const { CURRENCY_SYMBOL, CURRENCY_SYMBOL_POSITION, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, SITE_NAME } = useSettings();
 
-    useEffect(()=>{document.title = `Shopping Cart - ${SITE_NAME}`},[SITE_NAME])
+    useEffect(() => {
+        document.title = `Shopping Cart - ${SITE_NAME}`;
+        loadRef?.current?.focus();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [SITE_NAME]);
+
     function priceFormatter() {
         return (price) =>
             formatPrice(price, CURRENCY_SYMBOL, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, CURRENCY_SYMBOL_POSITION)
@@ -61,6 +66,7 @@ const ShoppingCart = () => {
             // eslint-disable-next-line react-hooks/exhaustive-deps
             abortController.current?.abort();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loadCart])
 
 
@@ -157,6 +163,7 @@ const ShoppingCart = () => {
     if (!auth?.accessToken) navigate("/login");
     return (
         <>
+            <div className="loadRef" tabIndex="22" ref={loadRef}></div>
             {
                 (isLoading)
                     ? <div className="mx-auto" style={{ height: "30vh", display: "grid" }}>{SPINNERS_BORDER}</div>

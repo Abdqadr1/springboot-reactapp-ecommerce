@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useContext } from "react";
+import { useCallback, useEffect, useState, useContext, useRef } from "react";
 import {  Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { SPINNERS_BORDER, listReviews, isTokenExpired } from "../utilities";
@@ -12,6 +12,7 @@ import MessageModal from "../message_modal";
 import { Link } from "react-router-dom";
 
 const ProductReviews = () => {
+    const loadRef = useRef();
     const { id } = useParams();
     const { auth, setAuth } = useContext(AuthContext);
     const { array: revs, setArray: setRevs, updateArray: updateReviews } = useArray();
@@ -37,7 +38,7 @@ const ProductReviews = () => {
         const url = process.env.REACT_APP_SERVER_URL + `p/${Number(id)}/reviews/${pageInfo.number}?sortField=${sort}`;
         setLoading(true);
         axios.get(url, {
-            headers:{...head},
+            headers: { ...head },
             signal: abortController.signal
         })
             .then(response => {
@@ -61,7 +62,13 @@ const ProductReviews = () => {
             .finally(() => {
                 setLoading(false);
             })
-    }, [id, pageInfo.number, setAuth, setRevs, sort])
+    }, [id, pageInfo.number, setAuth, setRevs, sort]);
+
+    useEffect(() => {
+        document.title = `Product Reviews`; 
+        loadRef?.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     useEffect(() => {
         const abortController = new AbortController();
@@ -81,6 +88,7 @@ const ProductReviews = () => {
     return (
             
          <>
+            <div className="loadRef" tabIndex="22" ref={loadRef}></div>
             {
                 (isLoading)
                     ? <div className="mx-auto" style={{ height: "30vh", display: "grid" }}>{SPINNERS_BORDER}</div>

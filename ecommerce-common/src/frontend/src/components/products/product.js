@@ -23,11 +23,15 @@ const Product = () => {
     const {array: questions, setArray: setQuestions, updateArray: updateQuestions} = useArray();
     const [showReviewForm, setShowReviewForm] = useState({show: false, product: {}});
     const { auth, setAuth } = useContext(AuthContext);
-    const abortController = useRef(new AbortController());
+    const [abortController, loadRef] = [useRef(new AbortController()), useRef()];
     
     const { CURRENCY_SYMBOL, CURRENCY_SYMBOL_POSITION, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE,SITE_NAME } = useSettings();
 
-    useEffect(()=>{document.title = `${alias} - ${SITE_NAME}`},[SITE_NAME, alias])
+    useEffect(() => {
+        document.title = `${alias} - ${SITE_NAME}`;
+        loadRef?.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [SITE_NAME, alias])
 
     function priceFormatter() {
         return (price) =>
@@ -333,6 +337,7 @@ const Product = () => {
     return ( 
          
          <>
+            <div className="loadRef" tabIndex="22" ref={loadRef}></div>
             {
                 (isLoading)
                     ? <div className="mx-auto" style={{ height: "30vh", display: "grid" }}>{SPINNERS_BORDER}</div>

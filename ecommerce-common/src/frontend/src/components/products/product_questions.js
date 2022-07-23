@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useContext } from "react";
+import { useCallback, useEffect, useState, useContext, useRef } from "react";
 import {  Row, Col } from "react-bootstrap";
 import axios from "axios";
 import { SPINNERS_BORDER, listQuestions, isTokenExpired } from "../utilities";
@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 
 const ProductQuestions = () => {
     const { id } = useParams();
+    const loadRef = useRef();
     const { auth, setAuth } = useContext(AuthContext);
     const { array: questions, setArray: setQuestions, updateArray: updateQuestions } = useArray();
     const [isLoading, setLoading] = useState(false);
@@ -60,6 +61,12 @@ const ProductQuestions = () => {
     }, [id, pageInfo.number, setAuth, setQuestions, sort])
 
     useEffect(() => {
+        document.title = `Product Questions`; 
+        loadRef?.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    useEffect(() => {
         const abortController = new AbortController();
         let head = {};
         if (auth && auth?.accessToken) head = { "Authorization": `Bearer ${auth.accessToken}` };
@@ -77,6 +84,7 @@ const ProductQuestions = () => {
     return (
             
          <>
+            <div className="loadRef" tabIndex="22" ref={loadRef}></div>
             {
                 (isLoading)
                     ? <div className="mx-auto" style={{ height: "30vh", display: "grid" }}>{SPINNERS_BORDER}</div>

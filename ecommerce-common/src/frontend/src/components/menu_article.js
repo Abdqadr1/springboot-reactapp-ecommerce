@@ -9,10 +9,14 @@ const MenuArticle = () => {
     const {alias} = useParams();
     const [isLoading, setLoading] = useState(true);
     const [article, setArticle] = useState(null);
-    const divRef = useRef();
+    const [divRef, loadRef] = [useRef(), useRef()];
     
     const {SITE_NAME} = useSettings();
-    useEffect(()=>{document.title = `${alias} - ${SITE_NAME}`},[SITE_NAME, alias]);
+    useEffect(() => {
+        document.title = `${alias} - ${SITE_NAME}`; 
+        loadRef?.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [alias]);
 
     useLayoutEffect(()=>{
         const abortController = new AbortController();
@@ -45,6 +49,7 @@ const MenuArticle = () => {
 
     return (
         <>
+            <div className="loadRef" tabIndex="22" ref={loadRef}></div>
             {
                 (isLoading)
                     ? <div className="mx-auto" style={{ height: "30vh", display: "grid" }}>{SPINNERS_BORDER}</div>

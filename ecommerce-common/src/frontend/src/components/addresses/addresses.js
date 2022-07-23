@@ -34,11 +34,15 @@ const Addresses = () => {
     const [showDelete, setShowDelete] = useState({show:false, id:-1})
     const [showEdit, setShowEdit] = useState({show:false, address:{}})
     const [showAdd, setShowAdd] = useState(false)
-    const abortController = useRef(new AbortController());
+    const [abortController, loadRef] = [useRef(new AbortController()), useRef()];
 
     
     const {SITE_NAME} = useSettings();
-    useEffect(()=>{document.title = `Addresses - ${SITE_NAME}`},[SITE_NAME])
+    useEffect(() => {
+        document.title = `Addresses - ${SITE_NAME}`;
+        loadRef?.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [SITE_NAME])
 
      const loadAddresses = useCallback((abortController) => {
        setLoading(true);
@@ -67,6 +71,7 @@ const Addresses = () => {
         return () => {
             abortController.current.abort();
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loadAddresses])
 
     useEffect(() => {
@@ -183,6 +188,7 @@ const Addresses = () => {
     if (!auth) navigate("/login");
     return ( 
          <>
+            <div className="loadRef" tabIndex="22" ref={loadRef}></div>
             {
                 (isLoading)
                     ? <div className="mx-auto" style={{ height: "30vh", display: "grid" }}>{SPINNERS_BORDER}</div>

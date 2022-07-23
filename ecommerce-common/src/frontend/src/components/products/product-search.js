@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { listProducts, formatPrice, SPINNERS_BORDER } from "../utilities";
 import useSettings from "../use-settings";
@@ -11,11 +11,15 @@ const ProductSearch = () => {
     const [results, setResults] = useState([]);
     const [isLoading, setLoading] = useState(true);
     const [pageInfo, setPageInfo] = useState({ number: 1 });
+    const loadRef = useRef();
 
     
     const { CURRENCY_SYMBOL, CURRENCY_SYMBOL_POSITION, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, SITE_NAME } = useSettings();
     
-    useEffect(()=>{document.title = `${keyword} - ${SITE_NAME}`},[SITE_NAME, keyword])
+    useEffect(() => {
+        document.title = `${keyword} - ${SITE_NAME}`;
+        loadRef?.current?.focus();
+    }, [SITE_NAME, keyword])
 
     function priceFormatter() {
         return (price) =>
@@ -53,6 +57,7 @@ const ProductSearch = () => {
 
     return ( 
         <>
+            <div className="loadRef" tabIndex="22" ref={loadRef}></div>
             {
                 (isLoading)
                     ? <div className="mx-auto" style={{ height: "30vh", display: "grid" }}>{SPINNERS_BORDER}</div>

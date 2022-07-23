@@ -11,13 +11,15 @@ const Register = () => {
     const { array: states, setArray: setStates } = useArray();
     const [country, setCountry] = useState(null);
     const [state, setState] = useState(null);
-    const [btnRef, alertRef,rePassRef, passRef] = [useRef(), useRef(),useRef(), useRef()];
+    const [btnRef, alertRef,rePassRef, passRef, loadRef] = [useRef(), useRef(),useRef(), useRef(), useRef()];
     const [alert, setAlert] = useState({ show: false, message: "", variant: 'danger' })
 
     const navigate = useNavigate();
 
      useEffect(() => {
         document.title = "Register";
+        loadRef?.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
@@ -87,6 +89,7 @@ const Register = () => {
     
     return ( 
         <>
+            <div className="loadRef" tabIndex="22" ref={loadRef}></div>
             <Row className="mx-0 justify-content-center mt-3">
                 <Col xs="11" md="8">
                     <h3>Customer Registration</h3>

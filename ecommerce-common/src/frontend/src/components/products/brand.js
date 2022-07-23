@@ -8,7 +8,7 @@ import CustomToast from "../custom_toast";
 import MyPagination from "../orders/paging";
 
 const Brand = () => {
-    const abortController = useRef(new AbortController());
+    const [abortController, loadRef] = [useRef(new AbortController()), useRef()];
     const [toast, setToast] = useState({ show: false, message: "" });
     const [isLoading, setLoading] = useState(true);
     const [products, setProducts] = useState([]);
@@ -22,7 +22,11 @@ const Brand = () => {
     const name = searchParams.get("name")
     
     const {SITE_NAME} = useSettings();
-    useEffect(()=>{document.title = `${name} - ${SITE_NAME}`},[SITE_NAME, name])
+    useEffect(() => {
+        document.title = `${name} - ${SITE_NAME}`;
+        loadRef?.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [SITE_NAME, name])
     
     const {CURRENCY_SYMBOL, CURRENCY_SYMBOL_POSITION, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE} = useSettings();
 
@@ -59,12 +63,14 @@ const Brand = () => {
         abortController.current = new AbortController();
         loadProducts(abortController.current, pageInfo.number);
         return () => abortController.current.abort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [name, loadProducts, pageInfo.number])
 
 
 
     return ( 
         <>
+            <div className="loadRef" tabIndex="22" ref={loadRef}></div>
             {
                 (isLoading)
                     ? <div className="mx-auto" style={{ height: "30vh", display: "grid" }}>{SPINNERS_BORDER}</div>

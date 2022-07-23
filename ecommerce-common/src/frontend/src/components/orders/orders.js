@@ -20,7 +20,7 @@ const Orders = () => {
     const { auth, setAuth } = useContext(AuthContext);
 
     const accessToken = auth.accessToken;
-    const searchBtnRef = useRef();
+    const [searchBtnRef, loadRef] = [useRef(), useRef()];
     const [orders, setOrders] = useState([]);
     const [isLoading, setLoading] = useState(true);
     const [keyword, setKeyword] = useState("");
@@ -91,7 +91,11 @@ const Orders = () => {
     const { CURRENCY_SYMBOL, CURRENCY_SYMBOL_POSITION, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, SITE_NAME } = useSettings();
 
     
-    useEffect(()=>{document.title = `Orders - ${SITE_NAME}`},[SITE_NAME])
+    useEffect(() => {
+        document.title = `Orders - ${SITE_NAME}`; 
+        loadRef?.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [SITE_NAME])
     
     function priceFormatter() {
         return (price) =>
@@ -179,6 +183,7 @@ const Orders = () => {
     if(!accessToken) return <Navigate to="/login/2" />
     return ( 
          <>
+            <div className="loadRef" tabIndex="22" ref={loadRef}></div>
             {
                 (isLoading)
                     ? <div className="mx-auto" style={{ height: "30vh", display: "grid" }}>{SPINNERS_BORDER}</div>

@@ -11,7 +11,7 @@ const Storefront = () => {
     const [categories, setCategories ] = useState([]);
     const [toast, setToast] = useState({ show: false, message: "" });
     const [isLoading, setLoading] = useState(true);
-    const abortController = useRef(new AbortController());
+    const [abortController, loadRef] = [useRef(new AbortController()), useRef()];
 
     const sort = (a, b) => {
         return a.position - b.position;
@@ -23,7 +23,11 @@ const Storefront = () => {
         return (price) =>
             formatPrice(price, CURRENCY_SYMBOL, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, CURRENCY_SYMBOL_POSITION)
     }
-    useEffect(()=>{document.title = "Home - " + SITE_NAME},[SITE_NAME])
+    useEffect(() => {
+        document.title = "Home - " + SITE_NAME;
+        loadRef?.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
      const loadCategories = useCallback((url, abortController, fronts) => {
         axios.get(url, {
@@ -90,7 +94,7 @@ const Storefront = () => {
         return <div className="d-flex flex-wrap mt-2 px-0">{map}</div>
     }
     const display = (image, name, alias, which) => {
-        return <Col key={alias + name} xs={6} sm={4} md={3} lg={2} xlg={2} className="product-in-listing my-2"
+        return <Col key={alias + name} xs={6} sm={4} md={3} lg={2} className="product-in-listing my-2"
                     as={Link} to={`/${which}/${encodeURIComponent(alias)}?name=${name}`}>
                 <img src={image} alt={name} className="cat-dp" />
                 <h6 className="mt-2">{name}</h6>
@@ -99,6 +103,7 @@ const Storefront = () => {
 
     return (
          <>
+            <div className="loadRef" tabIndex="22" ref={loadRef}></div>
             {
                 (isLoading)
                     ? <div className="mx-auto" style={{ height: "30vh", display: "grid" }}>{SPINNERS_BORDER}</div>

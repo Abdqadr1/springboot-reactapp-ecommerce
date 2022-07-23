@@ -129,7 +129,7 @@ const MyNavbar = () => {
                             {
                                 (hasAnyAuthority(auth, ["Admin"]))
                                     ? 
-                                        <Dropdown  onClick={e=> e.stopPropagation()}>
+                                        <Dropdown onClick={e=> e.stopPropagation()}>
                                             <Dropdown.Toggle data-toggle="dropdown" as={Link} to="#" className="nav-link border-0" variant="dark">
                                                Settings
                                             </Dropdown.Toggle>
@@ -144,7 +144,7 @@ const MyNavbar = () => {
                                         </Dropdown>
                                     : ""
                             }
-                        <Dropdown>
+                        <Dropdown onClick={e=> e.stopPropagation()}>
                             <Dropdown.Toggle as={NavLink} className="border-0" split variant="dark" id="dropdown-split-basic">
                                 <i className="bi bi-person-fill"></i> {auth.firstName} &nbsp;
                             </Dropdown.Toggle>

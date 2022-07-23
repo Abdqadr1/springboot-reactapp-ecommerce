@@ -21,7 +21,7 @@ const Reviews = () => {
     const { auth, setAuth } = useContext(AuthContext);
 
     const accessToken = auth.accessToken;
-    const searchBtnRef = useRef();
+    const [searchBtnRef, loadRef] = [useRef(), useRef()];
     const [reviews, setReviews] = useState([]);
     const [isLoading, setLoading] = useState(true);
     const [viewReview, setViewReview] = useState({show:false, id: -1, review: {}});
@@ -85,7 +85,11 @@ const Reviews = () => {
     const { SITE_NAME } = useSettings();
 
     
-    useEffect(()=>{document.title = `Reviews - ${SITE_NAME}`},[SITE_NAME])
+    useEffect(() => {
+        document.title = `Reviews - ${SITE_NAME}`; 
+        loadRef?.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [SITE_NAME])
     
     useEffect(() => {
         changePage(pageInfo.number, keyword)
@@ -143,6 +147,7 @@ const Reviews = () => {
     if(!accessToken) return <Navigate to="/login/2" />
     return ( 
          <>
+            <div className="loadRef" tabIndex="22" ref={loadRef}></div>
             {
                 (isLoading)
                     ? <div className="mx-auto" style={{ height: "30vh", display: "grid" }}>{SPINNERS_BORDER}</div>

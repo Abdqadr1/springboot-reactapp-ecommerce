@@ -60,7 +60,7 @@ export function listCategories(categories){
             <Col className="my-3 category-listing" key={cat.name + cat.id} xs={6} sm={4} md={2} lg={2}
                 as={Link} to={"/c/" + encodeURIComponent(cat.alias)}>
                     {photo}
-                    <h6 className="my-2">{cat.name}</h6>
+                    <h6 className="my-2 text-center">{cat.name}</h6>
             </Col>
         )
     })

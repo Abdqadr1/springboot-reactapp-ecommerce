@@ -21,10 +21,15 @@ const Checkout = () => {
     const [isCOD, setCOD] = useState(false);
     const [isPlacedOrder, setPlaceOrder] = useState(false);
     const [fullscreenLoader, setFullscreenLoader] = useState(false);
-  const [submitBtnRef] = [useRef()];
+    const [submitBtnRef, loadRef] = [useRef(), useRef()];
     
     const { CURRENCY_SYMBOL, CURRENCY_SYMBOL_POSITION, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, SITE_NAME } = useSettings();
-    useEffect(() => { document.title = `Checkout - ${SITE_NAME}` }, [SITE_NAME])
+    useEffect(() => {
+        document.title = `Checkout - ${SITE_NAME}`;
+        loadRef?.current?.focus();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [SITE_NAME]);
+
       function priceFormatter() {
         return (price) =>
             formatPrice(price, CURRENCY_SYMBOL, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE, CURRENCY_SYMBOL_POSITION)
@@ -195,6 +200,7 @@ const Checkout = () => {
 
     return ( 
         <>
+            <div className="loadRef" tabIndex="22" ref={loadRef}></div>
             {(isPlacedOrder)
                 ? checkoutSuccess()
                 : <>

@@ -44,6 +44,7 @@ a:hover{
 .content{
     min-height: calc(100vh + 110px);
     width: auto;
+    position: relative;
 }
 .form-label{
     width: 25%;

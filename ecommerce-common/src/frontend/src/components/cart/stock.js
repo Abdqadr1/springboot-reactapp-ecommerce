@@ -52,7 +52,7 @@ const Stock = ({ id, quantity }) => {
             <Form onSubmit={handleSubmit}>
                 <QuantityNumber number={quantity} w="v" show={showToast} />
                 <input name="product_id" type="hidden" value={id} />
-                <Button ref={btnRef} variant="primary" type="submit">Add to Cart</Button> 
+                <Button className="py-2" style={{maxWidth: 'fit-content'}} ref={btnRef} variant="primary" type="submit">Add to Cart</Button> 
             </Form>
         </>
     );

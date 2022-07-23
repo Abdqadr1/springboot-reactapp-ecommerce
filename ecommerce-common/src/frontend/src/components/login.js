@@ -15,13 +15,15 @@ const Login = () => {
     const [searchParams,] = useSearchParams();
     const error = searchParams.get("error");
 
-    const [alertRef, btnRef] = [useRef(), useRef()];
+    const [alertRef, btnRef, loadRef] = [useRef(), useRef(), useRef()];
     const [alert, setAlert] = useState({ show: (error) ? true :false, message: error ?? "", variant: 'danger' })
     const { setAuth } = useContext(AuthContext);
     const navigate = useNavigate();
 
     useEffect(() => {
         document.title = "Login";
+        loadRef?.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
@@ -56,6 +58,7 @@ const Login = () => {
 
     return ( 
         <>
+            <div className="loadRef" tabIndex="22" ref={loadRef}></div>
             <Row className="mx-0 justify-content-between bg-light content">
                 <Col md="6" className="p-0 d-none d-sm-none d-md-flex">
                     <img style={{width: '100%', height: '100%'}} src={login} alt="login" />

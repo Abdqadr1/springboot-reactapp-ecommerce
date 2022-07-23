@@ -9,7 +9,7 @@ import CustomToast from "../custom_toast";
 import MyPagination from "../orders/paging";
 
 const Category = () => {
-    const abortController = useRef(new AbortController());
+    const [abortController, loadRef] = [useRef(new AbortController()), useRef()];
     const [cat, setCat] = useState(null);
     const [toast, setToast] = useState({ show: false, message: "" });
     const [isLoading, setLoading] = useState(true);
@@ -20,9 +20,12 @@ const Category = () => {
     })
 
     const { alias } = useParams();
-    
     const {SITE_NAME} = useSettings();
-    useEffect(()=>{document.title = `${alias} - ${SITE_NAME}`},[SITE_NAME, alias])
+    useEffect(() => {
+        document.title = `${alias} - ${SITE_NAME}`;
+        loadRef?.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [SITE_NAME, alias])
     
     const {CURRENCY_SYMBOL, CURRENCY_SYMBOL_POSITION, DECIMAL_DIGIT, THOUSANDS_POINT_TYPE} = useSettings();
 
@@ -66,6 +69,7 @@ const Category = () => {
             setCat(res.data);
         }).catch(err => setToast(s => ({ ...s, show: true, message: "An error occurred" })))
         return () => abortController.current.abort();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [alias, loadProducts])
 
     useEffect(() => {
@@ -125,7 +129,7 @@ const Category = () => {
                             cat.children.map((p) => (
                                 <Col key={p.name} xs={6} sm={4} md={3} lg={2} xlg={2} as={Link} to={"/c/"+p.alias} className="product-in-listing my-2">
                                     <img loading="lazy" src={p.imagePath} alt={p.name} className="cat-dp" />
-                                    <h6 className="mt-2 text-primary text-start">{p.name}</h6>
+                                    <h6 className="mt-2 text-primary text-center">{p.name}</h6>
                                 </Col>
                                 ))
                         }
@@ -139,6 +143,7 @@ const Category = () => {
 
     return ( 
         <>
+            <div className="loadRef" tabIndex="22" ref={loadRef}></div>
             {
                 (isLoading)
                     ? <div className="mx-auto" style={{ height: "30vh", display: "grid" }}>{SPINNERS_BORDER}</div>
